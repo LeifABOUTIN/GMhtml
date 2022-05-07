@@ -1,0 +1,82 @@
+.wrapper {
+	width: 100%;
+	height: fit-content;
+	background-color: transparent;
+	position: absolute;
+	margin: auto;
+	top: 0;
+	left: 0;
+	z-index: 2;
+}
+
+.header {
+	display: flex;
+	/* justify-content: space-around; */
+
+	width: 90%;
+	min-width: fit-content;
+	height: 100px;
+	align-items: center;
+	margin: auto;
+	font-size: 1rem;
+	padding: 0 1rem;
+	background-color: rgba(255, 255, 255, 0.103);
+	position: relative;
+	top: 20px;
+}
+
+.nav-link {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	transition: all 0.5s ease;
+	padding: 1rem;
+	border-radius: 1rem;
+	font-size: 1rem;
+	position: relative;
+}
+.nav-link:hover {
+	color: white;
+}
+.nav-link::after {
+	content: "";
+	height: 5px;
+	position: absolute;
+	background-color: #95a588;
+	top: 66%;
+	left: calc(0% + 1rem);
+}
+@keyframes slide {
+	0% {
+		width: 0%;
+		/* calc(0% - .5rem); */
+	}
+
+	100% {
+		width: calc(100% - 2rem);
+	}
+}
+.header div:nth-of-type(2) {
+	margin-left: auto;
+}
+.header div:nth-of-type(7) {
+	margin-right: 2rem;
+}
+.nav-link:hover::after {
+	animation: slide 1.5s forwards;
+}
+.nav-link:hover > a {
+	color: white;
+}
+a {
+	text-decoration: none;
+	color: #646464;
+	/* padding: 2rem; */
+	text-align: center;
+}
+.header > div:hover {
+	cursor: pointer;
+}
+.logo {
+	width: 100px;
+}

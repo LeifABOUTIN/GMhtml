@@ -1,0 +1,188 @@
+@font-face {
+	font-family: Couture;
+	src: url("../fonts/couture-bld.otf") format("opentype");
+}
+
+body {
+	width: 100%;
+	background-image: url("../img/bkg2.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	margin: auto;
+}
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	width: 90vw;
+	background-color: rgb(7, 7, 7);
+	margin: auto;
+	font-family: "Roboto", sans-serif;
+}
+
+.title_main {
+	/* font-size: 3rem;
+margin: auto;
+padding: 2rem;
+font-weight: bold; */
+
+	/* -webkit-text-stroke: 2px #95a588; */
+	color: #95a588;
+	font-family: "Couture", sans-serif;
+	font-size: 2.5rem;
+	font-weight: bold;
+	letter-spacing: -1px;
+	line-height: 1;
+	text-align: left;
+	padding: 2rem;
+	width: fit-content;
+	margin: 5rem 0 10rem 10rem;
+	border: 5px solid #95a588;
+	border-radius: 1rem;
+}
+.homepage_logo {
+	width: 100%;
+	padding-top: 200px;
+
+	display: flex;
+	justify-content: center;
+}
+.homepage_logo > svg {
+	width: 50%;
+	/* background: rgba(255, 255, 255, 0.082); */
+	padding: 1rem;
+
+	/* box-shadow: 5px 5px 5px black; */
+}
+/* .homepage_logo > svg:hover {
+animation: dash 20s linear;
+animation-direction: reverse;
+background-color: red;
+} */
+.path {
+	animation: dash 15s ease-in-out forwards;
+	stroke-dasharray: 14003.5869140625;
+	stroke-dashoffset: 14003.5869140625;
+}
+.main-h2 {
+	color: #7a8670;
+	font-family: "Couture", sans-serif;
+	font-size: 1.3em;
+	padding: 1.5rem 0;
+	position: relative;
+}
+p {
+	/* font-family: Helvetica, sans-serif; */
+	font-weight: 300;
+	font-size: 1rem;
+	color: black;
+}
+@keyframes dash {
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+.container {
+	padding-top: 200px;
+	display: flex;
+	flex-direction: column;
+}
+.grid {
+	margin: 0 auto;
+	display: grid;
+	padding: 100px 0;
+	max-width: fit-content;
+	grid-gap: 25px;
+	grid-template-areas:
+		"card1 card2 card3"
+		"card4 card5 card6";
+}
+.card1 {
+	grid-area: card1;
+}
+.card2 {
+	grid-area: card2;
+}
+.card3 {
+	grid-area: card3;
+}
+.card4 {
+	margin-top: 100px;
+	grid-area: card4;
+}
+.card5 {
+	margin-top: 100px;
+	grid-area: card5;
+}
+.card6 {
+	margin-top: 100px;
+	grid-area: card6;
+}
+
+.card {
+	height: 550px;
+	width: 320px;
+	display: flex;
+	padding: 2rem 1rem;
+	flex-direction: column;
+	/* justify-content: center; */
+	align-items: center;
+	text-align: center;
+	background: rgba(255, 255, 255, 0.746);
+	position: relative;
+	z-index: 1;
+	box-shadow: 5px 5px 5px black;
+}
+.card-img {
+	width: 90%;
+	height: 40%;
+	background-size: cover;
+	border: 10px solid #7a8670;
+	border-radius: 10px;
+}
+.card-img3 {
+	background-image: url("../img/hand.jpg");
+	background-position: -10px 225px;
+}
+.card-img4 {
+	background-image: url("../img/marbrerie 0503.jpg");
+	background-position: center;
+}
+.card-img5 {
+	background-image: url("../img/flower_small.jpg");
+	background-position: center;
+}
+.card-img6 {
+	background-image: url("../img/devis.jpg");
+	background-position: center;
+}
+.card-logo {
+	width: 50px;
+	margin-bottom: 15px;
+}
+.separator {
+	margin: 30px;
+	width: 10%;
+	border-bottom: 1px solid black;
+}
+
+.btn {
+	background-color: white;
+	padding: 1rem;
+	border: 2px solid black;
+	cursor: pointer;
+}
+.btn:hover {
+	color: white;
+
+	background-color: #c3c3c3;
+}
+.btn-card {
+	position: absolute;
+	bottom: 10%;
+}

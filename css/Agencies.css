@@ -1,0 +1,113 @@
+.agences {
+	display: flex;
+	width: 100%;
+	/* gap: 50px; */
+	padding: 1rem;
+	height: 100vh;
+	justify-content: center;
+}
+/* .agence1,
+.agence2 {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+	height: fit-content;
+	width: 50%;
+	box-shadow: 0px 0px 12px 3px rgba(0, 0, 0, 0.51);
+	padding: 1rem;
+} */
+.agence_card {
+	display: flex;
+	flex-direction: column;
+	width: 40%;
+	padding: 2rem;
+	overflow: hidden;
+	/* box-shadow: 5px 5px 5px black; */
+
+	/* background: #ece9e6;
+	background: rgba(255, 255, 255, 0.746); */
+	background-color: transparent;
+	height: fit-content;
+}
+.agence_body {
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin: 2rem 2rem;
+}
+.agence_body h2 {
+	font-size: 1.5rem;
+	text-transform: capitalize;
+	color: white;
+	margin: auto;
+	font-family: sans-serif;
+	width: max-content;
+}
+.agence_footer {
+	display: flex;
+	/* padding: 1rem; */
+	margin-top: auto;
+	justify-content: center;
+}
+.agence_img {
+	max-width: 90%;
+	display: block;
+	object-fit: cover;
+	margin: auto auto 4rem auto;
+	border: 10px solid #7a8670;
+	border-radius: 10px;
+}
+.agence_info {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	background-color: #95a588;
+	color: #fff;
+	padding: 4rem 3rem;
+	box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.1);
+	font-size: 1.5rem;
+	align-items: flex-start;
+	min-width: 4em;
+	border-radius: 10px;
+	width: 90%;
+}
+.agence_info > a {
+	color: white;
+	font-size: 1.5rem;
+}
+.agence_info > h5 {
+	color: #7a8670;
+	background-color: #fff;
+	width: fit-content;
+	padding: 0.3rem;
+	margin: 1rem 0;
+}
+.agence_info > a,
+.agence_info {
+	font-size: 0.9rem;
+
+	font-weight: 600;
+}
+/* .photo_text {
+	display: flex;
+	align-items: center;
+	text-align: left;
+	flex-direction: column;
+	height: fit-content;
+
+	padding: 1rem;
+}
+.photo_text > p {
+	padding: 1rem;
+	height: 100%;
+	background: white;
+} */
+.card_info {
+	width: 100%;
+	background: rgba(255, 255, 255, 0.746);
+	min-height: 400px;
+	margin: 2rem 2rem;
+}
