@@ -2,7 +2,9 @@
 	font-family: Couture;
 	src: url("../fonts/couture-bld.otf") format("opentype");
 }
-
+:root {
+	--green-color: #7a8670;
+}
 body {
 	width: 100%;
 	background-image: url("../img/bkg2.jpg");
@@ -31,7 +33,7 @@ padding: 2rem;
 font-weight: bold; */
 
 	/* -webkit-text-stroke: 2px #95a588; */
-	color: #95a588;
+	color: var(--green-color);
 	font-family: "Couture", sans-serif;
 	font-size: 2.5rem;
 	font-weight: bold;
@@ -41,7 +43,7 @@ font-weight: bold; */
 	padding: 2rem;
 	width: fit-content;
 	margin: 5rem 0 10rem 10rem;
-	border: 5px solid #95a588;
+	border: 5px solid var(--green-color);
 	border-radius: 1rem;
 }
 .homepage_logo {
@@ -52,11 +54,23 @@ font-weight: bold; */
 	justify-content: center;
 }
 .homepage_logo > svg {
-	width: 50%;
 	/* background: rgba(255, 255, 255, 0.082); */
+	animation: borderAnimation 1000ms ease-in-out forwards;
 	padding: 1rem;
 
+	border-radius: 1rem;
+	background-color: rgba(0, 0, 0, 0.25);
+
 	/* box-shadow: 5px 5px 5px black; */
+}
+@keyframes borderAnimation {
+	0% {
+		border: 0px solid transparent;
+	}
+
+	100% {
+		border: 10px solid var(--green-color);
+	}
 }
 /* .homepage_logo > svg:hover {
 animation: dash 20s linear;
@@ -142,8 +156,12 @@ p {
 	width: 90%;
 	height: 40%;
 	background-size: cover;
-	border: 10px solid #7a8670;
+	border: 10px solid var(--green-color);
 	border-radius: 10px;
+	transition: transform 250ms ease-in-out;
+}
+.card-img:hover {
+	transform: translateY(5px);
 }
 .card-img3 {
 	background-image: url("../img/hand.jpg");
@@ -174,7 +192,7 @@ p {
 .btn {
 	background-color: white;
 	padding: 1rem;
-	border: 2px solid black;
+	border: 2px solid var(--green-color);
 	cursor: pointer;
 }
 .btn:hover {
@@ -185,4 +203,20 @@ p {
 .btn-card {
 	position: absolute;
 	bottom: 10%;
+	transition: transform 250ms ease-in-out, color 250ms ease-in-out,
+		background-color 250ms ease-in-out, border-radius 250ms ease-in-out;
+}
+.btn-card:hover {
+	transform: translateY(5px);
+	background-color: var(--green-color);
+	color: white;
+	border-radius: 0.75rem;
+}
+.btn-card:hover a {
+	color: white;
+}
+.btn-card a {
+	text-decoration: none;
+	color: black;
+	font-family: "Roboto", sans-serif;
 }
