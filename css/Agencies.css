@@ -1,10 +1,16 @@
+/* :root {
+	--green-color: #7a8670;
+} */
+
 .agences {
 	display: flex;
-	width: 100%;
+	width: 80%;
 	/* gap: 50px; */
 	padding: 1rem;
 	height: 100vh;
 	justify-content: center;
+
+	margin: 0 auto;
 }
 /* .agence1,
 .agence2 {
@@ -21,7 +27,7 @@
 .agence_card {
 	display: flex;
 	flex-direction: column;
-	width: 40%;
+	width: 50%;
 	padding: 2rem;
 	overflow: hidden;
 	/* box-shadow: 5px 5px 5px black; */
@@ -56,27 +62,36 @@
 	max-width: 90%;
 	display: block;
 	object-fit: cover;
-	margin: auto auto 4rem auto;
+	margin: auto;
 	border: 10px solid #7a8670;
 	border-radius: 10px;
+	border-bottom: 0;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
 }
 .agence_info {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
-	background-color: #95a588;
-	color: #fff;
+	background-color: rgba(255, 255, 255, 0.746);
+	color: #222;
 	padding: 4rem 3rem;
+	border: 10px solid #7a8670;
 	box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.1);
 	font-size: 1.5rem;
 	align-items: flex-start;
 	min-width: 4em;
 	border-radius: 10px;
 	width: 90%;
+	align-items: center;
+	font-weight: 600;
+	font-size: 1.25rem;
+	border-top: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 }
 .agence_info > a {
-	color: white;
-	font-size: 1.5rem;
+	color: #222;
 }
 .agence_info > h5 {
 	color: #7a8670;
@@ -87,9 +102,15 @@
 }
 .agence_info > a,
 .agence_info {
-	font-size: 0.9rem;
-
-	font-weight: 600;
+	display: flex;
+	place-content: center;
+	align-items: center;
+	gap: 0.25rem;
+}
+.agence_info a:hover {
+	color: var(--green-color);
+	font-weight: 900;
+	transform: scale(1.05);
 }
 /* .photo_text {
 	display: flex;
