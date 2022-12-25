@@ -132,3 +132,16 @@
 	min-height: 400px;
 	margin: 2rem 2rem;
 }
+
+@media (max-width: 1400px) {
+	.agences {
+		flex-direction: column;
+		width: 80%;
+		height: fit-content;
+	}
+	.agence_card {
+		width: 100%;
+		height: fit-content;
+		min-width: 688px;
+	}
+}
