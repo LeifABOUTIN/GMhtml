@@ -4,12 +4,52 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Artciles Funeraires</title>
+		<title>Articles Funeraires</title>
 		<link rel="stylesheet" href="../css/style.css" />
 		<link rel="stylesheet" href="../css/header.css" />
+		<link rel="stylesheet" href="../css/footer.css" />
+		<link rel="stylesheet" href="../css/ServicesObseques.css" />
+		<script defer src="../script/popup.js"></script>
 	</head>
 	<body>
 		<header>
+			<menu id="mobile_nav_open">
+				<img src="../img/logo_white.png" alt="logo gm" />
+				<img
+					class="mobile_nav_open_open_btn"
+					src="../img/menu.svg"
+					alt="menu pour petit écran"
+				/>
+			</menu>
+			<nav id="mobile_nav">
+				<img src="../img/close.svg" alt="" id="close_mobile_nav" />
+				<ul>
+					<a href="../index.html">
+						<img class="logo" src="../img/logo_grey.png" />
+					</a>
+
+					<li class="nav-link">
+						<a href="../pages/agencies.html">NOS AGENCES</a>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/qui-sommes-nous.html">QUI SOMMES NOUS</a>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/service-obseque.html">SERVICE OBSEQUES</a>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/marbrerie.html">SERVICE MARBRERIE</a>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/articles-funeraires.html"
+							>ARTICLES FUNERAIRES</a
+						>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/contact.html">CONTACT</a>
+					</li>
+				</ul>
+			</nav>
 			<nav class="wrapper">
 				<ul class="header">
 					<a href="../index.html">
@@ -23,12 +63,10 @@
 						<a href="../pages/qui-sommes-nous.html">QUI SOMMES NOUS</a>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/service-obseque.html">SERVICE OBSEQUE</a>
+						<a href="../pages/service-obseque.html">SERVICE OBSEQUES</a>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/service-marbrerie.html"
-							>SERVICE MARBRERIE</a
-						>
+						<a href="../pages/marbrerie.html">SERVICE MARBRERIE</a>
 					</li>
 					<li class="nav-link">
 						<a href="../pages/articles-funeraires.html"
@@ -36,10 +74,98 @@
 						>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/devis.html">DEVIS</a>
+						<a href="../pages/contact.html">CONTACT</a>
 					</li>
 				</ul>
 			</nav>
 		</header>
+
+		<h1 class="h1-main-title">Articles funEraires</h1>
+		<article>
+			<p>
+				Pour rendre le meilleur des hommages, il est important de bien
+				choisir ses <b>articles funéraires</b> afin de représenter au mieux
+				le défunt, témoigner votre soutien à la famille, perpétuer le
+				souvenir de votre proche ou ami.
+			</p>
+			<p>
+				Les articles peuvent être acheminés avec le cercueil et être déposés
+				par les pompes funèbres (ou l’entourage du défunt) dès l’inhumation
+				en fonction de l’organisation des obsèques, des choix de la famille
+				et du temps de livraison. Il est possible de personnaliser ces
+				ornements. Chaque article funéraire est singulier et il est
+				important de bien le choisir pour un hommage emblématique et
+				pérenne.
+			</p>
+			<p>
+				Les cimetières sont des endroits de souvenirs emplis d’articles
+				funéraires uniques en leur genre visant à commémorer un être cher
+				perdu. Certains articles sont plus communs que d’autres : les
+				<b>plaques funéraires personnalisées</b>, par exemple, peuvent
+				contenir textes, gravures et images afin de laisser un message ou
+				une pensée pour l’être perdu comme pour les vivants.
+			</p>
+
+			<p>
+				Dans le cas d’une crémation, <b>les urnes funéraires</b> sont
+				représentatives du défunt et différents types d’urnes vous sont
+				proposées à l’achat en fonction de vos goûts, budgets et attentions
+				particulières (urnes biodégradables, urnes prestige…).
+			</p>
+			<p>
+				Lors de l’organisation des obsèques, <b>les fleurs</b> sont bien
+				souvent un incontournable. Qu&#39;elles soient naturelles ou
+				artificielles, en pot ou encore en composition, les fleurs sont une
+				marque d&#39;amour et d&#39;attention non seulement pour le défunt
+				mais aussi pour sa famille.
+			</p>
+			<p>
+				Différents modèles d’articles en <b>céramique </b>vous sont proposés
+				à la vente. Ces objets colorés aux motifs floraux accompagnés d’un
+				texte sont également une option envisageable pour rendre un bel
+				hommage.
+			</p>
+		</article>
+		<footer>
+			<nav>
+				<ul>
+					<li><span>06.73.62.31.60</span><span>06.45.66.50.02</span></li>
+					<li>
+						<p>18 RUE DE L’EGALITE 95230 SOISY SOUS MONTMORENCY</p>
+						<p>
+							Du lundi au vendredi 9h-12h / 14h-18h Le samedi
+							9h30-12h/14h-17h30
+						</p>
+					</li>
+					<li>
+						<p>2 RUE MICHELET 95320 SAINT LEU LA FORET</p>
+						Du lundi au vendredi 10h-12h/14h-18h Le samedi sur rendez-vous
+					</li>
+					<li><a href="../pages/contact.html">contactez-nous</a></li>
+				</ul>
+			</nav>
+		</footer>
+		<script>
+
+
+
+			const mobileNavOpenBtn = document.querySelector("#mobile_nav_open")
+			const close_mobile_nav = document.getElementById("close_mobile_nav")
+			console.log(mobileNavOpenBtn)
+			const mobileNav = document.querySelector("#mobile_nav")
+			mobileNavOpenBtn.addEventListener("click",  () => {
+					console.log("clicking")
+					mobileNav.classList.add("show")
+				})
+			close_mobile_nav.addEventListener("click", () => {
+				mobileNav.style.left = "-100%"
+				mobileNav.addEventListener("transitionend", () => {
+					console.log("transition end")
+					mobileNav.style.left = ""
+					mobileNav.classList.remove("show")
+				}, {once: true})
+				// mobileNav.classList.remove("show")
+			})
+		</script>
 	</body>
 </html>

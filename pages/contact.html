@@ -4,12 +4,12 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>GM - Qui Sommes Nous</title>
+		<title>GM - Contact</title>
 		<link rel="stylesheet" href="../css/header.css" />
-		<link rel="stylesheet" href="../css/ServicesObseques.css" />
 		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="../css/contact.css" />
 		<link rel="stylesheet" href="../css/footer.css" />
-		<script defer src="../script/popup.js"></script>
+		<script defer src="../script/form.js"></script>
 	</head>
 	<body>
 		<header>
@@ -79,54 +79,93 @@
 				</ul>
 			</nav>
 		</header>
-		<h1 class="h1-main-title">Qui sommes nous</h1>
-		<article>
-			<p>
-				En 2010, José, Frédéric et Rémi prennent leur envol, après 23 années
-				aux côtés de leur père.
+		<h1 class="h1-main-title">Formulaire prise de contact</h1>
+		<dialog class="form__prise__contact__dialog">
+			<p id="dialog__message"></p>
+			<img
+				id="dialog__image"
+				src="../img/check.svg"
+				alt="logo check/validé"
+			/>
+			<button id="close__dialog">fermer</button>
+		</dialog>
+		<form class="form__prise_contact">
+			<p class="form__disclaimer">
+				*Vos données ne seront en aucun cas stockées ou utilisées à des fins
+				autres que la prise de contact que vous avez demandée.
 			</p>
-			<p>
-				Agostinho <span>G</span>oncalves <span>M</span>oura, apprenti depuis
-				1965 dans cette marbrerie (Virey) créée en 1955 et qui en deviendra
-				le gérant en 1987. Fort de son expérience, il transmettra à ses 3
-				fils sa passion en les formant aux métiers de la Pierre, comme
-				tailleur de pierre, graveur sur pierre et marbrier.
-			</p>
-			<p>
-				En 1995, l’entreprise obtient son habilitation aux prestations du
-				service extérieur des Pompes Funèbres et proposera aux familles en
-				deuil un accompagnement et une organisation complète des
-				funérailles. Leur formation de conseillers funéraires viendra
-				parfaire leur expérience dans le domaine du service funéraire.
-			</p>
-			<p>
-				L’équipe s’agrandit en accueillant Nadège en 2001 et Shirley en 2021
-				comme conseillères funéraires.
-			</p>
-			<div class="qui-nous-somme-nous-gallery">
-				<div class="card-persone">
-					<img src="../img/personnes/Jose.png" alt="Nadege Goujat" />
-					<span>José</span>
-				</div>
+			<fieldset>
+				<legend>Votre demande</legend>
+				<label for="demande__devis">Devis gratuit</label>
+				<input type="radio" name="demande" id="demande__devis" required />
+				<label for="demande__infos">Informations</label>
+				<input type="radio" name="demande" id="demande__infos" />
+			</fieldset>
+			<label for="nom">Nom | Prénom</label>
+			<input
+				type="text"
+				name="nom"
+				id="nom"
+				placeholder="Votre nom"
+				required
+			/>
+			<label for="nom">Dites nous en plus: (optionnel) </label>
+			<textarea
+				type="textarea"
+				name="message"
+				id="message"
+				placeholder="Tapez votre message..."
+			></textarea>
 
-				<div class="card-persone">
-					<img src="../img/personnes/Remi.png" alt="Nadege Goujat" />
-					<span>Rémi</span>
+			<fieldset>
+				<legend>Préférence prise de contact</legend>
+				<label for="pref__email">Par email</label>
+				<input
+					type="radio"
+					name="preference"
+					id="pref__email"
+					class="rbmail"
+				/>
+				<label for="pref__telephone">Par téléphone</label>
+				<input
+					type="radio"
+					name="preference"
+					id="pref__telephone"
+					class="rbtel"
+				/>
+				<div class="option option__email">
+					<label for="customer_email">Email</label>
+					<input
+						type="text"
+						name="email"
+						id="customer__email"
+						placeholder="Votre Email"
+						pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+						required
+					/>
+					<small>ex: example@gmail.com</small>
 				</div>
-				<div class="card-persone">
-					<img src="../img/personnes/Fred.png" alt="Nadege Goujat" />
-					<span>Frédèric</span>
+				<div class="option option__tel">
+					<label for="customer_tel">Téléphone</label>
+					<input
+						type="tel"
+						name="telephone"
+						id="customer__tel"
+						placeholder="Votre Téléphone"
+						maxlength="10"
+						required
+					/>
+					<small>ex: 0123456789</small>
 				</div>
-				<div class="card-persone">
-					<img src="../img/personnes/Nadege.png" alt="Nadege Goujat" />
-					<span>Nadège</span>
-				</div>
-				<div class="card-persone">
-					<img src="../img/personnes/Shirley.png" alt="Nadege Goujat" />
-					<span>Shirley</span>
-				</div>
-			</div>
-		</article>
+			</fieldset>
+
+			<input
+				class="submit__form"
+				type="submit"
+				value="Demander à être contacté"
+			/>
+			<!-- <button type="button" class="submit__form">envoyer</button> -->
+		</form>
 		<footer>
 			<nav>
 				<ul>

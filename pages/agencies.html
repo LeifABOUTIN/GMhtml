@@ -4,13 +4,52 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Nos agences - Soisy-Sous-Montmorency - Saint Leu</title>
+		<title>GM - Nos agences - Soisy-Sous-Montmorency - Saint Leu</title>
 		<link rel="stylesheet" href="../css/Agencies.css" />
 		<link rel="stylesheet" href="../css/style.css" />
 		<link rel="stylesheet" href="../css/header.css" />
+		<link rel="stylesheet" href="../css/footer.css" />
+		<script defer src="../script/popup.js"></script>
 	</head>
 	<body>
 		<header>
+			<menu id="mobile_nav_open">
+				<img src="../img/logo_white.png" alt="logo gm" />
+				<img
+					class="mobile_nav_open_open_btn"
+					src="../img/menu.svg"
+					alt="menu pour petit écran"
+				/>
+			</menu>
+			<nav id="mobile_nav">
+				<img src="../img/close.svg" alt="" id="close_mobile_nav" />
+				<ul>
+					<a href="../index.html">
+						<img class="logo" src="../img/logo_grey.png" />
+					</a>
+
+					<li class="nav-link">
+						<a href="../pages/agencies.html">NOS AGENCES</a>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/qui-sommes-nous.html">QUI SOMMES NOUS</a>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/service-obseque.html">SERVICE OBSEQUES</a>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/marbrerie.html">SERVICE MARBRERIE</a>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/articles-funeraires.html"
+							>ARTICLES FUNERAIRES</a
+						>
+					</li>
+					<li class="nav-link">
+						<a href="../pages/contact.html">CONTACT</a>
+					</li>
+				</ul>
+			</nav>
 			<nav class="wrapper">
 				<ul class="header">
 					<a href="../index.html">
@@ -24,12 +63,10 @@
 						<a href="../pages/qui-sommes-nous.html">QUI SOMMES NOUS</a>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/service-obseque.html">SERVICE OBSEQUE</a>
+						<a href="../pages/service-obseque.html">SERVICE OBSEQUES</a>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/service-marbrerie.html"
-							>SERVICE MARBRERIE</a
-						>
+						<a href="../pages/marbrerie.html">SERVICE MARBRERIE</a>
 					</li>
 					<li class="nav-link">
 						<a href="../pages/articles-funeraires.html"
@@ -37,7 +74,7 @@
 						>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/devis.html">DEVIS</a>
+						<a href="../pages/contact.html">CONTACT</a>
 					</li>
 				</ul>
 			</nav>
@@ -47,17 +84,27 @@
 			<div class="agences">
 				<div class="agence_card agence1">
 					<div class="agence_body">
-						<h2>SOISSY-SOUS-MONTMORENCY</h2>
+						<h2>Agence de Soisy sous Montmorency</h2>
 					</div>
-					<div class="agence_header">
+					<!-- <div class="agence_header">
 						<img
 							src="../img/agence_soisy.jpg"
 							loading="lazy"
 							class="agence_img"
 							alt="agence de soisy sous montmorency"
 						/>
+					</div> -->
+					<div class="agence_map">
+						<iframe
+							src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2620.7343032310932!2d2.4230438768853113!3d48.93950229499443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66b7c11c9b05b%3A0x41d693ee5bfca2ad!2s18%20Rue%20de%20l&#39;%C3%89galit%C3%A9%2C%2093350%20Le%20Bourget!5e0!3m2!1sfr!2sfr!4v1718443657472!5m2!1sfr!2sfr"
+							width="400"
+							height="300"
+							style="border:0;"
+							allowfullscreen=""
+							loading="lazy"
+							referrerpolicy="no-referrer-when-downgrade"
+						></iframe>
 					</div>
-
 					<div class="agence_footer">
 						<div class="agence_info">
 							<!-- <h5>Informations</h5> -->
@@ -65,7 +112,7 @@
 							<span>95230 SOISY SOUS MONTMORENCY</span>
 
 							<span>Du lundi au vendredi</span>
-							<span>9h-12h30 / 13h30-18h</span>
+							<span>9h-12h / 14h-18h</span>
 							<span>Le samedi 9h30-12h/14h-17h30</span>
 							<br />
 							<a class="contact-link" href="mailto:pfgm@gmail.com"
@@ -73,49 +120,94 @@
 							>
 							<a class="contact-link" href="tel:0139891788"
 								><img src="../logos/phone.svg" />Tél: 01.39.89.17.88</a
-							>
-							<a class="contact-link" href="fax:01398890??"
-								><img src="../logos/fax.svg" />Fax: 01.39.88.90.??</a
 							>
 						</div>
 					</div>
 				</div>
 				<div class="agence_card agence1">
 					<div class="agence_body">
-						<h2>SAINT LEU LA FORET</h2>
+						<h2>Agence de Saint Leu la Forêt</h2>
 					</div>
-					<div class="agence_header">
+					<!-- <div class="agence_header">
 						<img
 							src="../img/agence_soisy.jpg"
 							loading="lazy"
 							class="agence_img"
 							alt="agence de soisy sous montmorency"
 						/>
+					</div> -->
+					<div class="agence_map">
+						<iframe
+							src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2616.8978820080283!2d2.2389792926829495!3d49.01252771599165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6677885672dd9%3A0x33d038565ee49428!2s2%20Rue%20Michelet%2C%2095320%20Saint-Leu-la-For%C3%AAt!5e0!3m2!1sfr!2sfr!4v1718443701063!5m2!1sfr!2sfr"
+							width="400"
+							height="300"
+							style="border:0;"
+							allowfullscreen=""
+							loading="lazy"
+							referrerpolicy="no-referrer-when-downgrade"
+						></iframe>
 					</div>
-
 					<div class="agence_footer">
 						<div class="agence_info">
 							<!-- <h5>Informations</h5> -->
-							<span>18 RUE DE L’EGALITE</span>
-							<span>95230 SOISY SOUS MONTMORENCY</span>
+							<span>2 RUE MICHELET</span>
+							<span>95320 SAINT LEU LA FORET</span>
 
 							<span>Du lundi au vendredi</span>
-							<span>9h-12h30 / 13h30-18h</span>
-							<span>Le samedi 9h30-12h/14h-17h30</span>
+							<span>10h-12h/14h-18h</span>
+							<span>Le samedi sur rendez-vous</span>
 							<br />
 							<a class="contact-link" href="mailto:pfgm@gmail.com"
 								><img src="../logos/email.svg" />pfgm@gmail.com</a
 							>
 							<a class="contact-link" href="tel:0139891788"
-								><img src="../logos/phone.svg" />Tél: 01.39.89.17.88</a
-							>
-							<a class="contact-link" href="fax:01398890??"
-								><img src="../logos/fax.svg" />Fax: 01.39.88.90.??</a
+								><img src="../logos/phone.svg" />Tél: 01.34.13.68.82</a
 							>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<footer>
+			<nav>
+				<ul>
+					<li><span>06.73.62.31.60</span><span>06.45.66.50.02</span></li>
+					<li>
+						<p>18 RUE DE L’EGALITE 95230 SOISY SOUS MONTMORENCY</p>
+						<p>
+							Du lundi au vendredi 9h-12h / 14h-18h Le samedi
+							9h30-12h/14h-17h30
+						</p>
+					</li>
+					<li>
+						<p>2 RUE MICHELET 95320 SAINT LEU LA FORET</p>
+						Du lundi au vendredi 10h-12h/14h-18h Le samedi sur rendez-vous
+					</li>
+					<li><a href="../pages/contact.html">contactez-nous</a></li>
+				</ul>
+			</nav>
+		</footer>
+		<script>
+
+
+
+			const mobileNavOpenBtn = document.querySelector("#mobile_nav_open")
+			const close_mobile_nav = document.getElementById("close_mobile_nav")
+			console.log(mobileNavOpenBtn)
+			const mobileNav = document.querySelector("#mobile_nav")
+			mobileNavOpenBtn.addEventListener("click",  () => {
+					console.log("clicking")
+					mobileNav.classList.add("show")
+				})
+			close_mobile_nav.addEventListener("click", () => {
+				mobileNav.style.left = "-100%"
+				mobileNav.addEventListener("transitionend", () => {
+					console.log("transition end")
+					mobileNav.style.left = ""
+					mobileNav.classList.remove("show")
+				}, {once: true})
+				// mobileNav.classList.remove("show")
+			})
+		</script>
 	</body>
 </html>

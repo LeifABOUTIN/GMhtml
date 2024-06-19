@@ -1,0 +1,227 @@
+.form__prise_contact {
+	display: flex;
+	flex-direction: column;
+
+	padding: 4em 2em;
+	background-color: rgba(255, 255, 255, 0.746);
+	/* box-shadow: 0px 0px 15px 10px var(--green-color); */
+	border-radius: 10px;
+	color: #333;
+	font-weight: 700;
+	font-size: 1em;
+	width: 60%;
+	margin: 4em auto auto auto;
+	outline: 5px solid var(--green-color);
+	position: relative;
+	padding: 100px 50px;
+}
+
+small {
+	margin-left: 5px;
+}
+.form__prise_contact input,
+.form__prise_contact textarea {
+	margin-bottom: 2em;
+	font-size: 1em;
+	padding: 0.5em;
+	border-radius: 5px;
+	border: 2px solid var(--green-color);
+}
+.form__prise_contact textarea {
+	resize: none;
+	height: 100px;
+}
+.form__prise_contact input,
+.form__prise_contact label {
+	cursor: pointer;
+}
+.form__prise_contact label {
+	margin-bottom: 0.25em;
+	font-size: 1.5em;
+}
+.form__prise_contact textarea,
+.form__prise_contact input {
+	font-size: 1.25rem;
+}
+fieldset {
+	padding: 2em 1em;
+	display: flex;
+	gap: 2em;
+
+	margin-bottom: 4em;
+	border-radius: 1em;
+}
+legend {
+	font-size: 1.5em;
+}
+input[type="radio"] {
+	appearance: none;
+	background-color: #fff;
+
+	margin: 0;
+
+	color: var(--green-color);
+	width: 1em;
+	height: 1em;
+	/* outline: 3px solid var(--green-color); */
+	/* outline-offset: 2px; */
+	border-radius: 50%;
+	display: grid;
+	place-content: center;
+}
+input[type="radio"]::before {
+	content: "";
+	width: 1em;
+	height: 1em;
+	border-radius: 50%;
+	transform: scale(0);
+	transition: 120ms transform ease-in-out;
+}
+input[type="radio"]:checked::before {
+	transform: scale(0.75);
+	box-shadow: inset 1em 1em var(--green-color);
+}
+.submit__form {
+	all: unset;
+
+	margin: 5em auto 0 auto !important;
+
+	outline: 3px solid var(--green-color);
+
+	color: #fff;
+	background-color: var(--green-color);
+	padding: 10px 30px !important;
+	font-size: 1.3em !important;
+	font-weight: 900;
+	border-radius: 0.25em;
+	cursor: pointer;
+	transition: background-color 250ms linear, color 350ms ease-in-out;
+}
+.submit__form:hover,
+input[type="submit"]:focus {
+	background-color: rgb(250, 250, 250, 0.8);
+	color: var(--green-color);
+}
+.form__disclaimer {
+	position: absolute;
+	top: 5px;
+	width: 100%;
+	left: 0;
+	text-align: center;
+}
+.option__tel,
+.option__email {
+	display: none;
+	position: absolute;
+	transform: translate(-1em, 100px);
+	width: 50%;
+}
+.rbmail:checked ~ .option__email,
+.rbtel:checked ~ .option__tel {
+	display: flex;
+	flex-direction: column;
+	visibility: visible;
+
+	/* align-items: center; */
+	gap: 0.25em;
+	/* justify-content: center; */
+}
+
+#customer__email,
+#customer__tel {
+	margin: 0;
+	width: 300px;
+}
+
+.form__prise__contact__dialog {
+	width: 40%;
+	padding: 5rem 2rem;
+	/* position: fixed; */
+
+	height: fit-content;
+	inset: 30% 50%;
+	transform: translateX(-50%);
+	border: none;
+	box-shadow: 0 0 200px 2px black;
+	background-color: rgba(245, 245, 245, 0.477);
+	backdrop-filter: blur(5px);
+	border-radius: 10px;
+
+	z-index: 2000000;
+	/* display: flex; */
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+}
+.form__prise__contact__dialog.error img {
+	border-color: #5d0e07;
+}
+.form__prise__contact__dialog::backdrop {
+	background: radial-gradient(
+		circle,
+		rgba(122, 134, 112, 100%) 10%,
+		rgba(255, 255, 255, 0.1)
+	);
+	backdrop-filter: blur(5px);
+	width: 100vw;
+	height: 100vh;
+}
+.form__prise__contact__dialog[open] {
+	display: flex;
+}
+.form__prise__contact__dialog p {
+	color: black;
+	text-align: center;
+	line-height: 100%;
+	font-size: 2rem;
+}
+.form__prise__contact__dialog img {
+	width: 10%;
+	min-width: 50px;
+	border: 5px solid var(--green-color);
+	border-radius: 50%;
+	margin-block: 1rem;
+}
+.form__prise__contact__dialog button {
+	font-size: 2rem;
+	padding: 0.75rem 2rem;
+	cursor: pointer;
+	outline: 3px solid var(--green-color);
+	outline-offset: 4px;
+	border: none;
+	border-radius: 10px;
+	background-color: var(--green-color);
+	color: white;
+	transition: outline-offset 150ms ease;
+}
+.form__prise__contact__dialog button:hover {
+	outline-offset: -2px;
+}
+@media screen and (max-width: 600px) {
+	.form__prise_contact {
+		width: 100%;
+		font-size: 0.75rem;
+		padding: 20px 10px;
+		padding-top: 75px;
+		margin-bottom: 50px;
+	}
+	fieldset {
+		max-width: 100%;
+		margin-bottom: 2rem;
+	}
+	label {
+		font-size: 0.75em;
+		display: flex;
+		justify-content: start;
+		align-items: center;
+	}
+	input[type="radio"] {
+		width: 10px;
+		height: 10px;
+	}
+	.option__tel,
+	.option__email {
+		transform: translate(-1em, 50px);
+	}
+}

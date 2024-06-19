@@ -4,9 +4,12 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Service Obseques</title>
+		<title>GM - Service Obseques</title>
 		<link rel="stylesheet" href="../css/header.css" />
 		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="../css/ServicesObseques.css" />
+		<link rel="stylesheet" href="../css/footer.css" />
+		<script defer src="../script/popup.js"></script>
 	</head>
 	<body>
 		<header>
@@ -23,12 +26,10 @@
 						<a href="../pages/qui-sommes-nous.html">QUI SOMMES NOUS</a>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/service-obseque.html">SERVICE OBSEQUE</a>
+						<a href="../pages/service-obseque.html">SERVICE OBSEQUES</a>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/service-marbrerie.html"
-							>SERVICE MARBRERIE</a
-						>
+						<a href="../pages/marbrerie.html">SERVICE MARBRERIE</a>
 					</li>
 					<li class="nav-link">
 						<a href="../pages/articles-funeraires.html"
@@ -36,11 +37,97 @@
 						>
 					</li>
 					<li class="nav-link">
-						<a href="../pages/devis.html">DEVIS</a>
+						<a href="../pages/contact.html">CONTACT</a>
 					</li>
 				</ul>
 			</nav>
 		</header>
-		<h1>Service Obseques</h1>
+		<h1 class="h1-main-title">Service Obseques</h1>
+		<article>
+			<p>
+				Lors du décès d&#39;un proche, certaines démarches doivent être
+				faites rapidement l’organisation des obsèques notamment
+			</p>
+			<p>
+				Plusieurs cas en fonction du lieu où se situe le défunt, hôpital,
+				domicile, centre de soins ou maison de retraite Pour organiser les
+				obsèques, on détermine ensemble le mode de funérailles,
+				inhumation du cercueil ou sa crémation, cérémonie civile ou
+				religieuse. Les volontés du défunt ont pu être émises par écrit ou
+				oral afin qu’elles soient strictement respectées
+			</p>
+			<p>Différentes prestations vous seront proposées :</p>
+			<ul>
+				<li>
+					Démarches et formalités (Déclaration et demandes
+					d&#39;autorisations auprès des administrations compétentes :
+					mairies, préfecture…)
+				</li>
+				<li>
+					Préparation et organisation des obsèques (Coordination des
+					funérailles auprès des différents intervenants (Ehpad, hôpital,
+					funérarium, paroisse, crématorium, cimetière...)
+				</li>
+				<li>La transfert du défunt en chambre funéraire</li>
+				<li>
+					Préparation du corps du défunt (La toilette ou les soins de
+					conservation)
+				</li>
+				<li>Cérémonie funéraire (Civile ou religieuse)</li>
+				<li>Les cercueils, les urnes</li>
+				<li>Avis de décès (Faire part, parution presse)</li>
+				<li>Articles funéraires (Fleurs, plaques, bougies…)</li>
+				<li>
+					Travaux de marbrerie (creusements, caveaux, monuments funéraires,
+					gravures…)
+				</li>
+			</ul>
+			<br />
+			<p>
+				Un accompagnement à chaque étape de votre parcours d’obsèques où un
+				devis vous sera remis et expliqué
+			</p>
+		</article>
+		<footer>
+			<nav>
+				<ul>
+					<li><span>06.73.62.31.60</span><span>06.45.66.50.02</span></li>
+					<li>
+						<p>18 RUE DE L’EGALITE 95230 SOISY SOUS MONTMORENCY</p>
+						<p>
+							Du lundi au vendredi 9h-12h / 14h-18h Le samedi
+							9h30-12h/14h-17h30
+						</p>
+					</li>
+					<li>
+						<p>2 RUE MICHELET 95320 SAINT LEU LA FORET</p>
+						Du lundi au vendredi 10h-12h/14h-18h Le samedi sur rendez-vous
+					</li>
+					<li><a href="../pages/contact.html">contactez-nous</a></li>
+				</ul>
+			</nav>
+		</footer>
+		<script>
+
+
+
+			const mobileNavOpenBtn = document.querySelector("#mobile_nav_open")
+			const close_mobile_nav = document.getElementById("close_mobile_nav")
+			console.log(mobileNavOpenBtn)
+			const mobileNav = document.querySelector("#mobile_nav")
+			mobileNavOpenBtn.addEventListener("click",  () => {
+					console.log("clicking")
+					mobileNav.classList.add("show")
+				})
+			close_mobile_nav.addEventListener("click", () => {
+				mobileNav.style.left = "-100%"
+				mobileNav.addEventListener("transitionend", () => {
+					console.log("transition end")
+					mobileNav.style.left = ""
+					mobileNav.classList.remove("show")
+				}, {once: true})
+				// mobileNav.classList.remove("show")
+			})
+		</script>
 	</body>
 </html>
