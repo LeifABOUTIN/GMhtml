@@ -66,6 +66,7 @@ body {
 	font-size: 1.5rem;
 	text-decoration: none;
 }
+
 #close_mobile_nav {
 	position: absolute;
 	filter: invert(1);
@@ -395,6 +396,43 @@ b {
 	right: 10px;
 	width: 60px;
 	animation: downKey 1s ease-in-out infinite alternate-reverse;
+}
+#dialog_mentions_legales {
+	width: 50vw;
+	margin: auto;
+	height: 100vh;
+	padding: 20px;
+	border-radius: 10px;
+	background-image: linear-gradient(to left, #7a8670, white);
+	/* display: flex;
+	flex-direction: column;
+	position: relative; */
+	font-size: 1.15rem;
+	gap: 10px;
+	border: none;
+	box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+		rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+		rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+	line-height: 22px;
+	text-align: justify;
+}
+#dialog_mentions_legales h2 {
+	margin-block: 20px;
+}
+#dialog_mentions_legales p {
+	margin-block: 10px;
+}
+#dialog_mentions_legales img {
+	position: absolute;
+	height: 40px;
+	width: 40px;
+	top: 20px;
+	right: 20px;
+	cursor: pointer;
+}
+#dialog_mentions_legales::backdrop {
+	background-color: rgb(7, 7, 7, 0.4);
+	opacity: 0.75;
 }
 @keyframes downKey {
 	0% {
