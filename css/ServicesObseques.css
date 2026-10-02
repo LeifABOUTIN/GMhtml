@@ -69,3 +69,14 @@ article span {
 		width: 100%;
 	}
 }
+
+/* pages légales */
+article a {
+	color: inherit;
+	overflow-wrap: anywhere;
+}
+@media screen and (max-width: 600px) {
+	.h1-main-title--long {
+		font-size: 6vw;
+	}
+}

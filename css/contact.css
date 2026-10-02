@@ -168,23 +168,24 @@ input[type="submit"]:focus {
 	height: 100vh;
 }
 .form__prise__contact__dialog[open] {
+	overflow: hidden;
 	display: flex;
 }
 .form__prise__contact__dialog p {
 	color: black;
 	text-align: center;
 	line-height: 100%;
-	font-size: 2rem;
+	font-size: clamp(12px, 5vw, 28px);
 }
 .form__prise__contact__dialog img {
-	width: 10%;
-	min-width: 50px;
+	width: clamp(50px, 20%, 200px);
+
 	border: 5px solid var(--green-color);
 	border-radius: 50%;
 	margin-block: 1rem;
 }
 .form__prise__contact__dialog button {
-	font-size: 2rem;
+	font-size: clamp(12px, 5vw, 28px);
 	padding: 0.75rem 2rem;
 	cursor: pointer;
 	outline: 3px solid var(--green-color);
@@ -224,4 +225,8 @@ input[type="submit"]:focus {
 	.option__email {
 		transform: translate(-1em, 50px);
 	}
+}
+
+.form__disclaimer a {
+	color: inherit;
 }

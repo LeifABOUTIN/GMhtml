@@ -258,7 +258,8 @@ b {
 	grid-gap: 25px;
 	grid-template-areas:
 		"card1 card2 card3"
-		"card4 card5 card6";
+		"card4 card5 card6"
+		"null card7 card7";
 }
 .card1 {
 	grid-area: card1;
@@ -270,16 +271,20 @@ b {
 	grid-area: card3;
 }
 .card4 {
-	margin-top: 100px;
+	margin-top: 50px;
 	grid-area: card4;
 }
 .card5 {
-	margin-top: 100px;
+	margin-top: 50px;
 	grid-area: card5;
 }
 .card6 {
-	margin-top: 100px;
+	margin-top: 50px;
 	grid-area: card6;
+}
+.card7 {
+	margin-top: 50px;
+	grid-area: card7;
 }
 
 .card {
@@ -347,6 +352,10 @@ b {
 }
 .card-img6 {
 	background-image: url("../img/devis.jpg");
+	background-position: center;
+}
+.card-img7 {
+	background-image: url("../img/config.jpg");
 	background-position: center;
 }
 .card-logo {
@@ -434,6 +443,37 @@ b {
 	background-color: rgb(7, 7, 7, 0.4);
 	opacity: 0.75;
 }
+.main-page-slogan {
+	margin: auto;
+	font-size: clamp(20px, 10vw, 56px);
+	text-align: center;
+	line-height: 100%;
+	margin-top: 20px;
+	color: var(--green-color);
+	backdrop-filter: blur(20px);
+	width: fit-content;
+	padding: 20px;
+	background-color: rgb(0, 0, 0, 0.25);
+	text-shadow: 2px 2px rgba(255, 255, 255, 0.746);
+	animation: slowShake 1500ms ease-in-out infinite;
+}
+@keyframes slowShake {
+	0% {
+		transform: translate(-5px, -5px);
+	}
+	25% {
+		transform: translate(5px, 5px);
+	}
+	50% {
+		transform: translate(-5px, 5px);
+	}
+	75% {
+		transform: translate(5px, -5px);
+	}
+	100% {
+		transform: translate(-5px, -5px);
+	}
+}
 @keyframes downKey {
 	0% {
 		transform: scale(0.85);
@@ -450,11 +490,13 @@ b {
 		padding: 0.5rem 2.5rem;
 	}
 	.h1-main-title {
-		font-size: 3rem;
+		font-size: clamp(24px, 10vw, 68px);
 		line-height: 100%;
+		width: 100%;
 	}
 }
-@media screen and (max-width: 600px) {
+
+@media screen and (max-width: 1200px) {
 	#mobile_nav_open {
 		display: flex;
 	}
@@ -484,6 +526,12 @@ b {
 	}
 	.grid {
 		max-width: unset;
+
+		grid-template-areas:
+			"card1 card2"
+			"card3 card4"
+			"card5 card6"
+			"card7 card7";
 	}
 	.wrapper {
 		display: none;
@@ -492,8 +540,5 @@ b {
 	.card5,
 	.card6 {
 		margin-top: 0;
-	}
-	footer {
-		display: none;
 	}
 }

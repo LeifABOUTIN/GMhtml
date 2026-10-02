@@ -36,34 +36,24 @@ window.onload = () => {
 		const form = e.target
 
 		const devis = form.querySelector("#demande__devis").checked
-
 		const nom = form.querySelector("#nom").value
 		const message = form.querySelector("#message").value
-
 		const mail = form.querySelector("#customer__email").value
-
 		const tel = form.querySelector("#customer__tel").value
 		const body = {
-			reason: devis === "on" ? "devis" : "infos",
+			reason: devis ? "devis" : "infos",
 			name: nom,
 			message: message || undefined,
-
 			contact: mail !== "" ? mail : tel,
 		}
-		console.log(body)
 		try {
-			const res = await fetch(
-				"https://cmm7zvmefp2c65aqucfpnla6pu0zpzed.lambda-url.eu-west-3.on.aws",
-				{
-					method: "POST",
-
-					headers: {
-						"Content-Type": "application/json",
-					},
-
-					body: JSON.stringify(body),
-				}
-			)
+			const res = await fetch("https://cmm7zvmefp2c65aqucfpnla6pu0zpzed.lambda-url.eu-west-3.on.aws", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(body),
+			})
 			if (res.status === 200) {
 				imgDialog.src = "../img/check.svg"
 				messageDialog.textContent =
@@ -73,11 +63,9 @@ window.onload = () => {
 				imgDialog.src = "../img/error.svg"
 				dialogForm.classList.add("error")
 				messageDialog.textContent =
-					"Il semble qu'il y est un probleme de notre coté.. réassayez plus tard.."
-
+					"Il semble qu'il y ait un problème de notre coté.. réassayez plus tard.."
 				dialogForm.showModal()
 			}
 		} catch (e) {}
 	})
-	console.log(mobileNavOpenBtn)
 }

@@ -41,8 +41,9 @@ footer nav ul li p {
 footer nav ul li a {
 	text-decoration: none;
 	color: inherit;
-	font-size: 1.75rem;
+	font-size: 1rem;
 	text-align: center;
+	white-space: nowrap;
 
 	display: block;
 }
@@ -62,4 +63,18 @@ footer nav ul li:hover::before {
 }
 footer nav ul li:hover {
 	color: black;
+}
+@media screen and (max-width: 900px) {
+	footer nav ul {
+		flex-direction: column;
+	}
+	footer nav ul li {
+		padding: 1rem;
+	}
+	#dialog_mentions_legales {
+		width: 92vw;
+	}
+}
+footer nav ul li a:hover {
+	text-decoration: underline;
 }
