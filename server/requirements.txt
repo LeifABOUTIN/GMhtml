@@ -3,3 +3,4 @@ django-allauth[socialaccount]>=65.19,<66
 Pillow>=12
 python-dotenv>=1.2
 gunicorn>=23
+segno>=1.6

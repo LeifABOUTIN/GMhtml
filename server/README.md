@@ -6,6 +6,8 @@ The static website (repo root) is served as-is by **nginx**. A small **Django** 
 - condolence messages on each page:
   - **public** → hidden until an admin approves it (admins get an email)
   - **private** → never published, emailed to the family addresses set on the page, then deleted after 30 days
+- ceremony steps (levée du corps, cérémonie, inhumation…) each with an « Itinéraire » Google Maps link
+- a QR code for each page, printable as an A4 poster or 8 cards to take away (staff only: `/avis-de-deces/<page>/qr/`)
 - `/admin/` – create / edit / delete memorial pages, approve or reject messages. Sign-in with **Google**,
   restricted to the addresses in `ADMIN_EMAILS`.
 
@@ -30,7 +32,9 @@ copy .env.example .env          # set DJANGO_DEBUG=1, ADMIN_EMAILS=your Google a
 .venv\Scripts\python manage.py runserver 127.0.0.1:8002
 ```
 
-Open http://127.0.0.1:8002/ – Django serves the whole site in development. Emails are printed in the
+Open http://127.0.0.1:8002/ – Django serves the whole site in development.
+
+Run the tests with `.venv\Scripts\python manage.py test memorials`. Emails are printed in the
 terminal instead of being sent while `EMAIL_HOST` is empty.
 
 Google sign-in needs `GOOGLE_CLIENT_ID/SECRET` (step 2 below). Without it, create an emergency admin with
@@ -91,7 +95,12 @@ sudo bash /srv/gm/repo/server/deploy/deploy.sh
 ### Day-to-day
 
 - Admin: https://gmfuneraire.fr/admin/ → "Se connecter avec Google".
-- *Avis de décès → Ajouter*: name, dates, photo, text, ceremony, family email(s), tick "publié".
+- *Avis de décès → Ajouter*: name, dates, photo, text, family email(s), tick "publié". Add one line per
+  ceremony step in *Étapes de la cérémonie* (the address gives the « Itinéraire » button).
+- QR code: column « QR code » in the list, or the « QR code pour la cérémonie » box on the notice →
+  *Affiche A4* or *Cartes à emporter*, then « Imprimer » (A4, no margins, 100 %).
+- Old messages are deleted every night: private ones (sent or failed) and refused public ones after 30 days
+  (`PRIVATE_COMMENT_RETENTION_DAYS`, `REJECTED_COMMENT_RETENTION_DAYS`).
 - *Messages*: filter "En attente de validation", select, action "Publier" or "Refuser".
 - Logs: `journalctl -u gm -f` · Backups: `/srv/gm/data/backups` and the S3 bucket.
 - Restore a backup: `gunzip db-DATE.sqlite3.gz && sudo systemctl stop gm && cp db-DATE.sqlite3 /srv/gm/data/db.sqlite3 && sudo systemctl start gm`

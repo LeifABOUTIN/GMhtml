@@ -1,3 +1,6 @@
+from urllib.parse import quote_plus
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db import models
@@ -29,8 +32,9 @@ class Memorial(models.Model):
 	photo = models.ImageField("photo", upload_to="avis/%Y/", blank=True)
 	announcement = models.TextField("texte de l’avis",
 		help_text="Texte de l’avis de décès, tel qu’il apparaîtra sur la page.")
-	ceremony = models.TextField("cérémonie", blank=True,
-		help_text="Date, heure et lieu des obsèques, de l’inhumation ou de la crémation.")
+	ceremony = models.TextField("informations complémentaires", blank=True,
+		help_text="Facultatif : fleurs, dons, « ni fleurs ni couronnes »… Les étapes de la cérémonie "
+			"se saisissent dans le tableau « Étapes de la cérémonie » plus bas.")
 	family_emails = models.CharField("e-mails de la famille", max_length=500, blank=True,
 		validators=[validate_email_list],
 		help_text="Reçoivent les messages privés. Plusieurs adresses séparées par des virgules.")
@@ -59,6 +63,11 @@ class Memorial(models.Model):
 	def get_absolute_url(self):
 		return reverse("memorials:detail", args=[self.slug])
 
+	@property
+	def public_url(self):
+		"""Full address of the page, as printed in the QR code."""
+		return settings.SITE_URL + self.get_absolute_url()
+
 	def save(self, *args, **kwargs):
 		if not self.slug:
 			base = slugify(f"{self.first_name} {self.last_name} {self.death_date.year}")[:150]
@@ -67,6 +76,36 @@ class Memorial(models.Model):
 				slug, n = f"{base}-{n}", n + 1
 			self.slug = slug
 		super().save(*args, **kwargs)
+
+
+class CeremonyStep(models.Model):
+	"""One stage of the funeral (levée du corps, cérémonie, inhumation…), with a Google Maps link."""
+
+	memorial = models.ForeignKey(Memorial, on_delete=models.CASCADE, related_name="steps", verbose_name="avis")
+	title = models.CharField("étape", max_length=120,
+		help_text="Ex. : Levée du corps, Cérémonie religieuse, Inhumation, Crémation, Réunion après la cérémonie.")
+	starts_at = models.DateTimeField("date et heure", null=True, blank=True)
+	place = models.CharField("lieu", max_length=160, blank=True, help_text="Ex. : Église Saint-Germain")
+	address = models.CharField("adresse", max_length=255, blank=True,
+		help_text="Sert au lien « Itinéraire » vers Google Maps.")
+	details = models.CharField("précisions", max_length=255, blank=True,
+		help_text="Ex. : dans l’intimité familiale")
+	order = models.PositiveSmallIntegerField("ordre", default=0)
+
+	class Meta:
+		verbose_name = "étape de la cérémonie"
+		verbose_name_plural = "étapes de la cérémonie"
+		ordering = ["order", "starts_at", "pk"]
+
+	def __str__(self):
+		return self.title
+
+	@property
+	def maps_url(self):
+		query = ", ".join(part for part in (self.place, self.address) if part)
+		if not self.address:
+			return ""
+		return "https://www.google.com/maps/search/?api=1&query=" + quote_plus(query)
 
 
 class Comment(models.Model):

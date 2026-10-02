@@ -161,6 +161,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Private messages to families are deleted this many days after being sent
 PRIVATE_COMMENT_RETENTION_DAYS = int(os.environ.get("PRIVATE_COMMENT_RETENTION_DAYS", "30"))
+# Public messages refused by an admin are deleted this many days after they were received
+REJECTED_COMMENT_RETENTION_DAYS = int(os.environ.get("REJECTED_COMMENT_RETENTION_DAYS", "30"))
 
 if not DEBUG:
 	SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

@@ -1,12 +1,18 @@
+import time
+
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.safestring import mark_safe
 
 from .emails import notify_moderators, send_private_comment
 from .forms import CommentForm
 from .models import Comment, Memorial
+from .qr import qr_svg
 
 RATE_LIMIT = 5  # comments per visitor…
 RATE_WINDOW = 10 * 60  # …per 10 minutes
@@ -55,9 +61,38 @@ def memorial_detail(request, slug):
 	).order_by("created_at")
 	return render(request, "memorials/detail.html", {
 		"memorial": memorial,
+		"steps": memorial.steps.all(),
 		"comments": public_comments,
 		"form": form,
 	})
+
+
+# --- QR code for the ceremony (staff only: works before the page is published) ---
+
+PRINT_FORMATS = {"affiche": "Affiche A4", "cartes": "Cartes à emporter (8 par page)"}
+
+
+@staff_member_required
+def qr_print(request, slug):
+	memorial = get_object_or_404(Memorial, slug=slug)
+	fmt = request.GET.get("format")
+	if fmt not in PRINT_FORMATS:
+		fmt = "affiche"
+	return render(request, "memorials/qr_print.html", {
+		"memorial": memorial,
+		"format": fmt,
+		"formats": PRINT_FORMATS,
+		"qr": mark_safe(qr_svg(memorial.public_url)),
+		"short_url": memorial.public_url.split("://", 1)[-1],
+	})
+
+
+@staff_member_required
+def qr_download(request, slug):
+	memorial = get_object_or_404(Memorial, slug=slug)
+	response = HttpResponse(qr_svg(memorial.public_url, standalone=True), content_type="image/svg+xml")
+	response["Content-Disposition"] = f'attachment; filename="qr-{memorial.slug}.svg"'
+	return response
 
 
 def _client_ip(request):
@@ -66,9 +101,15 @@ def _client_ip(request):
 
 
 def _rate_limited(request):
+	"""At most RATE_LIMIT messages per visitor in a fixed RATE_WINDOW, counted from their first message.
+
+	The window's end is stored with the count, so later messages don't push it back."""
 	key = f"comment-rate:{_client_ip(request)}"
-	count = cache.get(key, 0)
+	now = time.time()
+	count, window_end = cache.get(key) or (0, 0)
+	if now >= window_end:
+		count, window_end = 0, now + RATE_WINDOW
 	if count >= RATE_LIMIT:
 		return True
-	cache.set(key, count + 1, RATE_WINDOW)
+	cache.set(key, (count + 1, window_end), max(1, int(window_end - now)))
 	return False

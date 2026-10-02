@@ -26,10 +26,33 @@
 					{{ memorial.announcement|linebreaks }}
 				</div>
 
-				{% if memorial.ceremony %}
+				{% if steps or memorial.ceremony %}
 					<section class="memorial__ceremony">
 						<h2>Cérémonie</h2>
-						{{ memorial.ceremony|linebreaks }}
+						{% if steps %}
+							<ol class="steps">
+								{% for step in steps %}
+									<li class="step">
+										<p class="step__title">{{ step.title }}</p>
+										{% if step.starts_at %}<p class="step__when">{{ step.starts_at|date:"l j F Y à H\hi" }}</p>{% endif %}
+										{% if step.place or step.address %}
+											<p class="step__where">
+												{% if step.place %}<strong>{{ step.place }}</strong>{% endif %}{% if step.place and step.address %}<br />{% endif %}{{ step.address }}
+											</p>
+										{% endif %}
+										{% if step.details %}<p class="step__details">{{ step.details }}</p>{% endif %}
+										{% if step.maps_url %}
+											<a class="btn btn--ghost step__maps" href="{{ step.maps_url }}" target="_blank" rel="noopener">
+												<img src="/logos/directions.svg" alt="" width="20" height="20" /> Itinéraire
+											</a>
+										{% endif %}
+									</li>
+								{% endfor %}
+							</ol>
+						{% endif %}
+						{% if memorial.ceremony %}
+							<div class="steps__notes">{{ memorial.ceremony|linebreaks }}</div>
+						{% endif %}
 					</section>
 				{% endif %}
 			</article>

@@ -1028,6 +1028,52 @@ input[type="radio"]:checked::before {
 	font-size: 1.2rem;
 	margin-bottom: 6px;
 }
+.steps {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 10px;
+}
+.step {
+	padding-bottom: 16px;
+	border-bottom: 1px solid rgba(122, 134, 112, 0.35);
+}
+.step:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+.step__title {
+	font-weight: 700;
+	font-size: 1.1rem;
+	color: var(--green-dark);
+}
+.step__when {
+	font-weight: 600;
+	margin-top: 2px;
+}
+.step__where,
+.step__details {
+	margin-top: 4px;
+}
+.step__details {
+	font-style: italic;
+}
+.step__maps {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 10px;
+	padding: 0.4rem 0.9rem;
+	font-size: 0.95rem;
+	color: var(--green-dark);
+}
+.step__maps:hover {
+	background-color: rgba(122, 134, 112, 0.15);
+}
+.steps__notes {
+	margin-top: 16px;
+}
 @media screen and (max-width: 640px) {
 	.memorial__head {
 		flex-direction: column;

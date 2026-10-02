@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from io import StringIO
 from types import SimpleNamespace
+from unittest import mock
 
 from allauth.core.exceptions import ImmediateHttpResponse
 from django.contrib.auth import get_user_model
@@ -9,10 +10,11 @@ from django.core import mail
 from django.core.cache import cache
 from django.core.management import call_command
 from django.test import RequestFactory, TestCase, override_settings
+from django.urls import reverse
 from django.utils import timezone
 
 from .adapters import AdminOnlySocialAccountAdapter
-from .models import Comment, Memorial
+from .models import CeremonyStep, Comment, Memorial
 
 
 def make_memorial(**kw):
@@ -87,6 +89,79 @@ class CommentFlowTests(TestCase):
 			status=Comment.Status.SENT)
 		call_command("purge_private_comments", stdout=StringIO())
 		self.assertEqual(list(Comment.objects.values_list("author_name", flat=True)), ["B"])
+
+	def test_rate_limit_window_does_not_slide(self):
+		# 5 messages, then one more every 3 minutes: blocked until 10 minutes after the FIRST message
+		with mock.patch("memorials.views.time.time") as now:
+			now.return_value = 1_000_000
+			for _ in range(5):
+				self.post(visibility="public")
+			for minutes in (3, 6, 9):
+				now.return_value = 1_000_000 + minutes * 60
+				self.post(visibility="public")
+			self.assertEqual(Comment.objects.count(), 5)
+			now.return_value = 1_000_000 + 10 * 60 + 1
+			self.post(visibility="public")
+		self.assertEqual(Comment.objects.count(), 6)
+
+	def test_purge_failed_private_and_rejected_messages(self):
+		def comment(name, visibility, status, days):
+			c = Comment.objects.create(memorial=self.m, author_name=name, message="x", visibility=visibility,
+				status=status)
+			Comment.objects.filter(pk=c.pk).update(created_at=timezone.now() - timedelta(days=days))
+
+		comment("old-failed", "private", Comment.Status.FAILED, 31)
+		comment("new-failed", "private", Comment.Status.FAILED, 2)
+		comment("old-rejected", "public", Comment.Status.REJECTED, 31)
+		comment("new-rejected", "public", Comment.Status.REJECTED, 2)
+		comment("old-pending", "public", Comment.Status.PENDING, 90)
+		comment("old-approved", "public", Comment.Status.APPROVED, 90)
+		call_command("purge_private_comments", stdout=StringIO())
+		self.assertEqual(sorted(Comment.objects.values_list("author_name", flat=True)),
+			["new-failed", "new-rejected", "old-approved", "old-pending"])
+
+
+class CeremonyStepTests(TestCase):
+	def test_steps_are_shown_with_maps_link(self):
+		m = make_memorial()
+		CeremonyStep.objects.create(memorial=m, order=1, title="Cérémonie religieuse", place="Église Saint-Germain",
+			address="1 place de l'Église, 95230 Soisy-sous-Montmorency")
+		CeremonyStep.objects.create(memorial=m, order=2, title="Inhumation", details="dans l’intimité familiale")
+		html = self.client.get(m.get_absolute_url()).content.decode()
+		self.assertIn("Cérémonie religieuse", html)
+		self.assertIn("https://www.google.com/maps/search/?api=1&amp;query=%C3%89glise+Saint-Germain", html)
+		self.assertEqual(html.count("Itinéraire"), 1)  # no address → no directions button
+		self.assertLess(html.index("Cérémonie religieuse"), html.index("Inhumation"))
+
+
+@override_settings(SITE_URL="https://gmfuneraire.fr")
+class QRCodeTests(TestCase):
+	def setUp(self):
+		self.m = make_memorial(is_published=False)  # the agency prints before publishing
+		self.staff = get_user_model().objects.create_user("agent", "agent@example.com", "x" * 12, is_staff=True)
+
+	def test_requires_staff(self):
+		for name in ("memorials:qr", "memorials:qr_download"):
+			r = self.client.get(reverse(name, args=[self.m.slug]))
+			self.assertEqual(r.status_code, 302)
+			self.assertIn("/admin/login/", r["Location"])
+
+	def test_poster_and_cards(self):
+		self.client.force_login(self.staff)
+		url = reverse("memorials:qr", args=[self.m.slug])
+		poster = self.client.get(url)
+		self.assertContains(poster, "<svg")
+		self.assertContains(poster, "gmfuneraire.fr/avis-de-deces/jeanne-exemple-2026/")
+		self.assertContains(poster, "pas encore publié")
+		cards = self.client.get(url + "?format=cartes").content.decode()
+		self.assertEqual(cards.count('class="card"'), 8)
+
+	def test_download_svg(self):
+		self.client.force_login(self.staff)
+		r = self.client.get(reverse("memorials:qr_download", args=[self.m.slug]))
+		self.assertEqual(r["Content-Type"], "image/svg+xml")
+		self.assertIn('filename="qr-jeanne-exemple-2026.svg"', r["Content-Disposition"])
+		self.assertIn(b"<svg", r.content)
 
 
 @override_settings(ADMIN_EMAILS=["boss@example.com"])

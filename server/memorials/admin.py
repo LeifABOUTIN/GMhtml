@@ -1,26 +1,36 @@
 from django.contrib import admin, messages
 from django.db.models import Count, Q
+from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
 from django.contrib.auth.models import Group
 
 from .emails import send_private_comment
-from .models import Comment, Memorial
+from .models import CeremonyStep, Comment, Memorial
 
 # keep the admin to what the staff actually use (Google login is configured in settings)
 for model in (Group, EmailAddress, SocialAccount, SocialApp, SocialToken):
 	admin.site.unregister(model)
 
 
+class CeremonyStepInline(admin.TabularInline):
+	model = CeremonyStep
+	fields = ["order", "title", "starts_at", "place", "address", "details"]
+	extra = 1
+	verbose_name_plural = "étapes de la cérémonie (une ligne par étape, avec l’adresse pour l’itinéraire)"
+
+
 @admin.register(Memorial)
 class MemorialAdmin(admin.ModelAdmin):
-	list_display = ["full_name", "death_date", "is_published", "pending_count", "view_link"]
+	inlines = [CeremonyStepInline]
+	list_display = ["full_name", "death_date", "is_published", "pending_count", "view_link", "qr_link"]
 	list_filter = ["is_published", "comments_open"]
 	search_fields = ["first_name", "last_name", "maiden_name"]
 	date_hierarchy = "death_date"
-	readonly_fields = ["photo_preview", "created_at", "updated_at"]
+	readonly_fields = ["photo_preview", "qr_tools", "created_at", "updated_at"]
 	actions = ["publish", "unpublish"]
 	fieldsets = [
 		("Défunt", {"fields": [("first_name", "last_name"), "maiden_name", ("birth_date", "death_date"), "city",
@@ -28,6 +38,7 @@ class MemorialAdmin(admin.ModelAdmin):
 		("Avis", {"fields": ["announcement", "ceremony"]}),
 		("Famille", {"fields": ["family_emails"]}),
 		("Publication", {"fields": ["is_published", "comments_open", "slug", ("created_at", "updated_at")]}),
+		("QR code pour la cérémonie", {"fields": ["qr_tools"]}),
 	]
 
 	def get_queryset(self, request):
@@ -52,6 +63,27 @@ class MemorialAdmin(admin.ModelAdmin):
 		if not obj.is_published:
 			return "non publié"
 		return format_html('<a href="{}" target="_blank">voir ↗</a>', obj.get_absolute_url())
+
+	@admin.display(description="QR code")
+	def qr_link(self, obj):
+		return format_html('<a href="{}" target="_blank">imprimer ↗</a>', reverse("memorials:qr", args=[obj.slug]))
+
+	@admin.display(description="QR code")
+	def qr_tools(self, obj):
+		if not obj.pk:
+			return "Disponible après l’enregistrement de l’avis."
+		warning = "" if obj.is_published else (
+			"<p><b>Attention :</b> l’avis n’est pas encore publié, le QR code mènera à une page introuvable "
+			"tant que « publié » n’est pas coché.</p>")
+		return format_html(
+			'{}<p>Le QR code ouvre la page de l’avis, où les proches peuvent laisser un message.</p>'
+			'<p><a href="{}" target="_blank">Affiche A4 ↗</a> · <a href="{}" target="_blank">Cartes à emporter ↗</a>'
+			' · <a href="{}">Télécharger le QR code seul (SVG)</a></p>',
+			mark_safe(warning),
+			reverse("memorials:qr", args=[obj.slug]),
+			reverse("memorials:qr", args=[obj.slug]) + "?format=cartes",
+			reverse("memorials:qr_download", args=[obj.slug]),
+		)
 
 	@admin.display(description="aperçu")
 	def photo_preview(self, obj):
