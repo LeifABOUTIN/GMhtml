@@ -326,6 +326,7 @@ main {
 	display: flex;
 	flex-direction: column;
 	background-color: var(--panel);
+	border: 2px solid var(--green);
 	border-radius: var(--radius);
 	overflow: hidden;
 	text-decoration: none;
@@ -399,6 +400,7 @@ main {
 	grid-template-columns: 1fr 1fr;
 	margin-top: 24px;
 	background-color: var(--panel);
+	border: 2px solid var(--green);
 	border-radius: var(--radius);
 	overflow: hidden;
 	box-shadow: var(--shadow);
