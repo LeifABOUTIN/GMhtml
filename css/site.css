@@ -100,7 +100,7 @@ main {
 	border-bottom: 1px solid var(--green);
 }
 .site-header__inner {
-	max-width: var(--max);
+	max-width: 1440px;
 	margin: 0 auto;
 	padding: 10px 16px;
 	display: flex;
@@ -108,9 +108,13 @@ main {
 	justify-content: space-between;
 	gap: 1rem;
 }
+.site-header__logo {
+	flex-shrink: 0;
+}
 .site-header__logo img {
 	height: 64px;
 	width: auto;
+	max-width: none;
 	transition: transform 300ms ease;
 }
 .site-header__logo:hover img {
@@ -170,7 +174,7 @@ main {
 	filter: invert(1); /* close.svg is drawn in black */
 }
 
-@media screen and (max-width: 1240px) {
+@media screen and (max-width: 1420px) {
 	.nav-toggle {
 		display: block;
 	}
@@ -240,6 +244,7 @@ main {
 /* ---------- Buttons ---------- */
 
 .btn {
+	font: inherit;
 	display: inline-block;
 	padding: 0.8rem 1.6rem;
 	border-radius: 8px;
@@ -870,4 +875,237 @@ input[type="radio"]:checked::before {
 	background: none;
 	padding: 28px;
 	font-size: 1rem;
+}
+
+/* ---------- Avis de décès (pages served by Django) ---------- */
+
+.notices {
+	max-width: 860px;
+	margin: 24px auto 0;
+}
+.notice {
+	padding: 14px 18px;
+	border-radius: 8px;
+	background-color: #fff;
+	border-left: 6px solid var(--green);
+	font-weight: 600;
+}
+.notice--error {
+	border-left-color: #8a2b22;
+}
+.back {
+	margin-top: 32px;
+}
+.back a {
+	color: #eee;
+	text-decoration: none;
+	font-weight: 600;
+}
+.back a:hover {
+	text-decoration: underline;
+}
+.empty {
+	color: #eee;
+	text-align: center;
+	padding: 24px 0;
+}
+.prose .empty,
+.condolences .empty {
+	color: var(--text);
+}
+
+.search {
+	max-width: 640px;
+	margin: 0 auto 40px;
+	color: #eee;
+}
+.search label {
+	display: block;
+	font-weight: 700;
+	margin-bottom: 8px;
+}
+.search__row {
+	display: flex;
+	gap: 10px;
+}
+.search input {
+	flex: 1;
+	min-width: 0;
+	font: inherit;
+	padding: 0.7rem 0.9rem;
+	border-radius: 8px;
+	border: 2px solid var(--green);
+}
+
+.memorial-card__photo {
+	width: 100%;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+	border-bottom: 4px solid var(--green);
+}
+.memorial-card__photo--empty {
+	background: var(--green) url("../img/logo_white.png") center / 60% no-repeat;
+}
+.memorial-card__name {
+	font-family: "Roboto", sans-serif !important;
+	font-weight: 700 !important;
+	color: var(--text) !important;
+	font-size: 1.3rem !important;
+}
+.memorial-card__maiden {
+	flex: 0 !important;
+	font-style: italic;
+}
+
+.pager {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 16px;
+	margin-top: 32px;
+	color: #eee;
+}
+
+.memorial {
+	max-width: 860px;
+	margin: 16px auto 0;
+	background-color: var(--panel);
+	border: 2px solid var(--green);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	overflow: hidden;
+}
+.memorial__head {
+	display: flex;
+	gap: 32px;
+	align-items: center;
+	padding: 40px 48px;
+	border-bottom: 1px solid rgba(122, 134, 112, 0.5);
+}
+.memorial__photo {
+	width: 180px;
+	aspect-ratio: 3 / 4;
+	object-fit: cover;
+	border-radius: 10px;
+	border: 4px solid var(--green);
+	flex-shrink: 0;
+}
+.memorial__kicker {
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: var(--green-dark);
+}
+.memorial__name {
+	font-size: clamp(1.8rem, 4vw, 2.6rem);
+	line-height: 1.2;
+	margin: 4px 0;
+}
+.memorial__maiden {
+	font-style: italic;
+}
+.memorial__dates {
+	font-size: 1.15rem;
+	font-weight: 600;
+	margin-top: 6px;
+}
+.memorial .prose {
+	max-width: none;
+	background: none;
+	box-shadow: none;
+	border-radius: 0;
+}
+.memorial__ceremony {
+	margin: 0 48px 40px;
+	padding: 20px 24px;
+	background-color: #fff;
+	border-left: 6px solid var(--green);
+	border-radius: 8px;
+}
+.memorial__ceremony h2 {
+	color: var(--green-dark);
+	font-size: 1.2rem;
+	margin-bottom: 6px;
+}
+@media screen and (max-width: 640px) {
+	.memorial__head {
+		flex-direction: column;
+		text-align: center;
+		padding: 28px 20px;
+	}
+	.memorial__ceremony {
+		margin: 0 20px 28px;
+	}
+}
+
+.condolences {
+	max-width: 860px;
+	margin: 40px auto 0;
+}
+.condolences > h2 {
+	font-family: "Couture", sans-serif;
+	font-weight: normal;
+	color: var(--green);
+	font-size: 1.6rem;
+	text-align: center;
+	margin-bottom: 24px;
+}
+.condolence {
+	background-color: var(--panel);
+	border-left: 6px solid var(--green);
+	border-radius: 8px;
+	padding: 20px 24px;
+	margin-bottom: 16px;
+}
+.condolence p + p {
+	margin-top: 0.75rem;
+}
+.condolence footer {
+	margin-top: 10px;
+	font-weight: 700;
+	color: var(--green-dark);
+}
+.condolence-form {
+	margin-top: 32px;
+	max-width: none;
+}
+.condolence-form > .btn {
+	align-self: center;
+}
+.condolence-form h3 {
+	font-size: 1.3rem;
+}
+.form input[type="email"],
+.form input[type="search"] {
+	width: 100%;
+	font: inherit;
+	font-size: 1.05rem;
+	padding: 0.7rem 0.9rem;
+	border: 2px solid #d6d6d6;
+	border-radius: 8px;
+	background-color: #fff;
+}
+.choices--stacked {
+	flex-direction: column;
+}
+.choices--stacked .choice {
+	align-items: flex-start;
+}
+.choices--stacked input {
+	margin-top: 0.3em;
+	flex-shrink: 0;
+}
+.errorlist {
+	list-style: none;
+	color: #8a2b22;
+	font-weight: 700;
+	margin-top: 6px;
+}
+.hp {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
 }

@@ -1,0 +1,16 @@
+# /etc/systemd/system/gm.service – the Django app (gunicorn), started at boot
+[Unit]
+Description=GM website – Django (gunicorn)
+After=network.target
+
+[Service]
+User=gm
+Group=www-data
+WorkingDirectory=/srv/gm/repo/server
+EnvironmentFile=/srv/gm/env
+RuntimeDirectory=gm
+ExecStart=/srv/gm/venv/bin/gunicorn gm.wsgi:application --workers 3 --bind unix:/run/gm/gunicorn.sock --umask 007 --access-logfile -
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

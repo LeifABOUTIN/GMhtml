@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+			<div class="page-title">
+				<h1>Avis de deces</h1>
+				<p>Rendez hommage et adressez vos condoléances aux familles.</p>
+			</div>
+
+			<form class="search" method="get" role="search">
+				<label for="q">Rechercher un défunt</label>
+				<div class="search__row">
+					<input type="search" id="q" name="q" value="{{ q }}" placeholder="Nom ou prénom" />
+					<button class="btn btn--primary" type="submit">Rechercher</button>
+				</div>
+			</form>
+
+			{% if page.object_list %}
+				<div class="cards memorial-cards">
+					{% for m in page.object_list %}
+						<a class="card memorial-card" href="{{ m.get_absolute_url }}">
+							{% if m.photo %}
+								<img class="memorial-card__photo" src="{{ m.photo.url }}" alt="" loading="lazy" />
+							{% else %}
+								<div class="memorial-card__photo memorial-card__photo--empty"></div>
+							{% endif %}
+							<div class="card__body">
+								<h2 class="memorial-card__name">{{ m.full_name }}</h2>
+								{% if m.maiden_name %}<p class="memorial-card__maiden">née {{ m.maiden_name }}</p>{% endif %}
+								<p>{% if m.birth_date %}{{ m.birth_date|date:"Y" }} – {% endif %}décédé(e) le {{ m.death_date|date:"j F Y" }}{% if m.city %}<br />{{ m.city }}{% endif %}</p>
+								<span class="card__more">Voir l’avis et laisser un message →</span>
+							</div>
+						</a>
+					{% endfor %}
+				</div>
+				{% if page.has_other_pages %}
+					<nav class="pager" aria-label="Pages">
+						{% if page.has_previous %}<a class="btn btn--ghost" href="?{% if q %}q={{ q|urlencode }}&amp;{% endif %}page={{ page.previous_page_number }}">← Précédents</a>{% endif %}
+						<span>Page {{ page.number }} / {{ page.paginator.num_pages }}</span>
+						{% if page.has_next %}<a class="btn btn--ghost" href="?{% if q %}q={{ q|urlencode }}&amp;{% endif %}page={{ page.next_page_number }}">Suivants →</a>{% endif %}
+					</nav>
+				{% endif %}
+			{% else %}
+				<p class="empty">{% if q %}Aucun avis ne correspond à « {{ q }} ».{% else %}Aucun avis de décès pour le moment.{% endif %}</p>
+			{% endif %}
+{% endblock %}

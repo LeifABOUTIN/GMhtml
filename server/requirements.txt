@@ -1,0 +1,5 @@
+Django>=6.1,<6.2
+django-allauth[socialaccount]>=65.19,<66
+Pillow>=12
+python-dotenv>=1.2
+gunicorn>=23

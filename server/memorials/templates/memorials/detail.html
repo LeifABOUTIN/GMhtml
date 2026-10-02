@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{{ memorial.full_name }}{% endblock %}
+{% block description %}Avis de décès de {{ memorial.full_name }}{% if memorial.city %}, {{ memorial.city }}{% endif %}. Laissez un message de condoléances à la famille.{% endblock %}
+
+{% block content %}
+			<p class="back"><a href="{% url 'memorials:list' %}">← Tous les avis de décès</a></p>
+
+			<article class="memorial">
+				<header class="memorial__head">
+					{% if memorial.photo %}
+						<img class="memorial__photo" src="{{ memorial.photo.url }}" alt="Photo de {{ memorial.full_name }}" />
+					{% endif %}
+					<div>
+						<p class="memorial__kicker">Avis de décès</p>
+						<h1 class="memorial__name">{{ memorial.full_name }}</h1>
+						{% if memorial.maiden_name %}<p class="memorial__maiden">née {{ memorial.maiden_name }}</p>{% endif %}
+						<p class="memorial__dates">
+							{% if memorial.birth_date %}{{ memorial.birth_date|date:"j F Y" }} – {% endif %}{{ memorial.death_date|date:"j F Y" }}
+						</p>
+						{% if memorial.city %}<p>{{ memorial.city }}</p>{% endif %}
+					</div>
+				</header>
+
+				<div class="prose memorial__text">
+					{{ memorial.announcement|linebreaks }}
+				</div>
+
+				{% if memorial.ceremony %}
+					<section class="memorial__ceremony">
+						<h2>Cérémonie</h2>
+						{{ memorial.ceremony|linebreaks }}
+					</section>
+				{% endif %}
+			</article>
+
+			<section class="condolences" id="messages">
+				<h2>Messages de condoleances</h2>
+
+				{% for c in comments %}
+					<blockquote class="condolence">
+						{{ c.message|linebreaks }}
+						<footer>— {{ c.author_name }}, le {{ c.created_at|date:"j F Y" }}</footer>
+					</blockquote>
+				{% empty %}
+					<p class="empty">Aucun message publié pour le moment.</p>
+				{% endfor %}
+
+				{% if memorial.comments_open %}
+					<form class="form condolence-form" method="post" action="#messages" novalidate>
+						{% csrf_token %}
+						<h3>Laisser un message</h3>
+						{% if form.non_field_errors %}<div class="form__errors">{{ form.non_field_errors }}</div>{% endif %}
+
+						<div class="field">
+							<label for="{{ form.author_name.id_for_label }}">{{ form.author_name.label }}</label>
+							{{ form.author_name }}
+							{{ form.author_name.errors }}
+						</div>
+						<div class="field">
+							<label for="{{ form.author_email.id_for_label }}">{{ form.author_email.label }}</label>
+							{{ form.author_email }}
+							<small>{{ form.author_email.help_text }}</small>
+							{{ form.author_email.errors }}
+						</div>
+						<div class="field">
+							<label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+							{{ form.message }}
+							{{ form.message.errors }}
+						</div>
+						<fieldset>
+							<legend>{{ form.visibility.label }}</legend>
+							<div class="choices choices--stacked">
+								{% for radio in form.visibility %}
+									<label class="choice">{{ radio.tag }}{{ radio.choice_label }}</label>
+								{% endfor %}
+							</div>
+							{{ form.visibility.errors }}
+						</fieldset>
+						<div class="hp" aria-hidden="true">
+							<label for="id_website">{{ form.website.label }}</label>
+							<input type="text" name="website" id="id_website" tabindex="-1" autocomplete="off" />
+						</div>
+						<button class="btn btn--primary" type="submit">Envoyer mon message</button>
+						<p class="form__disclaimer">
+							Votre nom et votre message sont utilisés uniquement pour être publiés sur cette page après
+							validation, ou transmis à la famille. <a class="legal-link" href="/pages/politique-confidentialite.html">Politique de confidentialité</a>
+						</p>
+					</form>
+				{% else %}
+					<p class="empty">Les messages sont fermés pour cet avis.</p>
+				{% endif %}
+			</section>
+{% endblock %}

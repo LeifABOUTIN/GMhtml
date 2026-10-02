@@ -1,0 +1,18 @@
+{% extends "admin/login.html" %}
+{% load socialaccount %}
+
+{% block content %}
+<div style="text-align:center;margin:1rem 0 2rem">
+	<form method="post" action="{% provider_login_url 'google' next=next|default:'/admin/' %}">
+		{% csrf_token %}
+		<button type="submit" style="font-size:1.05rem;padding:.8rem 1.5rem;border-radius:8px;border:0;background:#7a8670;color:#fff;cursor:pointer;font-weight:700">
+			Se connecter avec Google
+		</button>
+	</form>
+	<p style="margin-top:1rem;color:#666">Réservé aux comptes autorisés.</p>
+</div>
+<details>
+	<summary style="cursor:pointer;color:#666">Connexion de secours (identifiant et mot de passe)</summary>
+	{{ block.super }}
+</details>
+{% endblock %}
