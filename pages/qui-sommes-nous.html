@@ -3,116 +3,120 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="description" content="Pompes Funébres GM, une entreprise familiale à taille humaine, notre histoire et notre équipe." />
 		<title>Pompes Funèbres et Marbrerie GM, notre histoire et notre équipe.</title>
+		<meta name="description" content="Pompes Funébres GM, une entreprise familiale à taille humaine, notre histoire et notre équipe." />
 		<link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
-		<link rel="stylesheet" href="../css/header.css" />
-		<link rel="stylesheet" href="../css/ServicesObseques.css" />
-		<link rel="stylesheet" href="../css/style.css" />
-		<link rel="stylesheet" href="../css/footer.css" />
-		<script defer src="../script/popup.js"></script>
+		<link rel="stylesheet" href="../css/site.css" />
+		<script defer src="../script/nav.js"></script>
 	</head>
 	<body>
-		<header>
-			<menu id="mobile_nav_open">
-				<img src="../img/logo_white.png" alt="Pompes Funèbres GM" />
-				<img class="mobile_nav_open_open_btn" src="../img/menu.svg" alt="Ouvrir le menu" />
-			</menu>
-			<nav id="mobile_nav">
-				<img src="../img/close.svg" alt="Fermer le menu" id="close_mobile_nav" />
-				<ul>
-					<a href="../index.html"><img class="logo" src="../img/logo_grey.png" alt="Accueil" /></a>
-					<li class="nav-link"><a href="../pages/agences.html">NOS AGENCES</a></li>
-					<li class="nav-link"><a href="../pages/qui-sommes-nous.html">QUI SOMMES NOUS</a></li>
-					<li class="nav-link"><a href="../pages/service-obseque.html">SERVICE OBSEQUES</a></li>
-					<li class="nav-link"><a href="../pages/marbrerie.html">SERVICE MARBRERIE</a></li>
-					<li class="nav-link"><a href="../pages/articles-funeraires.html">ARTICLES FUNERAIRES</a></li>
-					<li class="nav-link"><a href="../pages/config.html" target="_blank">CREER UN MONUMENT</a></li>
-					<li class="nav-link"><a href="../pages/contact.html">CONTACT</a></li>
-				</ul>
-			</nav>
-			<nav class="wrapper">
-				<ul class="header">
-					<a href="../index.html"><img class="logo" src="../img/logo_grey.png" alt="Accueil" /></a>
-					<li class="nav-link"><a href="../pages/agences.html">NOS AGENCES</a></li>
-					<li class="nav-link"><a href="../pages/qui-sommes-nous.html">QUI SOMMES NOUS</a></li>
-					<li class="nav-link"><a href="../pages/service-obseque.html">SERVICE OBSEQUES</a></li>
-					<li class="nav-link"><a href="../pages/marbrerie.html">SERVICE MARBRERIE</a></li>
-					<li class="nav-link"><a href="../pages/articles-funeraires.html">ARTICLES FUNERAIRES</a></li>
-					<li class="nav-link"><a href="../pages/config.html" target="_blank">CREER UN MONUMENT</a></li>
-					<li class="nav-link"><a href="../pages/contact.html">CONTACT</a></li>
-				</ul>
-			</nav>
+		<div class="topbar">
+			<strong>Permanence téléphonique décès 7j/7 – 24h/24</strong>
+			<a href="tel:0673623160">06 73 62 31 60</a> · <a href="tel:0645665002">06 45 66 50 02</a>
+		</div>
+		<header class="site-header">
+			<div class="site-header__inner">
+				<a class="site-header__logo" href="../index.html"><img src="../img/logo_grey.png" alt="Pompes Funèbres et Marbrerie GM – accueil" /></a>
+				<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-open="../img/menu.svg" data-close="../img/close.svg">
+					<img src="../img/menu.svg" alt="Menu" />
+				</button>
+				<nav class="site-nav" id="site-nav">
+					<ul>
+						<li><a href="../pages/agences.html">Nos agences</a></li>
+						<li><a href="../pages/qui-sommes-nous.html" aria-current="page">Qui sommes-nous</a></li>
+						<li><a href="../pages/service-obseque.html">Services obsèques</a></li>
+						<li><a href="../pages/marbrerie.html">Marbrerie</a></li>
+						<li><a href="../pages/articles-funeraires.html">Articles funéraires</a></li>
+						<li><a href="../pages/config.html" target="_blank">Créer un monument</a></li>
+						<li><a class="site-nav__cta" href="../pages/contact.html">Contact</a></li>
+					</ul>
+				</nav>
+			</div>
 		</header>
-		<h1 class="h1-main-title">Qui sommes nous</h1>
-		<article>
-			<p>
-				En 2010, José, Frédéric et Rémi prennent leur envol, après 23 années
-				aux côtés de leur père.
-			</p>
-			<p>
-				Agostinho <span>G</span>oncalves <span>M</span>oura, apprenti depuis
-				1965 dans cette marbrerie (Virey) créée en 1955 et qui en deviendra
-				le gérant en 1987. Fort de son expérience, il transmettra à ses 3
-				fils sa passion en les formant aux métiers de la Pierre, comme
-				tailleur de pierre, graveur sur pierre et marbrier.
-			</p>
-			<p>
-				En 1995, l’entreprise obtient son habilitation aux prestations du
-				service extérieur des Pompes Funèbres et proposera aux familles en
-				deuil un accompagnement et une organisation complète des
-				funérailles. Leur formation de conseillers funéraires viendra
-				parfaire leur expérience dans le domaine du service funéraire.
-			</p>
-			<p>
-				L’équipe s’agrandit en accueillant Nadège en 2001 et Shirley en 2021
-				comme conseillères funéraires.
-			</p>
-			<div class="qui-nous-somme-nous-gallery">
-				<div class="card-persone">
-					<img src="../img/personnes/Jose.png" alt="José" />
-					<span>José</span>
-				</div>
-
-				<div class="card-persone">
-					<img src="../img/personnes/Remi.png" alt="Rémi" />
-					<span>Rémi</span>
-				</div>
-				<div class="card-persone">
-					<img src="../img/personnes/Fred.png" alt="Frédéric" />
-					<span>Frédèric</span>
-				</div>
-				<div class="card-persone">
-					<img src="../img/personnes/Nadege.png" alt="Nadège" />
-					<span>Nadège</span>
-				</div>
-				<div class="card-persone">
-					<img src="../img/personnes/Shirley.png" alt="Shirley" />
-					<span>Shirley</span>
+		<main>
+			<div class="page-title">
+				<h1>Qui sommes-nous</h1>
+			</div>
+			<div class="prose">
+				<p>
+					En 2010, José, Frédéric et Rémi prennent leur envol, après 23 années
+					aux côtés de leur père.
+				</p>
+				<p>
+					Agostinho <span class="initial">G</span>oncalves <span class="initial">M</span>oura, apprenti depuis
+					1965 dans cette marbrerie (Virey) créée en 1955 et qui en deviendra
+					le gérant en 1987. Fort de son expérience, il transmettra à ses 3
+					fils sa passion en les formant aux métiers de la Pierre, comme
+					tailleur de pierre, graveur sur pierre et marbrier.
+				</p>
+				<p>
+					En 1995, l’entreprise obtient son habilitation aux prestations du
+					service extérieur des Pompes Funèbres et proposera aux familles en
+					deuil un accompagnement et une organisation complète des
+					funérailles. Leur formation de conseillers funéraires viendra
+					parfaire leur expérience dans le domaine du service funéraire.
+				</p>
+				<p>
+					L’équipe s’agrandit en accueillant Nadège en 2001 et Shirley en 2021
+					comme conseillères funéraires.
+				</p>
+				<div class="team">
+					<figure>
+						<img src="../img/personnes/Jose.png" alt="José" loading="lazy" />
+						<figcaption>José</figcaption>
+					</figure>
+					<figure>
+						<img src="../img/personnes/Remi.png" alt="Rémi" loading="lazy" />
+						<figcaption>Rémi</figcaption>
+					</figure>
+					<figure>
+						<img src="../img/personnes/Fred.png" alt="Frédéric" loading="lazy" />
+						<figcaption>Frédèric</figcaption>
+					</figure>
+					<figure>
+						<img src="../img/personnes/Nadege.png" alt="Nadège" loading="lazy" />
+						<figcaption>Nadège</figcaption>
+					</figure>
+					<figure>
+						<img src="../img/personnes/Shirley.png" alt="Shirley" loading="lazy" />
+						<figcaption>Shirley</figcaption>
+					</figure>
 				</div>
 			</div>
-		</article>
-		<footer>
-			<nav>
-				<ul>
-					<li><span>06.73.62.31.60</span><span>06.45.66.50.02</span></li>
-					<li>
-						<p>18 RUE DE L’EGALITE<br />95230 SOISY SOUS MONTMORENCY</p>
-						<p>Du lundi au vendredi 9h-12h / 14h-18h Le samedi 9h30-12h/14h-17h30</p>
-					</li>
-					<li>
-						<p>2 RUE MICHELET<br />95320 SAINT LEU LA FORET</p>
-						<p>Du lundi au vendredi 10h-12h/14h-18h Le samedi sur rendez-vous</p>
-					</li>
-					<li><a href="../pages/contact.html">contactez-nous</a></li>
-					<li class="footer-legal">
-						<a href="../pages/notice-information.html">notice d’information</a>
-						<a href="../pages/mentions-legales.html">mentions légales</a>
-						<a href="../pages/politique-confidentialite.html">politique de confidentialité</a>
-					</li>
-				</ul>
-			</nav>
+		</main>
+		<footer class="site-footer">
+			<div class="site-footer__inner">
+				<div>
+					<h2>Permanence téléphonique décès</h2>
+					<p>7j/7 – 24h/24</p>
+					<ul>
+						<li><a href="tel:0673623160">06 73 62 31 60</a></li>
+						<li><a href="tel:0645665002">06 45 66 50 02</a></li>
+					</ul>
+				</div>
+				<div>
+					<h2>Soisy-sous-Montmorency</h2>
+					<p>18 rue de l’Égalité<br />95230 Soisy-sous-Montmorency</p>
+					<p>Lun – ven : 9h-12h / 14h-18h<br />Samedi : 9h30-12h / 14h-17h30</p>
+					<p><a href="tel:0139891788">01 39 89 17 88</a></p>
+				</div>
+				<div>
+					<h2>Saint-Leu-la-Forêt</h2>
+					<p>2 rue Michelet<br />95320 Saint-Leu-la-Forêt</p>
+					<p>Lun – ven : 10h-12h / 14h-18h<br />Samedi sur rendez-vous</p>
+					<p><a href="tel:0134136882">01 34 13 68 82</a></p>
+				</div>
+				<div>
+					<h2>Informations</h2>
+					<ul>
+						<li><a href="../pages/contact.html">Nous contacter</a></li>
+						<li><a class="legal-link" href="../pages/notice-information.html">Notice d’information</a></li>
+						<li><a class="legal-link" href="../pages/mentions-legales.html">Mentions légales</a></li>
+						<li><a class="legal-link" href="../pages/politique-confidentialite.html">Politique de confidentialité</a></li>
+					</ul>
+				</div>
+				<p class="site-footer__copy">© Pompes Funèbres et Marbrerie GM – entreprise familiale indépendante depuis 1955</p>
+			</div>
 		</footer>
-		<script src="../script/nav.js"></script>
 	</body>
 </html>

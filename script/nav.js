@@ -1,53 +1,51 @@
-const mobileNavOpenBtn = document.querySelector("#mobile_nav_open")
-const close_mobile_nav = document.getElementById("close_mobile_nav")
-const mobileNav = document.querySelector("#mobile_nav")
+// Mobile menu
+const siteHeader = document.querySelector(".site-header")
+const navToggle = document.querySelector(".nav-toggle")
 
-mobileNavOpenBtn.addEventListener("click", () => {
-	mobileNav.classList.add("show")
+navToggle.addEventListener("click", () => {
+	const open = siteHeader.classList.toggle("nav-open")
+	navToggle.setAttribute("aria-expanded", open)
+	navToggle.querySelector("img").src = open ? navToggle.dataset.close : navToggle.dataset.open
+	navToggle.querySelector("img").alt = open ? "Fermer le menu" : "Menu"
 })
-// Footer legal links open their page's text in a popup (the pages still work on their own)
+
+// Legal links open their page's text in a popup (the pages also work on their own)
 const legalDialog = document.createElement("dialog")
-legalDialog.id = "dialog_mentions_legales"
+legalDialog.id = "legal-dialog"
 legalDialog.addEventListener("click", (e) => {
 	if (e.target === legalDialog) legalDialog.close() // click on the backdrop
 })
 document.body.append(legalDialog)
 
-document.querySelectorAll(".footer-legal a").forEach((link) => {
+document.querySelectorAll(".legal-link").forEach((link) => {
 	link.addEventListener("click", async (e) => {
 		e.preventDefault()
 		try {
 			const res = await fetch(link.href)
 			if (!res.ok) throw new Error(res.status)
 			const page = new DOMParser().parseFromString(await res.text(), "text/html")
-			const content = page.querySelector("article")
+			const content = page.querySelector(".prose")
 			// links inside the text are relative to the legal page, not the current one
 			content.querySelectorAll("a[href]").forEach((a) => (a.href = new URL(a.getAttribute("href"), link.href)))
 
-			const close = document.createElement("img")
-			close.src = new URL("../img/close.svg", link.href)
-			close.alt = "Fermer"
-			close.addEventListener("click", () => legalDialog.close())
+			const head = document.createElement("div")
+			head.className = "legal-dialog__head"
 			const title = document.createElement("h2")
-			title.textContent = link.textContent[0].toUpperCase() + link.textContent.slice(1)
+			title.textContent = link.textContent
+			const close = document.createElement("button")
+			close.type = "button"
+			const closeImg = document.createElement("img")
+			closeImg.src = new URL("../img/close.svg", link.href)
+			closeImg.alt = "Fermer"
+			close.append(closeImg)
+			close.addEventListener("click", () => legalDialog.close())
+			head.append(title, close)
 
-			legalDialog.replaceChildren(close, title, ...content.children)
+			legalDialog.replaceChildren(head, content)
 			legalDialog.showModal()
 			legalDialog.scrollTop = 0
 		} catch {
 			window.location.href = link.href
 		}
 	})
-})
-
-close_mobile_nav.addEventListener("click", () => {
-	mobileNav.style.left = "-100%"
-	mobileNav.addEventListener(
-		"transitionend",
-		() => {
-			mobileNav.style.left = ""
-			mobileNav.classList.remove("show")
-		},
-		{ once: true }
-	)
 })
