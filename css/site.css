@@ -293,10 +293,50 @@ main {
 	margin-top: 32px;
 }
 .hero__slogan {
+	display: inline-block;
+	position: relative;
+	isolation: isolate;
+	padding: 6px 24px;
 	color: #eee;
 	font-size: clamp(1.1rem, 3vw, 1.5rem);
 	letter-spacing: 0.04em;
 	margin-top: 12px;
+}
+/* soft green glow drifting behind the slogan */
+.hero__slogan::before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	top: 50%;
+	left: 0;
+	width: 35%;
+	height: 140%;
+	background: radial-gradient(closest-side, rgba(122, 134, 112, 0.9), transparent);
+	filter: blur(12px);
+	transform: translate(-50%, -50%);
+	animation: glow-run 6s ease-in-out infinite;
+}
+@keyframes glow-run {
+	0% {
+		transform: translate(-50%, -50%);
+		opacity: 0;
+	}
+	15%,
+	85% {
+		opacity: 1;
+	}
+	100% {
+		transform: translate(240%, -50%);
+		opacity: 0;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.hero__slogan::before {
+		animation: none;
+		left: 50%;
+		width: 60%;
+		opacity: 0.6;
+	}
 }
 .hero__actions {
 	display: flex;
