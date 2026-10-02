@@ -599,6 +599,18 @@ main {
 	width: 20px;
 	height: 20px;
 }
+/* "Itinéraire" stands out: filled green, white text and icon */
+.agency__links .agency__route {
+	background-color: var(--green);
+	color: #fff;
+}
+.agency__links .agency__route:hover {
+	background-color: var(--green-dark);
+	border-color: var(--green-dark);
+}
+.agency__route img {
+	filter: invert(1);
+}
 
 /* ---------- Contact form ---------- */
 
