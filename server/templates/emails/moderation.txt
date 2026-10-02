@@ -1,8 +1,9 @@
 {% autoescape off %}Un nouveau message public attend votre validation.
 
 Avis : {{ comment.memorial.full_name }}
-De : {{ comment.author_name }}{% if comment.author_email %} <{{ comment.author_email }}>{% endif %}
-
+De : {{ comment.author_name }}{% if comment.author_email %} <{{ comment.author_email }}>{% endif %}{% if comment.relationship %} ({{ comment.relationship }}){% endif %}
+{% with n=comment.photos.count %}{% if n %}Photos jointes : {{ n }} (à voir dans l'administration)
+{% endif %}{% endwith %}
 ----------------------------------------
 {{ comment.message }}
 ----------------------------------------

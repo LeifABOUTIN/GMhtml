@@ -9,7 +9,7 @@ from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
 from django.contrib.auth.models import Group
 
 from .emails import send_private_comment
-from .models import CeremonyStep, Comment, Memorial
+from .models import CeremonyStep, Comment, CommentPhoto, Memorial
 
 # keep the admin to what the staff actually use (Google login is configured in settings)
 for model in (Group, EmailAddress, SocialAccount, SocialApp, SocialToken):
@@ -100,9 +100,26 @@ class MemorialAdmin(admin.ModelAdmin):
 		queryset.update(is_published=False)
 
 
+class CommentPhotoInline(admin.TabularInline):
+	model = CommentPhoto
+	fields = ["preview"]
+	readonly_fields = ["preview"]
+	extra = 0
+	can_delete = True  # remove one unsuitable photo but keep the message
+	verbose_name_plural = "photos jointes (supprimez celles qui ne conviennent pas avant de publier)"
+
+	def has_add_permission(self, request, obj=None):
+		return False
+
+	@admin.display(description="photo")
+	def preview(self, obj):
+		return format_html('<a href="{0}" target="_blank"><img src="{0}" style="max-height:220px;border-radius:6px" /></a>',
+			obj.image.url)
+
+
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-	list_display = ["created_at", "memorial", "author_name", "visibility", "status", "excerpt"]
+	list_display = ["created_at", "memorial", "author_name", "visibility", "status", "excerpt", "photo_count"]
 	list_filter = ["status", "visibility", "memorial"]
 	search_fields = ["author_name", "memorial__first_name", "memorial__last_name"]
 	list_select_related = ["memorial"]
@@ -111,13 +128,24 @@ class CommentAdmin(admin.ModelAdmin):
 	def has_add_permission(self, request):
 		return False  # messages come from visitors
 
+	def get_queryset(self, request):
+		return super().get_queryset(request).annotate(_photos=Count("photos"))
+
+	def get_inlines(self, request, obj):
+		# private photos are for the family only, like the private text
+		return [] if obj is None or obj.is_private else [CommentPhotoInline]
+
+	@admin.display(description="photos", ordering="_photos")
+	def photo_count(self, obj):
+		return obj._photos or "–"
+
 	def get_fields(self, request, obj=None):
-		fields = ["memorial", "author_name", "author_email", "visibility", "status", "created_at"]
+		fields = ["memorial", "author_name", "relationship", "author_email", "visibility", "status", "created_at"]
 		# private messages are for the family only: admins see that one was sent, not its content
-		return fields if obj and obj.is_private else fields[:3] + ["message"] + fields[3:]
+		return fields if obj and obj.is_private else fields[:4] + ["message"] + fields[4:]
 
 	def get_readonly_fields(self, request, obj=None):
-		return ["memorial", "author_name", "author_email", "visibility", "created_at"] + (
+		return ["memorial", "author_name", "relationship", "author_email", "visibility", "created_at"] + (
 			["status"] if obj and obj.is_private else []
 		)
 

@@ -1,3 +1,7 @@
+import io
+import os
+import shutil
+import tempfile
 from datetime import date, timedelta
 from io import StringIO
 from types import SimpleNamespace
@@ -8,13 +12,16 @@ from django.contrib.auth import get_user_model
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.core import mail
 from django.core.cache import cache
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
 from .adapters import AdminOnlySocialAccountAdapter
-from .models import CeremonyStep, Comment, Memorial
+from PIL import Image
+
+from .models import CeremonyStep, Comment, CommentPhoto, Memorial
 
 
 def make_memorial(**kw):
@@ -132,6 +139,73 @@ class CeremonyStepTests(TestCase):
 		self.assertIn("https://www.google.com/maps/search/?api=1&amp;query=%C3%89glise+Saint-Germain", html)
 		self.assertEqual(html.count("Itinéraire"), 1)  # no address → no directions button
 		self.assertLess(html.index("Cérémonie religieuse"), html.index("Inhumation"))
+
+
+def jpeg_upload(name="souvenir.jpg", size=(3000, 2000)):
+	buf = io.BytesIO()
+	Image.new("RGB", size, "blue").save(buf, "JPEG")
+	return SimpleUploadedFile(name, buf.getvalue(), content_type="image/jpeg")
+
+
+@override_settings(MODERATION_EMAILS=["admin@example.com"])
+class CommentPhotoTests(TestCase):
+	def setUp(self):
+		cache.clear()
+		self.media = tempfile.mkdtemp()
+		self.override = override_settings(MEDIA_ROOT=self.media)
+		self.override.enable()
+		self.m = make_memorial()
+
+	def tearDown(self):
+		self.override.disable()
+		shutil.rmtree(self.media, ignore_errors=True)
+
+	def post(self, photos, **data):
+		return self.client.post(self.m.get_absolute_url(), {
+			"author_name": "Ami", "relationship": "voisin", "message": "Pensées", "visibility": "public",
+			"photos": photos, **data})
+
+	def test_public_photos_are_resized_and_shown_after_approval(self):
+		self.post([jpeg_upload(), jpeg_upload("b.png")])
+		c = Comment.objects.get()
+		self.assertEqual(c.relationship, "voisin")
+		photos = list(c.photos.all())
+		self.assertEqual(len(photos), 2)
+		self.assertTrue(photos[0].image.name.startswith("messages/public/"))
+		self.assertEqual(max(photos[0].width, photos[0].height), 1600)
+		self.assertIn("Photos jointes : 2", mail.outbox[0].body)
+		self.assertNotContains(self.client.get(self.m.get_absolute_url()), photos[0].image.url)
+		c.status = Comment.Status.APPROVED
+		c.save()
+		page = self.client.get(self.m.get_absolute_url())
+		self.assertContains(page, photos[0].image.url)
+		self.assertContains(page, "(voisin)")
+
+	def test_too_many_photos(self):
+		r = self.post([jpeg_upload() for _ in range(4)])
+		self.assertFalse(Comment.objects.exists())
+		self.assertContains(r, "3 photos maximum")
+
+	def test_not_an_image(self):
+		r = self.post([SimpleUploadedFile("virus.jpg", b"MZ\x90 not a picture", content_type="image/jpeg")])
+		self.assertFalse(Comment.objects.exists())
+		self.assertContains(r, "pas une photo lisible")
+
+	def test_private_photos_are_emailed_and_stored_apart(self):
+		self.post([jpeg_upload()], visibility="private")
+		photo = CommentPhoto.objects.get()
+		self.assertTrue(photo.image.name.startswith("messages/prive/"))
+		self.assertEqual([a[0] for a in mail.outbox[0].attachments], ["photo-1.jpg"])
+		self.assertEqual(mail.outbox[0].attachments[0][2], "image/jpeg")
+
+	def test_purge_deletes_photo_files(self):
+		self.post([jpeg_upload()], visibility="private")
+		path = CommentPhoto.objects.get().image.path
+		self.assertTrue(os.path.exists(path))
+		Comment.objects.update(created_at=timezone.now() - timedelta(days=31))
+		call_command("purge_private_comments", stdout=StringIO())
+		self.assertFalse(CommentPhoto.objects.exists())
+		self.assertFalse(os.path.exists(path))
 
 
 @override_settings(SITE_URL="https://gmfuneraire.fr")

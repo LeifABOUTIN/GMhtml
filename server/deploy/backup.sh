@@ -12,6 +12,7 @@ find "$DIR" -name 'db-*.sqlite3.gz' -mtime +14 -delete  # keep two weeks locally
 
 if [ -n "${BACKUP_BUCKET:-}" ]; then
 	aws s3 cp "$DIR/db-$STAMP.sqlite3.gz" "s3://$BACKUP_BUCKET/db/" --only-show-errors
-	aws s3 sync /srv/gm/data/media "s3://$BACKUP_BUCKET/media/" --only-show-errors
+	# private message photos are deleted after 30 days: keep them out of the backups too
+	aws s3 sync /srv/gm/data/media "s3://$BACKUP_BUCKET/media/" --exclude "messages/prive/*" --only-show-errors
 fi
 echo "$(date -Is) backup ok"

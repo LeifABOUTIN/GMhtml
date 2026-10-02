@@ -63,14 +63,21 @@
 				{% for c in comments %}
 					<blockquote class="condolence">
 						{{ c.message|linebreaks }}
-						<footer>— {{ c.author_name }}, le {{ c.created_at|date:"j F Y" }}</footer>
+						{% if c.photos.all %}
+							<div class="gallery">
+								{% for photo in c.photos.all %}
+									<a href="{{ photo.image.url }}" target="_blank"><img src="{{ photo.image.url }}" alt="Photo partagée par {{ c.author_name }}" width="{{ photo.width }}" height="{{ photo.height }}" loading="lazy" /></a>
+								{% endfor %}
+							</div>
+						{% endif %}
+						<footer>— {{ c.author_name }}{% if c.relationship %} <span class="condolence__relationship">({{ c.relationship }})</span>{% endif %}, le {{ c.created_at|date:"j F Y" }}</footer>
 					</blockquote>
 				{% empty %}
 					<p class="empty">Aucun message publié pour le moment.</p>
 				{% endfor %}
 
 				{% if memorial.comments_open %}
-					<form class="form condolence-form" method="post" action="#messages" novalidate>
+					<form class="form condolence-form" method="post" action="#messages" enctype="multipart/form-data" novalidate>
 						{% csrf_token %}
 						<h3>Laisser un message</h3>
 						{% if form.non_field_errors %}<div class="form__errors">{{ form.non_field_errors }}</div>{% endif %}
@@ -79,6 +86,11 @@
 							<label for="{{ form.author_name.id_for_label }}">{{ form.author_name.label }}</label>
 							{{ form.author_name }}
 							{{ form.author_name.errors }}
+						</div>
+						<div class="field">
+							<label for="{{ form.relationship.id_for_label }}">{{ form.relationship.label }}</label>
+							{{ form.relationship }}
+							{{ form.relationship.errors }}
 						</div>
 						<div class="field">
 							<label for="{{ form.author_email.id_for_label }}">{{ form.author_email.label }}</label>
@@ -90,6 +102,12 @@
 							<label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
 							{{ form.message }}
 							{{ form.message.errors }}
+						</div>
+						<div class="field">
+							<label for="{{ form.photos.id_for_label }}">{{ form.photos.label }}</label>
+							{{ form.photos }}
+							<small>{{ form.photos.help_text }}</small>
+							{{ form.photos.errors }}
 						</div>
 						<fieldset>
 							<legend>{{ form.visibility.label }}</legend>
@@ -106,8 +124,9 @@
 						</div>
 						<button class="btn btn--primary" type="submit">Envoyer mon message</button>
 						<p class="form__disclaimer">
-							Votre nom et votre message sont utilisés uniquement pour être publiés sur cette page après
-							validation, ou transmis à la famille. <a class="legal-link" href="/pages/politique-confidentialite.html">Politique de confidentialité</a>
+							Votre nom, votre message et vos photos sont utilisés uniquement pour être publiés sur cette page
+							après validation, ou transmis à la famille. Les informations de localisation contenues dans les
+							photos sont supprimées. <a class="legal-link" href="/pages/politique-confidentialite.html">Politique de confidentialité</a>
 						</p>
 					</form>
 				{% else %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Actualités{% endblock %}
+{% block description %}Actualités des Pompes Funèbres et Marbrerie GM, Soisy-sous-Montmorency et Saint-Leu-la-Forêt.{% endblock %}
+
+{% block content %}
+			<div class="page-title">
+				<h1>Actualites</h1>
+				<p>Les nouvelles de nos agences, également publiées sur nos pages Facebook et Instagram.</p>
+			</div>
+
+			{% if page.object_list %}
+				<div class="cards post-cards">
+					{% for post in page.object_list %}
+						<a class="card post-card" href="{{ post.get_absolute_url }}">
+							{% with first=post.images.all|first %}
+								{% if first %}
+									<img class="post-card__img" src="{{ first.image.url }}" alt="" width="{{ first.width }}" height="{{ first.height }}" loading="lazy" />
+								{% endif %}
+							{% endwith %}
+							<div class="card__body">
+								<p class="post__meta">{{ post.published_at|date:"j F Y" }}{% if post.source != "site" %} · {{ post.get_source_display }}{% endif %}</p>
+								<h2>{{ post.display_title }}</h2>
+								<p>{{ post.text|truncatewords:28 }}</p>
+								<span class="card__more">Lire la suite →</span>
+							</div>
+						</a>
+					{% endfor %}
+				</div>
+				{% if page.has_other_pages %}
+					<nav class="pager" aria-label="Pages">
+						{% if page.has_previous %}<a class="btn btn--ghost" href="?page={{ page.previous_page_number }}">← Plus récentes</a>{% endif %}
+						<span>Page {{ page.number }} / {{ page.paginator.num_pages }}</span>
+						{% if page.has_next %}<a class="btn btn--ghost" href="?page={{ page.next_page_number }}">Plus anciennes →</a>{% endif %}
+					</nav>
+				{% endif %}
+			{% else %}
+				<p class="empty">Aucune actualité pour le moment.</p>
+			{% endif %}
+{% endblock %}

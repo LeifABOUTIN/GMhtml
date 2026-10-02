@@ -13,6 +13,10 @@ sudo -u gm /srv/gm/venv/bin/pip install -q -r server/requirements.txt
 cd server
 sudo -u gm bash -c 'set -a && . /srv/gm/env && /srv/gm/venv/bin/python manage.py migrate --noinput && /srv/gm/venv/bin/python manage.py collectstatic --noinput -v 0'
 
+# scheduled jobs (backup, purge, Facebook/Instagram import)
+cp /srv/gm/repo/server/deploy/gm.cron /etc/cron.d/gm && chmod 644 /etc/cron.d/gm
+for log in gm-backup gm-purge gm-import; do touch /var/log/$log.log && chown gm /var/log/$log.log; done
+
 systemctl restart gm
 nginx -t && systemctl reload nginx
 echo "Deployed $(sudo -u gm git -C /srv/gm/repo rev-parse --short HEAD)"

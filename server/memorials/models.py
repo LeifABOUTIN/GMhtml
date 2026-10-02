@@ -1,4 +1,5 @@
 from urllib.parse import quote_plus
+from uuid import uuid4
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -123,6 +124,7 @@ class Comment(models.Model):
 	memorial = models.ForeignKey(Memorial, on_delete=models.CASCADE, related_name="comments", verbose_name="avis")
 	author_name = models.CharField("nom", max_length=100)
 	author_email = models.EmailField("e-mail", blank=True)
+	relationship = models.CharField("lien avec le défunt", max_length=100, blank=True)
 	message = models.TextField("message")
 	visibility = models.CharField("visibilité", max_length=10, choices=Visibility.choices)
 	status = models.CharField("statut", max_length=10, choices=Status.choices)
@@ -139,3 +141,26 @@ class Comment(models.Model):
 	@property
 	def is_private(self):
 		return self.visibility == self.Visibility.PRIVATE
+
+
+def comment_photo_path(instance, filename):
+	# random names: a pending photo can't be found by guessing; private ones live in a folder nginx refuses to serve
+	folder = "prive" if instance.comment.is_private else "public"
+	return f"messages/{folder}/{uuid4().hex}.jpg"
+
+
+class CommentPhoto(models.Model):
+	MAX_PER_MESSAGE = 3
+
+	comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="photos", verbose_name="message")
+	image = models.ImageField("photo", upload_to=comment_photo_path, width_field="width", height_field="height")
+	width = models.PositiveIntegerField(default=0, editable=False)
+	height = models.PositiveIntegerField(default=0, editable=False)
+
+	class Meta:
+		verbose_name = "photo"
+		verbose_name_plural = "photos"
+		ordering = ["pk"]
+
+	def __str__(self):
+		return f"Photo de {self.comment.author_name}"

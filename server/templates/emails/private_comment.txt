@@ -1,11 +1,13 @@
 {% autoescape off %}Bonjour,
 
-{{ comment.author_name }} a laissé un message privé en mémoire de {{ memorial.full_name }} sur le site des Pompes Funèbres et Marbrerie GM. Ce message n'est visible que par vous.
+{{ comment.author_name }}{% if comment.relationship %} ({{ comment.relationship }}){% endif %} a laissé un message privé en mémoire de {{ memorial.full_name }} sur le site des Pompes Funèbres et Marbrerie GM. Ce message n'est visible que par vous.
 
 ----------------------------------------
 {{ comment.message }}
 ----------------------------------------
-
+{% with n=comment.photos.count %}{% if n %}
+{{ n }} photo{{ n|pluralize }} jointe{{ n|pluralize }} à cet e-mail.
+{% endif %}{% endwith %}
 {% if comment.author_email %}Pour répondre à {{ comment.author_name }}, il vous suffit de répondre à cet e-mail.{% else %}{{ comment.author_name }} n'a pas laissé d'adresse e-mail.{% endif %}
 
 Page de l'avis : {{ page_url }}

@@ -27,7 +27,8 @@
 						<li><a href="/pages/service-obseque.html">Services obsèques</a></li>
 						<li><a href="/pages/marbrerie.html">Marbrerie</a></li>
 						<li><a href="/pages/articles-funeraires.html">Articles funéraires</a></li>
-						<li><a href="/avis-de-deces/" aria-current="page">Avis de décès</a></li>
+						<li><a href="/avis-de-deces/"{% if request.resolver_match.namespace == "memorials" %} aria-current="page"{% endif %}>Avis de décès</a></li>
+						<li><a href="/actualites/"{% if request.resolver_match.namespace == "news" %} aria-current="page"{% endif %}>Actualités</a></li>
 						<li><a href="/pages/config.html" target="_blank">Créer un monument</a></li>
 						<li><a class="site-nav__cta" href="/pages/contact.html">Contact</a></li>
 					</ul>

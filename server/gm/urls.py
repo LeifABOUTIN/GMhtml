@@ -12,6 +12,7 @@ urlpatterns = [
 	path("admin/", admin.site.urls),
 	path("accounts/", include("allauth.urls")),
 	path("avis-de-deces/", include("memorials.urls")),
+	path("actualites/", include("news.urls")),
 ]
 
 if settings.DEBUG:
@@ -23,8 +24,13 @@ if settings.DEBUG:
 			raise Http404
 		return serve(request, path or "index.html", document_root=settings.SITE_DIR)
 
+	def media_file(request, path):
+		if path.startswith("messages/prive/"):
+			raise Http404  # same rule as nginx in production
+		return serve(request, path, document_root=settings.MEDIA_ROOT)
+
 	urlpatterns += [
-		re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
+		re_path(r"^media/(?P<path>.*)$", media_file),
 		path("", site_file),
 		re_path(r"^(?P<path>.+)$", site_file),
 	]

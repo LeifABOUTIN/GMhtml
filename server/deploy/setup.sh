@@ -36,12 +36,8 @@ cp /srv/gm/repo/server/deploy/nginx.conf /etc/nginx/sites-available/gm
 ln -sf /etc/nginx/sites-available/gm /etc/nginx/sites-enabled/gm
 rm -f /etc/nginx/sites-enabled/default
 
-# nightly backup + purge of delivered private messages
-cat >/etc/cron.d/gm <<'CRON'
-15 3 * * * gm /srv/gm/repo/server/deploy/backup.sh >>/var/log/gm-backup.log 2>&1
-30 3 * * * gm cd /srv/gm/repo/server && set -a && . /srv/gm/env && /srv/gm/venv/bin/python manage.py purge_private_comments
-CRON
-touch /var/log/gm-backup.log && chown gm /var/log/gm-backup.log
+# log files for the cron jobs (deploy/gm.cron, installed by deploy.sh)
+for log in gm-backup gm-purge gm-import; do touch /var/log/$log.log && chown gm /var/log/$log.log; done
 
 systemctl daemon-reload
 systemctl enable gm

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 	"allauth.socialaccount",
 	"allauth.socialaccount.providers.google",
 	"memorials",
+	"news",
 ]
 
 MIDDLEWARE = [
@@ -155,7 +156,7 @@ STATIC_URL = "/django-static/"
 STATIC_ROOT = DATA_DIR / "static"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = DATA_DIR / "media"
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # form fields; uploaded files are limited in forms.py
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -170,9 +171,21 @@ if not DEBUG:
 	CSRF_COOKIE_SECURE = True
 	SECURE_HSTS_SECONDS = 3600
 
+# --- Actualités: daily import of the agency's Facebook / Instagram posts (see README) ---
+META_PAGE_ID = os.environ.get("META_PAGE_ID", "")
+META_PAGE_TOKEN = os.environ.get("META_PAGE_TOKEN", "")
+META_GRAPH_VERSION = os.environ.get("META_GRAPH_VERSION", "v23.0")
+META_IMPORT_INSTAGRAM = os.environ.get("META_IMPORT_INSTAGRAM", "1") == "1"
+META_INSTAGRAM_ID = os.environ.get("META_INSTAGRAM_ID", "")  # found automatically from the Page if empty
+# A post containing this tag is not copied to the site (and is hidden if it already was)
+SOCIAL_OPT_OUT_TAG = os.environ.get("SOCIAL_OPT_OUT_TAG", "#pasdesite")
+
 LOGGING = {
 	"version": 1,
 	"disable_existing_loggers": False,
 	"handlers": {"console": {"class": "logging.StreamHandler"}},
-	"loggers": {"memorials": {"handlers": ["console"], "level": "INFO"}},
+	"loggers": {
+		"memorials": {"handlers": ["console"], "level": "INFO"},
+		"news": {"handlers": ["console"], "level": "INFO"},
+	},
 }

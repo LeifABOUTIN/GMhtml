@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.display_title }} – Actualités{% endblock %}
+{% block description %}{{ post.text|truncatewords:30 }}{% endblock %}
+
+{% block content %}
+			<p class="back"><a href="{% url 'news:list' %}">← Toutes les actualités</a></p>
+
+			<article class="prose post">
+				<p class="post__meta">{{ post.published_at|date:"l j F Y" }}{% if post.source != "site" %} · publié sur {{ post.get_source_display }}{% endif %}</p>
+				<h2>{{ post.display_title }}</h2>
+				{% if post.text %}{{ post.text|urlize|linebreaks }}{% endif %}
+
+				{% if post.images.all %}
+					<div class="gallery gallery--large">
+						{% for img in post.images.all %}
+							<a href="{{ img.image.url }}" target="_blank"><img src="{{ img.image.url }}" alt="" width="{{ img.width }}" height="{{ img.height }}" loading="lazy" /></a>
+						{% endfor %}
+					</div>
+				{% endif %}
+
+				{% if post.permalink %}
+					<p class="post__origin">
+						<a class="btn btn--primary" href="{{ post.permalink }}" target="_blank" rel="noopener">
+							{% if post.is_video %}Voir la vidéo sur {{ post.get_source_display }}{% else %}Voir sur {{ post.get_source_display }}{% endif %} ↗
+						</a>
+					</p>
+				{% endif %}
+			</article>
+{% endblock %}

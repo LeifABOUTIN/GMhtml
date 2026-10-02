@@ -18,11 +18,15 @@ def send_private_comment(comment):
 	})
 	subject = f"Un message de {comment.author_name} en mémoire de {memorial.full_name}"
 	reply_to = [comment.author_email] if comment.author_email else None
+	attachments = []
+	for i, photo in enumerate(comment.photos.all(), start=1):
+		with photo.image.open("rb") as f:
+			attachments.append((f"photo-{i}.jpg", f.read(), "image/jpeg"))
 	ok = True
 	# one email per address so family members don't see each other's addresses
 	for to in memorial.family_email_list:
 		try:
-			EmailMessage(subject, body, to=[to], reply_to=reply_to).send()
+			EmailMessage(subject, body, to=[to], reply_to=reply_to, attachments=attachments).send()
 		except Exception:
 			log.exception("Private comment %s could not be sent to %s", comment.pk, to)
 			ok = False
