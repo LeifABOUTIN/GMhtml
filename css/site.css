@@ -100,7 +100,7 @@ main {
 	border-bottom: 1px solid var(--green);
 }
 .site-header__inner {
-	max-width: var(--max);
+	max-width: 1440px;
 	margin: 0 auto;
 	padding: 10px 16px;
 	display: flex;
@@ -108,9 +108,13 @@ main {
 	justify-content: space-between;
 	gap: 1rem;
 }
+.site-header__logo {
+	flex-shrink: 0;
+}
 .site-header__logo img {
 	height: 64px;
 	width: auto;
+	max-width: none;
 	transition: transform 300ms ease;
 }
 .site-header__logo:hover img {
@@ -170,7 +174,7 @@ main {
 	filter: invert(1); /* close.svg is drawn in black */
 }
 
-@media screen and (max-width: 1240px) {
+@media screen and (max-width: 1280px) {
 	.nav-toggle {
 		display: block;
 	}
