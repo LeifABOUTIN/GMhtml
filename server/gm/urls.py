@@ -8,6 +8,7 @@ from django.views.static import serve
 admin.site.site_header = "Pompes Funèbres et Marbrerie GM – Administration"
 admin.site.site_title = "GM – Administration"
 admin.site.index_title = "Gestion du site"
+admin.site.enable_nav_sidebar = False  # more room for the (larger) lists; the header and breadcrumbs lead everywhere
 
 to_admin_login = RedirectView.as_view(pattern_name="admin:login", query_string=True)
 

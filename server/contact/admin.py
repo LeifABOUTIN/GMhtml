@@ -27,7 +27,7 @@ class ContactRequestAdmin(admin.ModelAdmin):
 	@admin.display(description="statut", ordering="status")
 	def status_badge(self, obj):
 		if obj.status == ContactRequest.Status.NEW:
-			return format_html('<b style="color:#8a2b22">{}</b>', obj.get_status_display())
+			return format_html('<b style="color:var(--error-fg)">{}</b>', obj.get_status_display())
 		return obj.get_status_display()
 
 	@admin.display(description="contact")

@@ -8,7 +8,7 @@
 	{% if todo %}
 		<ul style="margin:12px 16px;padding:0;list-style:none;font-size:1.05rem;line-height:2">
 			{% for item in todo %}
-				<li><a href="{{ item.url }}"><b style="color:#8a2b22">{{ item.count }}</b> {{ item.label }}</a></li>
+				<li><a href="{{ item.url }}"><b style="color:var(--error-fg)">{{ item.count }}</b> {{ item.label }}</a></li>
 			{% endfor %}
 		</ul>
 	{% else %}

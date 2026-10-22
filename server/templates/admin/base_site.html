@@ -5,95 +5,222 @@
 {% block extrastyle %}{{ block.super }}
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
 <style>
-	/* the website's look (css/site.css): near-black, sage green, Couture titles */
+	/* the website's look (css/site.css): near-black, sage green, Couture titles – always dark, larger UI */
 	@font-face {
 		font-family: Couture;
 		src: url("/fonts/couture-bld.otf") format("opentype");
 	}
+	/* one palette for every theme setting, so the admin is always dark */
 	:root,
-	html[data-theme="light"] {
+	html[data-theme] {
 		--gm-green: #7a8670;
 		--gm-green-dark: #5f6a56;
+		--gm-green-light: #b9c6ad;
+		--gm-panel: #171915;
+		--gm-panel-2: #1f221c;
+
 		--primary: var(--gm-green);
 		--secondary: var(--gm-green-dark);
-		--accent: #dfe5d8;
-		--header-bg: rgb(7, 7, 7);
-		--header-color: #ddd;
+		--accent: var(--gm-green-light);
+		--primary-fg: #fff;
+
+		--body-fg: #e4e6e1;
+		--body-bg: #0d0e0c;
+		--body-quiet-color: #a3a99b;
+		--body-medium-color: #c9cdc3;
+		--body-loud-color: #fff;
+
+		--header-color: #d6dad1;
 		--header-branding-color: var(--gm-green);
+		--header-bg: rgb(7, 7, 7);
 		--header-link-color: #fff;
-		--breadcrumbs-bg: var(--gm-green-dark);
-		--breadcrumbs-fg: #e8ece4;
+
+		--breadcrumbs-fg: #c9d2bf;
 		--breadcrumbs-link-fg: #fff;
-		--link-fg: var(--gm-green-dark);
-		--link-hover-color: #3f4738;
-		--link-selected-fg: var(--gm-green-dark);
+		--breadcrumbs-bg: #23271f;
+
+		--link-fg: var(--gm-green-light);
+		--link-hover-color: #e3eadb;
+		--link-selected-fg: #e3eadb;
+
+		--hairline-color: #2b2f27;
+		--border-color: #3b4035;
+		--error-fg: #ff8f84;
+
+		--message-debug-bg: #23271f;
+		--message-info-bg: #1e2a33;
+		--message-success-bg: #253021;
+		--message-warning-bg: #3a3420;
+		--message-error-bg: #3d2220;
+
+		--darkened-bg: var(--gm-panel);
+		--selected-bg: #2b2f27;
+		--selected-row: #2c3428;
+
+		--button-fg: #fff;
 		--button-bg: var(--gm-green);
 		--button-hover-bg: var(--gm-green-dark);
 		--default-button-bg: var(--gm-green-dark);
-		--default-button-hover-bg: #3f4738;
-		--selected-row: #eef1ea;
-		--message-success-bg: #e6ecdf;
-		--body-bg: #f6f6f3;
+		--default-button-hover-bg: var(--gm-green);
+		--close-button-bg: #4a4f45;
+		--close-button-hover-bg: #666b60;
+		--delete-button-bg: #9c2a20;
+		--delete-button-hover-bg: #7f1f17;
+
+		--object-tools-fg: var(--button-fg);
+		--object-tools-bg: var(--close-button-bg);
+		--object-tools-hover-bg: var(--close-button-hover-bg);
+
+		color-scheme: dark;
 	}
-	@media (prefers-color-scheme: dark) {
-		:root,
-		html[data-theme="auto"] {
-			--primary: var(--gm-green);
-			--secondary: var(--gm-green-dark);
-			--link-fg: #b7c4aa;
-			--link-hover-color: #dfe5d8;
-			--header-bg: rgb(7, 7, 7);
-			--breadcrumbs-bg: #3f4738;
-			--selected-row: #2c3228;
-		}
+	/* bigger everything: the admin sizes are in rem, so this scales text, inputs and buttons together */
+	html {
+		font-size: 112%;
 	}
-	html[data-theme="dark"] {
-		--primary: var(--gm-green);
-		--secondary: var(--gm-green-dark);
-		--link-fg: #b7c4aa;
-		--link-hover-color: #dfe5d8;
-		--header-bg: rgb(7, 7, 7);
-		--breadcrumbs-bg: #3f4738;
-		--selected-row: #2c3228;
+	body {
+		background: var(--body-bg);
 	}
+	.theme-toggle {
+		display: none !important;  /* always dark */
+	}
+
+	/* header */
 	#header {
 		border-bottom: 3px solid var(--gm-green);
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding: 14px 40px;
 	}
 	#site-name a {
 		display: inline-flex;
 		align-items: center;
-		gap: 14px;
+		gap: 16px;
 	}
 	#site-name img {
-		height: 46px;
+		height: 56px;
 		width: auto;
 	}
 	#site-name span {
 		font-family: "Couture", sans-serif;
 		color: var(--gm-green);
-		font-size: 1.15rem;
+		font-size: 1.35rem;
 		letter-spacing: 0.04em;
 	}
-	#content h1,
-	.module h2,
-	.module caption {
-		letter-spacing: 0.02em;
+	#user-tools {
+		font-size: 0.8rem;
+	}
+	div.breadcrumbs {
+		padding: 12px 40px;
+	}
+
+	/* content */
+	#content {
+		padding: 28px 40px;
+	}
+	#content h1 {
+		font-size: 1.6rem;
+		color: #fff;
+		font-weight: 400;
+	}
+	.module {
+		background: var(--gm-panel);
+		border-radius: 10px;
+		border: 1px solid var(--hairline-color);
 	}
 	.module h2,
-	.module caption {
-		background: var(--gm-green);
+	.module caption,
+	.inline-group h2,
+	fieldset.module .fieldset-heading,
+	fieldset .fieldset-heading {
+		background: var(--gm-green-dark);
+		font-size: 0.9rem;
+		padding: 10px 14px;
+		letter-spacing: 0.04em;
 	}
+	.module table {
+		width: 100%;
+	}
+	td,
+	th {
+		padding: 10px 12px;
+		font-size: 0.95rem;
+	}
+	#changelist table thead th,
+	thead th {
+		background: var(--gm-panel-2);
+		color: var(--body-medium-color);
+	}
+	#result_list tbody tr:hover {
+		background: var(--gm-panel-2);
+	}
+	#changelist-filter {
+		background: var(--gm-panel);
+		border-radius: 10px;
+		border: 1px solid var(--hairline-color);
+	}
+	#changelist-filter h2 {
+		background: var(--gm-green-dark);
+		border-radius: 10px 10px 0 0;
+	}
+	#changelist .actions {
+		background: var(--gm-panel-2);
+		padding: 12px 14px;
+		border-radius: 8px;
+	}
+
+	/* forms */
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	input[type="url"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="search"],
+	textarea,
+	select,
+	.vTextField {
+		background: #11130f;
+		color: var(--body-fg);
+		border: 1px solid var(--border-color);
+		border-radius: 6px;
+		padding: 8px 10px;
+		font-size: 1rem;
+	}
+	input:focus,
+	textarea:focus,
+	select:focus {
+		border-color: var(--gm-green);
+		outline: 2px solid rgba(122, 134, 112, 0.35);
+	}
+	fieldset.module {
+		padding-bottom: 6px;
+	}
+	.form-row {
+		padding: 14px 16px;
+	}
+	label,
+	.aligned label {
+		font-size: 0.95rem;
+	}
+	.help,
+	div.help {
+		color: var(--body-quiet-color);
+	}
+
+	/* buttons */
 	.button,
 	input[type="submit"],
 	input[type="button"],
 	.submit-row input,
-	a.button {
-		border-radius: 6px;
+	a.button,
+	.object-tools a {
+		border-radius: 8px;
+		padding: 10px 18px;
+		font-size: 0.95rem;
 	}
-	.gm-viewsite {
-		margin-left: 8px;
+	.submit-row {
+		background: var(--gm-panel);
+		border: 1px solid var(--hairline-color);
+		border-radius: 10px;
+		padding: 14px;
 	}
 </style>
 {% endblock %}
@@ -105,9 +232,6 @@
 		<span>Administration</span>
 	</a>
 </div>
-{% if user.is_anonymous %}
-	{% include "admin/color_theme_toggle.html" %}
-{% endif %}
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
