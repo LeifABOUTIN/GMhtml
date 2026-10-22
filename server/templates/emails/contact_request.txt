@@ -1,0 +1,14 @@
+{% autoescape off %}Nouvelle demande reçue via le formulaire de contact du site.
+
+Demande : {{ req.get_reason_display }}
+Nom : {{ req.name }}
+{% if req.email %}E-mail : {{ req.email }}{% else %}Téléphone : {{ req.phone }}{% endif %}
+
+----------------------------------------
+{{ req.message|default:"(pas de message)" }}
+----------------------------------------
+{% if req.email %}
+Répondre à cet e-mail répond directement à {{ req.name }}.{% endif %}
+
+Voir la demande et la marquer comme traitée : {{ admin_url }}
+{% endautoescape %}

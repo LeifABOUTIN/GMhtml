@@ -13,6 +13,7 @@ urlpatterns = [
 	path("accounts/", include("allauth.urls")),
 	path("avis-de-deces/", include("memorials.urls")),
 	path("actualites/", include("news.urls")),
+	path("contact/", include("contact.urls")),
 ]
 
 if settings.DEBUG:

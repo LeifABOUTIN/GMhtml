@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 	"allauth.socialaccount.providers.google",
 	"memorials",
 	"news",
+	"contact",
 ]
 
 MIDDLEWARE = [
@@ -164,6 +165,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 PRIVATE_COMMENT_RETENTION_DAYS = int(os.environ.get("PRIVATE_COMMENT_RETENTION_DAYS", "30"))
 # Public messages refused by an admin are deleted this many days after they were received
 REJECTED_COMMENT_RETENTION_DAYS = int(os.environ.get("REJECTED_COMMENT_RETENTION_DAYS", "30"))
+# Contact form requests are deleted this many days after being received (3 years, see the privacy policy)
+CONTACT_REQUEST_RETENTION_DAYS = int(os.environ.get("CONTACT_REQUEST_RETENTION_DAYS", str(3 * 365)))
 
 if not DEBUG:
 	SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -187,5 +190,6 @@ LOGGING = {
 	"loggers": {
 		"memorials": {"handlers": ["console"], "level": "INFO"},
 		"news": {"handlers": ["console"], "level": "INFO"},
+		"contact": {"handlers": ["console"], "level": "INFO"},
 	},
 }

@@ -4,5 +4,7 @@ SHELL=/bin/bash
 15 3 * * * gm /srv/gm/repo/server/deploy/backup.sh >>/var/log/gm-backup.log 2>&1
 # delete delivered/failed private messages and refused messages after their retention period
 30 3 * * * gm cd /srv/gm/repo/server && set -a && . /srv/gm/env && /srv/gm/venv/bin/python manage.py purge_private_comments >>/var/log/gm-purge.log 2>&1
+# delete contact form requests after 3 years
+35 3 * * * gm cd /srv/gm/repo/server && set -a && . /srv/gm/env && /srv/gm/venv/bin/python manage.py purge_contact_requests >>/var/log/gm-purge.log 2>&1
 # copy the latest Facebook / Instagram posts to the Actualités page
 0 7 * * * gm cd /srv/gm/repo/server && set -a && . /srv/gm/env && /srv/gm/venv/bin/python manage.py import_social_posts >>/var/log/gm-import.log 2>&1

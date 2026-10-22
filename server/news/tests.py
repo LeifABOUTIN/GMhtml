@@ -129,7 +129,8 @@ class CommandTests(MediaMixin, TestCase):
 		call_command("import_social_posts", stdout=out)
 		self.assertEqual(Post.objects.count(), 2)
 		fetch_ig.assert_called_once_with("17841", "token", mock.ANY, 50)
-		self.assertIn("Facebook : 1 créées", out.getvalue())
+		facebook_line = next(line for line in out.getvalue().splitlines() if line.startswith("Facebook :"))
+		self.assertIn("1 créées", facebook_line)  # the summary's word order follows the counter, not fixed
 
 	@mock.patch("news.social.fetch_facebook", side_effect=social.MetaAPIError("HTTP 190 Error validating access token"))
 	@mock.patch("news.social.instagram_account_id", return_value=None)
