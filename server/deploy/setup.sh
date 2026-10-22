@@ -15,8 +15,12 @@ DOMAINS="${DOMAINS:-gmfuneraire.fr www.gmfuneraire.fr}"
 MAIN_DOMAIN="${DOMAINS%% *}"
 
 apt-get update
-apt-get install -y nginx python3-venv sqlite3 rsync git openssl certbot python3-certbot-nginx
-snap install aws-cli --classic || true
+apt-get install -y nginx python3-venv sqlite3 rsync git openssl unzip certbot python3-certbot-nginx
+# AWS CLI from the official installer: the snap version refuses users whose home is outside /home (gm's is /srv/gm)
+if [ ! -x /usr/local/bin/aws ]; then
+	curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o /tmp/awscliv2.zip
+	unzip -q -o /tmp/awscliv2.zip -d /tmp && /tmp/aws/install && rm -rf /tmp/aws /tmp/awscliv2.zip
+fi
 
 id gm &>/dev/null || useradd --system --home /srv/gm --shell /usr/sbin/nologin --gid www-data gm
 mkdir -p /srv/gm/data/{media,static,cache,backups} /srv/gm/www

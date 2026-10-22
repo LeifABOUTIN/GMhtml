@@ -3,6 +3,7 @@
 # Requires BACKUP_BUCKET in /srv/gm/env and an EC2 instance role allowed to write to it.
 set -euo pipefail
 set -a; . /srv/gm/env; set +a
+export PATH="/usr/local/bin:$PATH"  # cron's PATH doesn't include the AWS CLI
 
 STAMP=$(date +%Y-%m-%d)
 DIR=/srv/gm/data/backups
