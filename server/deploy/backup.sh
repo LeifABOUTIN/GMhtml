@@ -6,6 +6,7 @@ set -a; . /srv/gm/env; set +a
 
 STAMP=$(date +%Y-%m-%d)
 DIR=/srv/gm/data/backups
+cd "$DIR"  # find/aws fail if started from a folder user gm cannot read (e.g. via sudo from /home/ubuntu)
 sqlite3 /srv/gm/data/db.sqlite3 ".backup '$DIR/db-$STAMP.sqlite3'"
 gzip -f "$DIR/db-$STAMP.sqlite3"
 find "$DIR" -name 'db-*.sqlite3.gz' -mtime +14 -delete  # keep two weeks locally
