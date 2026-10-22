@@ -266,3 +266,45 @@ class GoogleAllowListTests(TestCase):
 		with self.assertRaises(ImmediateHttpResponse):
 			AdminOnlySocialAccountAdapter().pre_social_login(
 				self.request(), self.sociallogin("boss@example.com", verified=False))
+
+	def test_older_verified_email_key_is_accepted(self):
+		sl = self.sociallogin("boss@example.com")
+		sl.account.extra_data = {"email": "boss@example.com", "verified_email": True}
+		AdminOnlySocialAccountAdapter().pre_social_login(self.request(), sl)
+		self.assertTrue(sl.user.is_staff)
+
+	def test_google_login_reaches_existing_account_with_same_email(self):
+		"""The emergency superuser shares the admin's address: Google login must log into it, not ask to sign up."""
+		from allauth.account.models import EmailAddress
+		from allauth.socialaccount.helpers import complete_social_login
+		from allauth.socialaccount.models import SocialAccount, SocialLogin
+		from django.contrib.auth.models import AnonymousUser
+		from django.contrib.sessions.middleware import SessionMiddleware
+
+		existing = get_user_model().objects.create_superuser("admin", "boss@example.com", "x" * 12)
+		request = RequestFactory().get("/accounts/google/login/callback/")
+		SessionMiddleware(lambda r: None).process_request(request)
+		request._messages = FallbackStorage(request)
+		request.user = AnonymousUser()
+		from allauth.socialaccount.adapter import get_adapter as get_social_adapter
+		sociallogin = SocialLogin(
+			provider=get_social_adapter().get_provider(request, "google"),
+			user=get_user_model()(email="boss@example.com"),
+			account=SocialAccount(provider="google", uid="1234567890",
+				extra_data={"email": "boss@example.com", "email_verified": True}),
+			email_addresses=[EmailAddress(email="boss@example.com", verified=True, primary=True)],
+		)
+		sociallogin.state = {"process": "login", "next": "/admin/"}
+		from allauth.core.context import request_context
+		with request_context(request):  # normally set by allauth's middleware
+			response = complete_social_login(request, sociallogin)
+		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response["Location"], "/admin/")
+		self.assertEqual(SocialAccount.objects.get().user, existing)
+		self.assertEqual(get_user_model().objects.count(), 1)
+
+	def test_allauth_pages_go_to_admin_login(self):
+		for url in ("/accounts/login/", "/accounts/signup/", "/accounts/3rdparty/signup/"):
+			r = self.client.get(url)
+			self.assertEqual(r.status_code, 302)
+			self.assertTrue(r["Location"].startswith("/admin/login/"))

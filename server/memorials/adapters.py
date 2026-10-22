@@ -23,7 +23,9 @@ class AdminOnlySocialAccountAdapter(DefaultSocialAccountAdapter):
 
 	def pre_social_login(self, request, sociallogin):
 		email = _email(sociallogin)
-		verified = sociallogin.account.extra_data.get("email_verified", False)
+		data = sociallogin.account.extra_data
+		# Google says so as "email_verified" (OpenID token) or "verified_email" (older userinfo endpoint)
+		verified = bool(data.get("email_verified", data.get("verified_email", False)))
 		if email not in settings.ADMIN_EMAILS or not verified:
 			messages.error(request, f"Le compte {email or 'Google'} n’est pas autorisé à administrer le site.")
 			raise ImmediateHttpResponse(redirect("admin:login"))

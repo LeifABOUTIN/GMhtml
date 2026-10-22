@@ -114,6 +114,10 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*"]
 ACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_AUTO_SIGNUP = True
+# A Google address verified by Google signs in to the existing account with that e-mail (e.g. the emergency
+# superuser) instead of being sent to a sign-up form; only ADMIN_EMAILS get past the adapter anyway.
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_PROVIDERS = {
 	"google": {
 		"APPS": [

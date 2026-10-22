@@ -1,0 +1,113 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+<style>
+	/* the website's look (css/site.css): near-black, sage green, Couture titles */
+	@font-face {
+		font-family: Couture;
+		src: url("/fonts/couture-bld.otf") format("opentype");
+	}
+	:root,
+	html[data-theme="light"] {
+		--gm-green: #7a8670;
+		--gm-green-dark: #5f6a56;
+		--primary: var(--gm-green);
+		--secondary: var(--gm-green-dark);
+		--accent: #dfe5d8;
+		--header-bg: rgb(7, 7, 7);
+		--header-color: #ddd;
+		--header-branding-color: var(--gm-green);
+		--header-link-color: #fff;
+		--breadcrumbs-bg: var(--gm-green-dark);
+		--breadcrumbs-fg: #e8ece4;
+		--breadcrumbs-link-fg: #fff;
+		--link-fg: var(--gm-green-dark);
+		--link-hover-color: #3f4738;
+		--link-selected-fg: var(--gm-green-dark);
+		--button-bg: var(--gm-green);
+		--button-hover-bg: var(--gm-green-dark);
+		--default-button-bg: var(--gm-green-dark);
+		--default-button-hover-bg: #3f4738;
+		--selected-row: #eef1ea;
+		--message-success-bg: #e6ecdf;
+		--body-bg: #f6f6f3;
+	}
+	@media (prefers-color-scheme: dark) {
+		:root,
+		html[data-theme="auto"] {
+			--primary: var(--gm-green);
+			--secondary: var(--gm-green-dark);
+			--link-fg: #b7c4aa;
+			--link-hover-color: #dfe5d8;
+			--header-bg: rgb(7, 7, 7);
+			--breadcrumbs-bg: #3f4738;
+			--selected-row: #2c3228;
+		}
+	}
+	html[data-theme="dark"] {
+		--primary: var(--gm-green);
+		--secondary: var(--gm-green-dark);
+		--link-fg: #b7c4aa;
+		--link-hover-color: #dfe5d8;
+		--header-bg: rgb(7, 7, 7);
+		--breadcrumbs-bg: #3f4738;
+		--selected-row: #2c3228;
+	}
+	#header {
+		border-bottom: 3px solid var(--gm-green);
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	#site-name a {
+		display: inline-flex;
+		align-items: center;
+		gap: 14px;
+	}
+	#site-name img {
+		height: 46px;
+		width: auto;
+	}
+	#site-name span {
+		font-family: "Couture", sans-serif;
+		color: var(--gm-green);
+		font-size: 1.15rem;
+		letter-spacing: 0.04em;
+	}
+	#content h1,
+	.module h2,
+	.module caption {
+		letter-spacing: 0.02em;
+	}
+	.module h2,
+	.module caption {
+		background: var(--gm-green);
+	}
+	.button,
+	input[type="submit"],
+	input[type="button"],
+	.submit-row input,
+	a.button {
+		border-radius: 6px;
+	}
+	.gm-viewsite {
+		margin-left: 8px;
+	}
+</style>
+{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+	<a href="{% url 'admin:index' %}">
+		<img src="/img/logo_grey.png" alt="" />
+		<span>Administration</span>
+	</a>
+</div>
+{% if user.is_anonymous %}
+	{% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

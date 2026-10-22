@@ -2,14 +2,21 @@ from django.conf import settings
 from django.contrib import admin
 from django.http import Http404
 from django.urls import include, path, re_path
+from django.views.generic import RedirectView
 from django.views.static import serve
 
 admin.site.site_header = "Pompes Funèbres et Marbrerie GM – Administration"
 admin.site.site_title = "GM – Administration"
 admin.site.index_title = "Gestion du site"
 
+to_admin_login = RedirectView.as_view(pattern_name="admin:login", query_string=True)
+
 urlpatterns = [
 	path("admin/", admin.site.urls),
+	# allauth's own login / sign-up pages are not used: the admin login page has the Google button
+	path("accounts/login/", to_admin_login),
+	path("accounts/signup/", to_admin_login),
+	path("accounts/3rdparty/signup/", to_admin_login),
 	path("accounts/", include("allauth.urls")),
 	path("avis-de-deces/", include("memorials.urls")),
 	path("actualites/", include("news.urls")),
