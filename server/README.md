@@ -117,6 +117,27 @@ What the import does:
 - a post you edit, hide or publish in the admin is no longer touched by the import ("ne plus mettre à jour
   automatiquement" is ticked for you). Posts can also be written directly in the admin.
 
+### Beta (beta.gmfuneraire.fr) and going live
+
+The server first runs as a password-protected beta, while www.gmfuneraire.fr stays on S3:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/LeifABOUTIN/GMhtml/memorials/server/deploy/setup.sh \
+  | sudo DOMAINS="beta.gmfuneraire.fr" BETA_PASSWORD='…' CERTBOT_EMAIL=pfgm.soisy@gmail.com bash
+```
+
+Testers log in with user `beta` and that password; the beta also tells search engines not to index it.
+Change the password: `printf 'beta:%s\n' "$(openssl passwd -apr1 'NEW')" | sudo tee /etc/nginx/gm-beta.htpasswd && sudo systemctl reload nginx`.
+
+Going live later:
+1. `/srv/gm/env`: `DJANGO_ALLOWED_HOSTS=gmfuneraire.fr,www.gmfuneraire.fr,beta.gmfuneraire.fr`, `SITE_URL=https://www.gmfuneraire.fr`,
+   then `sudo systemctl restart gm`.
+2. `/etc/nginx/sites-available/gm`: add `gmfuneraire.fr www.gmfuneraire.fr` to every `server_name` line.
+3. `sudo rm /etc/nginx/snippets/gm-access.conf && sudo systemctl reload nginx` (removes the password).
+4. Point the DNS of `gmfuneraire.fr` and `www.gmfuneraire.fr` to the server's Elastic IP (instead of CloudFront), then
+   `sudo certbot --nginx -d gmfuneraire.fr -d www.gmfuneraire.fr -d beta.gmfuneraire.fr`.
+5. Add the new address to the Google sign-in client's redirect URIs.
+
 ### Updating the site later
 
 Push to the `memorials` branch, then on the server:
