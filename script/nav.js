@@ -2,11 +2,21 @@
 const siteHeader = document.querySelector(".site-header")
 const navToggle = document.querySelector(".nav-toggle")
 
-navToggle.addEventListener("click", () => {
-	const open = siteHeader.classList.toggle("nav-open")
+function setMenu(open) {
+	siteHeader.classList.toggle("nav-open", open)
 	navToggle.setAttribute("aria-expanded", open)
 	navToggle.querySelector("img").src = open ? navToggle.dataset.close : navToggle.dataset.open
 	navToggle.querySelector("img").alt = open ? "Fermer le menu" : "Menu"
+}
+
+navToggle.addEventListener("click", () => setMenu(!siteHeader.classList.contains("nav-open")))
+
+// a click or tap anywhere outside the header, or the Escape key, closes the menu
+document.addEventListener("click", (e) => {
+	if (siteHeader.classList.contains("nav-open") && !siteHeader.contains(e.target)) setMenu(false)
+})
+document.addEventListener("keydown", (e) => {
+	if (e.key === "Escape" && siteHeader.classList.contains("nav-open")) setMenu(false)
 })
 
 // Legal links open their page's text in a popup (the pages also work on their own)
