@@ -7,6 +7,9 @@ sudo -u gm git pull --ff-only
 
 # static website: everything except the server code and git metadata
 rsync -a --delete --exclude server/ --exclude .git/ --exclude '.git*' /srv/gm/repo/ /srv/gm/www/
+# browsers keep css/js for 7 days (nginx): give their links a version so a deploy is seen at once
+v=$(stat -c %Y /srv/gm/www/css/site.css)
+sed -i -E "s#(css/site\.css|script/[a-z]+\.js)(\?v=[0-9]+)?\"#\1?v=$v\"#g" /srv/gm/www/*.html /srv/gm/www/pages/*.html
 chown -R gm:www-data /srv/gm/www
 
 sudo -u gm /srv/gm/venv/bin/pip install -q -r server/requirements.txt
