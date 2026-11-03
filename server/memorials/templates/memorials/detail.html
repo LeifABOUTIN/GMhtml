@@ -1,16 +1,18 @@
 {% extends "base.html" %}
 
 {% block title %}{{ memorial.full_name }}{% endblock %}
-{% block description %}Avis de décès de {{ memorial.full_name }}{% if memorial.city %}, {{ memorial.city }}{% endif %}. Laissez un message de condoléances à la famille.{% endblock %}
+{% block description %}Avis de décès de {{ memorial.full_name }}{% if memorial.city %}, {{ memorial.city }}{% endif %}.{% endblock %}
 
 {% block content %}
 			<p class="back"><a href="{% url 'memorials:list' %}">← Tous les avis de décès</a></p>
 
 			<article class="memorial">
 				<header class="memorial__head">
+					{% comment "Photo du défunt désactivée pour le moment" %}
 					{% if memorial.photo %}
 						<img class="memorial__photo" src="{{ memorial.photo.url }}" alt="Photo de {{ memorial.full_name }}" />
 					{% endif %}
+					{% endcomment %}
 					<div>
 						<p class="memorial__kicker">Avis de décès</p>
 						<h1 class="memorial__name">{{ memorial.full_name }}</h1>
@@ -24,6 +26,9 @@
 
 				<div class="prose memorial__text">
 					{{ memorial.announcement|linebreaks }}
+					{% if memorial.faire_part %}
+						<p><a class="btn btn--primary" href="{{ memorial.faire_part.url }}" target="_blank" rel="noopener" download>Télécharger le faire-part</a></p>
+					{% endif %}
 				</div>
 
 				{% if steps or memorial.ceremony %}
@@ -57,6 +62,7 @@
 				{% endif %}
 			</article>
 
+			{% comment "Messages de condoléances désactivés pour le moment" %}
 			<section class="condolences" id="messages">
 				<h2>Messages de condoleances</h2>
 
@@ -133,4 +139,5 @@
 					<p class="empty">Les messages sont fermés pour cet avis.</p>
 				{% endif %}
 			</section>
+			{% endcomment %}
 {% endblock %}

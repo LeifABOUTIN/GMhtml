@@ -18,16 +18,18 @@
 				<div class="cards memorial-cards">
 					{% for m in page.object_list %}
 						<a class="card memorial-card" href="{{ m.get_absolute_url }}">
+							{% comment "Photo du défunt désactivée pour le moment" %}
 							{% if m.photo %}
 								<img class="memorial-card__photo" src="{{ m.photo.url }}" alt="" loading="lazy" />
 							{% else %}
 								<div class="memorial-card__photo memorial-card__photo--empty"></div>
 							{% endif %}
+							{% endcomment %}
 							<div class="card__body">
 								<h2 class="memorial-card__name">{{ m.full_name }}</h2>
 								{% if m.maiden_name %}<p class="memorial-card__maiden">née {{ m.maiden_name }}</p>{% endif %}
 								<p>{% if m.birth_date %}{{ m.birth_date|date:"Y" }} – {% endif %}décédé(e) le {{ m.death_date|date:"j F Y" }}{% if m.city %}<br />{{ m.city }}{% endif %}</p>
-								<span class="card__more">Voir l’avis et laisser un message →</span>
+								<span class="card__more">Voir l’avis →</span>
 							</div>
 						</a>
 					{% endfor %}

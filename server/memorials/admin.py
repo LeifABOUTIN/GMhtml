@@ -26,18 +26,17 @@ class CeremonyStepInline(admin.TabularInline):
 @admin.register(Memorial)
 class MemorialAdmin(admin.ModelAdmin):
 	inlines = [CeremonyStepInline]
-	list_display = ["full_name", "death_date", "is_published", "pending_count", "view_link", "qr_link"]
-	list_filter = ["is_published", "comments_open"]
+	list_display = ["full_name", "death_date", "is_published", "view_link", "qr_link"]
+	list_filter = ["is_published"]  # "comments_open": messages switched off
 	search_fields = ["first_name", "last_name", "maiden_name"]
 	date_hierarchy = "death_date"
-	readonly_fields = ["photo_preview", "qr_tools", "created_at", "updated_at"]
+	readonly_fields = ["qr_tools", "created_at", "updated_at"]
 	actions = ["publish", "unpublish"]
 	fieldsets = [
-		("Défunt", {"fields": [("first_name", "last_name"), "maiden_name", ("birth_date", "death_date"), "city",
-			"photo", "photo_preview"]}),
-		("Avis", {"fields": ["announcement", "ceremony"]}),
+		("Défunt", {"fields": [("first_name", "last_name"), "maiden_name", ("birth_date", "death_date"), "city"]}),  # "photo", "photo_preview": pictures switched off
+		("Avis", {"fields": ["announcement", "ceremony", "faire_part"]}),
 		("Famille", {"fields": ["family_emails"]}),
-		("Publication", {"fields": ["is_published", "comments_open", "slug", ("created_at", "updated_at")]}),
+		("Publication", {"fields": ["is_published", "slug", ("created_at", "updated_at")]}),
 		("QR code pour la cérémonie", {"fields": ["qr_tools"]}),
 	]
 
@@ -76,7 +75,7 @@ class MemorialAdmin(admin.ModelAdmin):
 			"<p><b>Attention :</b> l’avis n’est pas encore publié, le QR code mènera à une page introuvable "
 			"tant que « publié » n’est pas coché.</p>")
 		return format_html(
-			'{}<p>Le QR code ouvre la page de l’avis, où les proches peuvent laisser un message.</p>'
+			'{}<p>Le QR code ouvre la page de l’avis.</p>'
 			'<p><a href="{}" target="_blank">Affiche A4 ↗</a> · <a href="{}" target="_blank">Cartes à emporter ↗</a>'
 			' · <a href="{}">Télécharger le QR code seul (SVG)</a></p>',
 			mark_safe(warning),
@@ -117,7 +116,7 @@ class CommentPhotoInline(admin.TabularInline):
 			obj.image.url)
 
 
-@admin.register(Comment)
+# @admin.register(Comment)  # condolence messages switched off for now
 class CommentAdmin(admin.ModelAdmin):
 	list_display = ["created_at", "memorial", "author_name", "visibility", "status", "excerpt", "photo_count"]
 	list_filter = ["status", "visibility", "memorial"]

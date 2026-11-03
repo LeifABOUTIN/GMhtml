@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
+from django.core.validators import FileExtensionValidator, validate_email
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -30,7 +30,10 @@ class Memorial(models.Model):
 	birth_date = models.DateField("date de naissance", null=True, blank=True)
 	death_date = models.DateField("date de décès")
 	city = models.CharField("commune", max_length=120, blank=True)
-	photo = models.ImageField("photo", upload_to="avis/%Y/", blank=True)
+	photo = models.ImageField("photo", upload_to="avis/%Y/", blank=True)  # no longer shown on the site
+	faire_part = models.FileField("faire-part", upload_to="faire-part/%Y/", blank=True,
+		validators=[FileExtensionValidator(["pdf", "jpg", "jpeg", "png"])],
+		help_text="Facultatif : PDF ou image. Un bouton « Télécharger le faire-part » apparaît sur la page.")
 	announcement = models.TextField("texte de l’avis",
 		help_text="Texte de l’avis de décès, tel qu’il apparaîtra sur la page.")
 	ceremony = models.TextField("informations complémentaires", blank=True,

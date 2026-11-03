@@ -236,7 +236,7 @@
 							<p class="card__kicker">En mémoire de</p>
 							<p class="card__name">{{ memorial.full_name }}</p>
 							<p class="card__dates">{% if memorial.birth_date %}{{ memorial.birth_date|date:"j F Y" }} – {% endif %}{{ memorial.death_date|date:"j F Y" }}</p>
-							<p class="card__cta">Scannez ce code pour laisser un message à la famille</p>
+							<p class="card__cta">Scannez ce code pour voir l’avis et la cérémonie</p>
 							<img class="card__logo" src="/img/logo_grey.png" alt="Pompes Funèbres et Marbrerie GM" />
 						</div>
 					</div>
@@ -246,13 +246,13 @@
 			<div class="sheet poster">
 				<img class="poster__logo" src="/img/logo_grey.png" alt="Pompes Funèbres et Marbrerie GM" />
 				<p class="poster__kicker">En mémoire de</p>
-				{% if memorial.photo %}<img class="poster__photo" src="{{ memorial.photo.url }}" alt="" />{% endif %}
+				{% comment "Photo du défunt désactivée pour le moment" %}{% if memorial.photo %}<img class="poster__photo" src="{{ memorial.photo.url }}" alt="" />{% endif %}{% endcomment %}
 				<h1 class="poster__name">{{ memorial.full_name }}</h1>
 				{% if memorial.maiden_name %}<p class="poster__maiden">née {{ memorial.maiden_name }}</p>{% endif %}
 				<p class="poster__dates">{% if memorial.birth_date %}{{ memorial.birth_date|date:"j F Y" }} – {% endif %}{{ memorial.death_date|date:"j F Y" }}</p>
 				<div class="poster__scan">
 					<div class="qr">{{ qr }}</div>
-					<p class="poster__cta">Laissez un message à la famille</p>
+					<p class="poster__cta">Retrouvez l’avis et la cérémonie</p>
 					<p class="poster__how">Ouvrez l’appareil photo de votre téléphone et visez ce code.</p>
 					<p class="poster__url">{{ short_url }}</p>
 				</div>

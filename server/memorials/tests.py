@@ -5,7 +5,7 @@ import tempfile
 from datetime import date, timedelta
 from io import StringIO
 from types import SimpleNamespace
-from unittest import mock
+from unittest import mock, skip
 
 from allauth.core.exceptions import ImmediateHttpResponse
 from django.contrib.auth import get_user_model
@@ -49,6 +49,7 @@ class CommentFlowTests(TestCase):
 		self.assertEqual(self.client.get(hidden.get_absolute_url()).status_code, 404)
 		self.assertNotContains(self.client.get("/avis-de-deces/"), "Caché")
 
+	@skip("condolence messages switched off for now")
 	def test_public_comment_waits_for_approval(self):
 		self.post(visibility="public")
 		c = Comment.objects.get()
@@ -59,6 +60,7 @@ class CommentFlowTests(TestCase):
 		c.save()
 		self.assertContains(self.client.get(self.m.get_absolute_url()), "Pensées")
 
+	@skip("condolence messages switched off for now")
 	def test_private_comment_is_emailed_to_each_family_member(self):
 		self.post(visibility="private", author_email="ami@example.com")
 		c = Comment.objects.get()
@@ -77,6 +79,7 @@ class CommentFlowTests(TestCase):
 		self.post(visibility="public", website="http://spam")
 		self.assertFalse(Comment.objects.exists())
 
+	@skip("condolence messages switched off for now")
 	def test_rate_limit(self):
 		for _ in range(7):
 			self.post(visibility="public")
@@ -97,6 +100,7 @@ class CommentFlowTests(TestCase):
 		call_command("purge_private_comments", stdout=StringIO())
 		self.assertEqual(list(Comment.objects.values_list("author_name", flat=True)), ["B"])
 
+	@skip("condolence messages switched off for now")
 	def test_rate_limit_window_does_not_slide(self):
 		# 5 messages, then one more every 3 minutes: blocked until 10 minutes after the FIRST message
 		with mock.patch("memorials.views.time.time") as now:
@@ -141,6 +145,22 @@ class CeremonyStepTests(TestCase):
 		self.assertLess(html.index("Cérémonie religieuse"), html.index("Inhumation"))
 
 
+class MemorialPageTests(TestCase):
+	def test_newest_notice_first(self):
+		make_memorial(first_name="Ancien", death_date=date(2026, 10, 30))
+		make_memorial(first_name="Récent", death_date=date(2026, 9, 1))
+		html = self.client.get("/avis-de-deces/").content.decode()
+		self.assertLess(html.index("Récent"), html.index("Ancien"))
+
+	def test_faire_part_download(self):
+		media = tempfile.mkdtemp()
+		self.addCleanup(shutil.rmtree, media, ignore_errors=True)
+		with override_settings(MEDIA_ROOT=media):
+			m = make_memorial(faire_part=SimpleUploadedFile("fp.pdf", b"%PDF-1.4", content_type="application/pdf"))
+			self.assertContains(self.client.get(m.get_absolute_url()), "Télécharger le faire-part")
+		self.assertNotContains(self.client.get(make_memorial().get_absolute_url()), "faire-part")
+
+
 def jpeg_upload(name="souvenir.jpg", size=(3000, 2000)):
 	buf = io.BytesIO()
 	Image.new("RGB", size, "blue").save(buf, "JPEG")
@@ -165,6 +185,7 @@ class CommentPhotoTests(TestCase):
 			"author_name": "Ami", "relationship": "voisin", "message": "Pensées", "visibility": "public",
 			"photos": photos, **data})
 
+	@skip("condolence messages switched off for now")
 	def test_public_photos_are_resized_and_shown_after_approval(self):
 		self.post([jpeg_upload(), jpeg_upload("b.png")])
 		c = Comment.objects.get()
@@ -181,16 +202,19 @@ class CommentPhotoTests(TestCase):
 		self.assertContains(page, photos[0].image.url)
 		self.assertContains(page, "(voisin)")
 
+	@skip("condolence messages switched off for now")
 	def test_too_many_photos(self):
 		r = self.post([jpeg_upload() for _ in range(4)])
 		self.assertFalse(Comment.objects.exists())
 		self.assertContains(r, "3 photos maximum")
 
+	@skip("condolence messages switched off for now")
 	def test_not_an_image(self):
 		r = self.post([SimpleUploadedFile("virus.jpg", b"MZ\x90 not a picture", content_type="image/jpeg")])
 		self.assertFalse(Comment.objects.exists())
 		self.assertContains(r, "pas une photo lisible")
 
+	@skip("condolence messages switched off for now")
 	def test_private_photos_are_emailed_and_stored_apart(self):
 		self.post([jpeg_upload()], visibility="private")
 		photo = CommentPhoto.objects.get()
@@ -198,6 +222,7 @@ class CommentPhotoTests(TestCase):
 		self.assertEqual([a[0] for a in mail.outbox[0].attachments], ["photo-1.jpg"])
 		self.assertEqual(mail.outbox[0].attachments[0][2], "image/jpeg")
 
+	@skip("condolence messages switched off for now")
 	def test_purge_deletes_photo_files(self):
 		self.post([jpeg_upload()], visibility="private")
 		path = CommentPhoto.objects.get().image.path

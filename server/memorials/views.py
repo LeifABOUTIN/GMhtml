@@ -20,7 +20,7 @@ RATE_WINDOW = 10 * 60  # …per 10 minutes
 
 
 def memorial_list(request):
-	memorials = Memorial.objects.filter(is_published=True)
+	memorials = Memorial.objects.filter(is_published=True).order_by("-created_at")  # newest notice first
 	q = request.GET.get("q", "").strip()
 	if q:
 		memorials = memorials.filter(
@@ -32,39 +32,40 @@ def memorial_list(request):
 
 def memorial_detail(request, slug):
 	memorial = get_object_or_404(Memorial, slug=slug, is_published=True)
-	form = CommentForm(request.POST or None, request.FILES or None, memorial=memorial)
+	# Condolence messages are switched off for now: no form, no published messages (data is kept).
+	# form = CommentForm(request.POST or None, request.FILES or None, memorial=memorial)
 
-	if request.method == "POST" and memorial.comments_open:
-		if form.is_spam:
-			# pretend it worked so bots learn nothing
-			messages.success(request, "Merci, votre message a bien été reçu.")
-			return redirect(memorial.get_absolute_url() + "#messages")
-		if _rate_limited(request):
-			messages.error(request, "Vous avez envoyé plusieurs messages en peu de temps. Merci de réessayer plus tard.")
-		elif form.is_valid():
-			comment = form.save(commit=False)
-			comment.memorial = memorial
-			comment.status = Comment.Status.PENDING
-			comment.save()
-			for jpeg in form.processed_photos:
-				CommentPhoto.objects.create(comment=comment, image=ContentFile(jpeg, name="photo.jpg"))
-			if comment.is_private:
-				comment.status = Comment.Status.SENT if send_private_comment(comment) else Comment.Status.FAILED
-				comment.save(update_fields=["status"])
-				messages.success(request, "Merci, votre message a été transmis à la famille.")
-			else:
-				notify_moderators(comment)
-				messages.success(request, "Merci, votre message sera publié sur cette page après validation.")
-			return redirect(memorial.get_absolute_url() + "#messages")
+	# if request.method == "POST" and memorial.comments_open:
+		# if form.is_spam:
+			# # pretend it worked so bots learn nothing
+			# messages.success(request, "Merci, votre message a bien été reçu.")
+			# return redirect(memorial.get_absolute_url() + "#messages")
+		# if _rate_limited(request):
+			# messages.error(request, "Vous avez envoyé plusieurs messages en peu de temps. Merci de réessayer plus tard.")
+		# elif form.is_valid():
+			# comment = form.save(commit=False)
+			# comment.memorial = memorial
+			# comment.status = Comment.Status.PENDING
+			# comment.save()
+			# for jpeg in form.processed_photos:
+				# CommentPhoto.objects.create(comment=comment, image=ContentFile(jpeg, name="photo.jpg"))
+			# if comment.is_private:
+				# comment.status = Comment.Status.SENT if send_private_comment(comment) else Comment.Status.FAILED
+				# comment.save(update_fields=["status"])
+				# messages.success(request, "Merci, votre message a été transmis à la famille.")
+			# else:
+				# notify_moderators(comment)
+				# messages.success(request, "Merci, votre message sera publié sur cette page après validation.")
+			# return redirect(memorial.get_absolute_url() + "#messages")
 
-	public_comments = memorial.comments.filter(
-		visibility=Comment.Visibility.PUBLIC, status=Comment.Status.APPROVED
-	).order_by("created_at").prefetch_related("photos")
+	# public_comments = memorial.comments.filter(
+		# visibility=Comment.Visibility.PUBLIC, status=Comment.Status.APPROVED
+	# ).order_by("created_at").prefetch_related("photos")
 	return render(request, "memorials/detail.html", {
 		"memorial": memorial,
 		"steps": memorial.steps.all(),
-		"comments": public_comments,
-		"form": form,
+		# "comments": public_comments,
+		# "form": form,
 	})
 
 
