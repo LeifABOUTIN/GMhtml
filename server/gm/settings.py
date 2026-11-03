@@ -160,6 +160,12 @@ USE_TZ = True
 # Admin CSS/JS (the website's own css/ and img/ are served by nginx from the site root)
 STATIC_URL = "/django-static/"
 STATIC_ROOT = DATA_DIR / "static"
+# collectstatic names each file after its content (place_picker.3f2a….js): nginx lets browsers keep them 7 days,
+# so a changed file must get a new address to be seen at once
+STORAGES = {
+	"default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+	"staticfiles": {"BACKEND": "gm.storage.HashedStaticStorage"},
+}
 MEDIA_URL = "/media/"
 MEDIA_ROOT = DATA_DIR / "media"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # form fields; uploaded files are limited in forms.py
