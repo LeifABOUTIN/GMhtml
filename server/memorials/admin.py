@@ -45,9 +45,11 @@ class PlaceAdmin(admin.ModelAdmin):
 	search_fields = ["name", "address"]
 
 
-class CeremonyStepInline(admin.TabularInline):
+class CeremonyStepInline(admin.StackedInline):
+	"""One block per step (a table row was wider than the screen)."""
+
 	model = CeremonyStep
-	fields = ["order", "title", "starts_at", "saved_place", "place", "address", "details"]
+	fields = [("title", "order"), "starts_at", "saved_place", ("place", "address"), "details"]
 	extra = 1
 	verbose_name_plural = "étapes de la cérémonie (choisissez un lieu enregistré ou tapez-en un nouveau)"
 
