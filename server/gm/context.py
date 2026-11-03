@@ -4,8 +4,7 @@ from django.conf import settings
 
 
 def asset_version(request):
-	"""Changes whenever css/site.css changes: added to its URL so browsers don't keep an old copy (cached 7 days)."""
-	try:
-		return {"asset_version": int((settings.SITE_DIR / "css" / "site.css").stat().st_mtime)}
-	except OSError:
-		return {"asset_version": 0}
+	"""Changes whenever the css or a script changes: added to their URLs so browsers don't keep an old copy
+	(nginx lets them cache those files 7 days). Same value as deploy.sh stamps into the static pages."""
+	files = [settings.SITE_DIR / "css" / "site.css", *(settings.SITE_DIR / "script").glob("*.js")]
+	return {"asset_version": max((int(f.stat().st_mtime) for f in files if f.exists()), default=0)}
