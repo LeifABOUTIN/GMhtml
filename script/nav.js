@@ -59,3 +59,30 @@ document.querySelectorAll(".legal-link").forEach((link) => {
 		}
 	})
 })
+
+// "Cérémonie et itinéraires" on a notice: slides open and closed instead of jumping
+document.querySelectorAll("details.memorial__ceremony").forEach((details) => {
+	const summary = details.querySelector("summary")
+	let running = null
+	summary.addEventListener("click", (e) => {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+		e.preventDefault()
+		const start = details.getBoundingClientRect().height
+		const opening = !details.open || running?.closing
+		running?.animation.cancel()
+		details.open = true
+		const style = getComputedStyle(details)
+		const end = opening
+			? details.getBoundingClientRect().height
+			: summary.getBoundingClientRect().height + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
+				+ parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)
+		details.style.overflow = "hidden"
+		const animation = details.animate({ height: [`${start}px`, `${end}px`] }, { duration: 280, easing: "ease-out" })
+		running = { animation, closing: !opening }
+		animation.onfinish = () => {
+			details.open = opening
+			details.style.overflow = ""
+			running = null
+		}
+	})
+})

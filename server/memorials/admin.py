@@ -1,3 +1,7 @@
+import json
+from pathlib import Path
+
+from django import forms
 from django.contrib import admin, messages
 from django.db.models import Count, Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -12,7 +16,7 @@ from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
 from django.contrib.auth.models import Group
 
 from .emails import send_private_comment, send_qr_to_family
-from .models import CeremonyStep, Comment, CommentPhoto, Memorial, Place
+from .models import CeremonyStep, Comment, CommentPhoto, Memorial, Place, searchable
 
 # keep the admin to what the staff actually use (Google login is configured in settings)
 for model in (Group, EmailAddress, SocialAccount, SocialApp, SocialToken):
@@ -30,11 +34,32 @@ def get_app_list(request, app_label=None):
 admin.site.get_app_list = get_app_list
 
 
+STEP_TITLES = Path(__file__).resolve().parent / "data" / "steps.json"
+
+
+class StepTitleInput(forms.TextInput):
+	"""Free text with the usual step names suggested as you type (memorials/data/steps.json)."""
+
+	def render(self, name, value, attrs=None, renderer=None):
+		# one shared list id: rows added with "Ajouter" are copies whose ids get renumbered, the list's must not
+		list_id = "gm-step-titles"
+		html = super().render(name, value, {**(attrs or {}), "list": list_id, "autocomplete": "off"}, renderer)
+		options = "".join(format_html('<option value="{}">', title)
+			for title in json.loads(STEP_TITLES.read_text(encoding="utf-8")))
+		return mark_safe(f'{html}<datalist id="{list_id}">{options}</datalist>')
+
+
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
 	list_display = ["title", "name", "address"]
-	search_fields = ["title", "name", "address"]
+	search_fields = ["search"]  # see get_search_results
 	fields = ["title", "name", "address"]
+
+	def get_search_results(self, request, queryset, search_term):
+		# every word typed must appear in the title, lieu or adresse, ignoring case and accents
+		for word in searchable(search_term).split():
+			queryset = queryset.filter(search__contains=word)
+		return queryset, False
 
 	def get_urls(self):
 		return [path("<int:pk>/json/", self.admin_site.admin_view(self.place_json), name="memorials_place_json"),
@@ -57,6 +82,11 @@ class CeremonyStepInline(admin.StackedInline):
 
 	class Media:
 		js = ["memorials/place_picker.js"]
+
+	def formfield_for_dbfield(self, db_field, request, **kwargs):
+		if db_field.name == "title":
+			kwargs["widget"] = StepTitleInput()
+		return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 @admin.register(Memorial)

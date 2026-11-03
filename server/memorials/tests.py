@@ -163,11 +163,21 @@ class PlaceTests(TestCase):
 		own = Place.objects.create(title="Église de Soisy", name="Église Saint-Germain", address="Place de l’Église, 95230 Soisy")
 		self.assertEqual(str(own), "Église de Soisy")
 		self.client.force_login(get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12))
-		r = self.client.get("/admin/autocomplete/", {"term": "église de soisy", "app_label": "memorials",
+		for term in ["église de soisy", "EGLISE soisy", "eglise de soi"]:
+			r = self.client.get("/admin/autocomplete/", {"term": term, "app_label": "memorials",
+				"model_name": "ceremonystep", "field_name": "saved_place"})
+			self.assertIn("Église de Soisy", [x["text"] for x in r.json()["results"]], term)
+		r = self.client.get("/admin/autocomplete/", {"term": "chauvry test", "app_label": "memorials",
 			"model_name": "ceremonystep", "field_name": "saved_place"})
-		self.assertEqual([x["text"] for x in r.json()["results"]], ["Église de Soisy"])
+		self.assertEqual([x["text"] for x in r.json()["results"]], ["Chapelle test (Chauvry)"])
 		r = self.client.get(f"/admin/memorials/place/{own.pk}/json/")
 		self.assertEqual(r.json(), {"name": "Église Saint-Germain", "address": "Place de l’Église, 95230 Soisy"})
+
+	def test_step_names_are_suggested(self):
+		self.client.force_login(get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12))
+		html = self.client.get("/admin/memorials/memorial/add/").content.decode()
+		self.assertIn('list="gm-step-titles"', html)
+		self.assertIn('<option value="Levée du corps">', html)
 
 	def test_place_list_file_is_loaded(self):
 		self.assertTrue(Place.objects.filter(name="Crématorium des Joncherolles").exists())

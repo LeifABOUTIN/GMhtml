@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from urllib.parse import quote_plus
 from uuid import uuid4
 
@@ -84,6 +85,12 @@ class Memorial(models.Model):
 		super().save(*args, **kwargs)
 
 
+def searchable(text):
+	"""Lower case without accents: "Église" and "eglise" match (SQLite only ignores the case of plain letters)."""
+	text = unicodedata.normalize("NFKD", text.replace("’", "'"))
+	return "".join(c for c in text if not unicodedata.combining(c)).lower()
+
+
 def place_title(name, address):
 	"""Default title of a saved place: "Église Saint-Flaive (Ermont)", the town taken after the postcode."""
 	town = re.search(r"\b\d{5}\s+(.+)$", address)
@@ -100,6 +107,7 @@ class Place(models.Model):
 		help_text="Nom affiché dans la liste de choix, ex. : Église de Soisy. Laissé vide : « lieu (ville) ».")
 	name = models.CharField("lieu", max_length=160, help_text="Affiché sur la page de l’avis. Ex. : Église Saint-Germain")
 	address = models.CharField("adresse", max_length=255)
+	search = models.CharField(max_length=700, blank=True, editable=False)  # title + lieu + adresse, see searchable()
 
 	class Meta:
 		verbose_name = "lieu enregistré"
@@ -112,6 +120,7 @@ class Place(models.Model):
 
 	def save(self, *args, **kwargs):
 		self.title = self.title.strip() or place_title(self.name, self.address)
+		self.search = searchable(" ".join([self.title, self.name, self.address]))
 		super().save(*args, **kwargs)
 
 
