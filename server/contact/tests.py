@@ -1,3 +1,4 @@
+from unittest import skip
 import json
 from datetime import timedelta
 from io import StringIO
@@ -23,24 +24,25 @@ class ContactFormTests(TestCase):
 		body = {"reason": "devis", "name": "Jean Dupont", "message": "Bonjour", "contact": "jean@example.com", **data}
 		return self.client.post(URL, json.dumps(body), content_type="application/json")
 
-	def test_request_is_saved_and_agency_notified(self):
+	def test_request_is_emailed_not_stored(self):
 		r = self.post()
 		self.assertEqual(r.status_code, 200)
-		req = ContactRequest.objects.get()
-		self.assertEqual((req.reason, req.name, req.email, req.status), ("devis", "Jean Dupont", "jean@example.com", "new"))
+		self.assertFalse(ContactRequest.objects.exists())
 		self.assertEqual(mail.outbox[0].to, ["agence@example.com"])
 		self.assertEqual(mail.outbox[0].reply_to, ["jean@example.com"])
-		self.assertIn(f"/admin/contact/contactrequest/{req.pk}/change/", mail.outbox[0].body)
+		self.assertIn("Demande : Devis gratuit", mail.outbox[0].body)
+		self.assertIn("Bonjour", mail.outbox[0].body)
+		self.assertNotIn("/admin/", mail.outbox[0].body)
 
 	def test_phone_contact(self):
 		self.post(contact="06 12 34 56 78", reason="infos", message=None)
-		req = ContactRequest.objects.get()
-		self.assertEqual((req.phone, req.email, req.reason, req.message), ("06 12 34 56 78", "", "infos", ""))
+		self.assertIn("Téléphone : 06 12 34 56 78", mail.outbox[0].body)
+		self.assertIn("(pas de message)", mail.outbox[0].body)
+		self.assertIsNone(mail.outbox[0].reply_to or None)
 
-	def test_saved_even_if_email_fails(self):
+	def test_error_if_email_fails(self):
 		with self.settings(EMAIL_BACKEND="nonexistent.Backend"):
-			self.assertEqual(self.post().status_code, 200)
-		self.assertTrue(ContactRequest.objects.exists())
+			self.assertEqual(self.post().status_code, 502)
 
 	def test_invalid_requests(self):
 		self.assertEqual(self.post(name="").status_code, 400)
@@ -65,6 +67,7 @@ class ContactFormTests(TestCase):
 
 
 class AdminTodoTests(TestCase):
+	@skip("contact requests are only e-mailed now")
 	def test_admin_home_shows_new_requests(self):
 		ContactRequest.objects.create(reason="devis", name="A", phone="0102030405")
 		admin = get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12)

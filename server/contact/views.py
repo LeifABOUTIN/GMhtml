@@ -12,7 +12,6 @@ from django.core.mail import EmailMessage
 from django.core.validators import validate_email
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -25,7 +24,7 @@ RATE_WINDOW = 10 * 60  # …per 10 minutes
 PHONE = re.compile(r"^\+?[0-9 .()-]{6,25}$")
 
 
-@csrf_exempt  # the static contact page has no CSRF token; the endpoint only stores a request
+@csrf_exempt  # the static contact page has no CSRF token; the endpoint only e-mails a request
 @require_POST
 def submit(request):
 	try:
@@ -56,24 +55,27 @@ def submit(request):
 	if _rate_limited(request):
 		return JsonResponse({"error": "rate"}, status=429)
 
-	req = ContactRequest.objects.create(reason=reason, name=name, email=email, phone=phone, message=message)
-	_notify_staff(req)
+	# requests are only e-mailed now, no longer stored or shown in the admin
+	# req = ContactRequest.objects.create(reason=reason, name=name, email=email, phone=phone, message=message)
+	req = ContactRequest(reason=reason, name=name, email=email, phone=phone, message=message)
+	if not _notify_staff(req):
+		return JsonResponse({"error": "mail"}, status=502)  # the page shows its error, the visitor can call instead
 	return JsonResponse({"ok": True})
 
 
 def _notify_staff(req):
-	"""Same e-mail as the old Lambda sent; the request is already saved if this fails."""
+	"""Same e-mail as the old Lambda sent. Returns False if it could not be sent (the request is not stored)."""
 	if not settings.MODERATION_EMAILS:
-		return
-	body = render_to_string("emails/contact_request.txt", {
-		"req": req,
-		"admin_url": settings.SITE_URL + reverse("admin:contact_contactrequest_change", args=[req.pk]),
-	})
+		log.error("No MODERATION_EMAILS/ADMIN_EMAILS: contact request from %s not sent", req.name)
+		return False
+	body = render_to_string("emails/contact_request.txt", {"req": req})
 	try:
 		EmailMessage(f"Nouvelle demande de contact ({req.get_reason_display()}) – {req.name}", body,
 			to=settings.MODERATION_EMAILS, reply_to=[req.email] if req.email else None).send()
 	except Exception:
-		log.exception("Notification for contact request %s could not be sent", req.pk)
+		log.exception("Contact request from %s could not be sent", req.name)
+		return False
+	return True
 
 
 def _rate_limited(request):

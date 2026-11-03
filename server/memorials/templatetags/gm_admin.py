@@ -12,9 +12,10 @@ register = template.Library()
 @register.simple_tag
 def todo_items():
 	items = [
-		(ContactRequest.objects.filter(status=ContactRequest.Status.NEW).count(),
-			"nouvelle(s) demande(s) de contact",
-			reverse("admin:contact_contactrequest_changelist") + "?status__exact=new"),
+		# contact requests are only e-mailed now
+		# (ContactRequest.objects.filter(status=ContactRequest.Status.NEW).count(),
+			# "nouvelle(s) demande(s) de contact",
+			# reverse("admin:contact_contactrequest_changelist") + "?status__exact=new"),
 		# condolence messages switched off for now
 		# (Comment.objects.filter(visibility=Comment.Visibility.PUBLIC, status=Comment.Status.PENDING).count(),
 			# "message(s) de condoléances à valider",

@@ -8,7 +8,6 @@ Nom : {{ req.name }}
 {{ req.message|default:"(pas de message)" }}
 ----------------------------------------
 {% if req.email %}
-Répondre à cet e-mail répond directement à {{ req.name }}.{% endif %}
-
-Voir la demande et la marquer comme traitée : {{ admin_url }}
+Répondre à cet e-mail répond directement à {{ req.name }}.{% else %}
+Rappeler {{ req.name }} au {{ req.phone }}.{% endif %}
 {% endautoescape %}

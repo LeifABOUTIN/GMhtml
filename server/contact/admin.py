@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from .models import ContactRequest
 
 
-@admin.register(ContactRequest)
+# @admin.register(ContactRequest)  # contact requests are only e-mailed now
 class ContactRequestAdmin(admin.ModelAdmin):
 	list_display = ["created_at", "status_badge", "reason", "name", "contact_link", "excerpt"]
 	list_display_links = ["created_at", "name"]
