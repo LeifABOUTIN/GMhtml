@@ -254,7 +254,8 @@ class CeremonyStepTests(TestCase):
 		html = self.client.get(m.get_absolute_url()).content.decode()
 		self.assertIn("Cérémonie religieuse", html)
 		self.assertIn("https://www.google.com/maps/search/?api=1&amp;query=%C3%89glise+Saint-Germain", html)
-		self.assertEqual(html.count("Itinéraire"), 1)  # no address → no directions button
+		ceremony = html.split("memorial__flowers")[0]  # the florist box has its own directions button
+		self.assertEqual(ceremony.count("Itinéraire"), 1)  # no address → no directions button
 		self.assertLess(html.index("Cérémonie religieuse"), html.index("Inhumation"))
 
 
