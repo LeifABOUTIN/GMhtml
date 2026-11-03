@@ -30,7 +30,7 @@
 								<p class="memorial-card__kicker">En mémoire de</p>
 								<h2 class="memorial-card__name">{{ m.full_name }}</h2>
 								{% if m.maiden_name %}<p class="memorial-card__maiden">née {{ m.maiden_name }}</p>{% endif %}
-								<p class="memorial-card__dates">{% if m.birth_date %}{{ m.birth_date|date:"j F Y" }} – {% endif %}{{ m.death_date|date:"j F Y" }}</p>
+								<p class="memorial-card__dates">{% if m.birth_date %}<span>{{ m.birth_date|date:"j F Y" }}</span> – {% endif %}<span>{{ m.death_date|date:"j F Y" }}</span></p>
 								<span class="card__more">Voir l’avis →</span>
 							</div>
 						</a>

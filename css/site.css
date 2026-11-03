@@ -1447,6 +1447,9 @@ input[type="radio"]:checked::before {
 .memorial-card__dates {
 	margin-top: 8px !important;
 }
+.memorial-card__dates span {
+	white-space: nowrap;  /* a narrow card breaks after the dash, never inside a date */
+}
 .memorial-card .card__more {
 	margin-top: 18px;
 	font-family: "Roboto", sans-serif;
