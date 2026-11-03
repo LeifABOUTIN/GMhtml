@@ -279,7 +279,7 @@ class MemorialPageTests(TestCase):
 		self.assertIn("Envoyer des fleurs", html)
 		self.assertIn('href="tel:0139897442"', html)
 		self.assertIn("45 avenue du Général Leclerc", html)
-		self.assertIn("https://www.amourdefleurs95.com/", html)
+		self.assertIn('href="/pages/compositions-deuil.html"', html)
 
 	def test_faire_part_download(self):
 		media = tempfile.mkdtemp()
