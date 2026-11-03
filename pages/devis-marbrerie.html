@@ -49,6 +49,7 @@
 			<form class="form quote" data-kind="marbrerie" novalidate>
 				<div class="quote__progress" aria-hidden="true"><div class="quote__progress-bar"></div></div>
 				<p class="quote__progress-label" aria-live="polite"></p>
+				<div class="quote__steps">
 				<div class="quote__step" data-title="Votre projet">
 					<fieldset>
 						<legend>Quel est votre besoin&nbsp;?</legend>
@@ -87,6 +88,7 @@
 							<label class="choice"><input type="radio" name="preference" id="pref__telephone" required />Par téléphone</label>
 							<label class="choice"><input type="radio" name="preference" id="pref__email" />Par e-mail</label>
 						</div>
+						<div class="quote__contact-field">
 						<div class="option option__tel">
 							<label for="customer__tel">Votre téléphone</label>
 							<input type="tel" name="telephone" id="customer__tel" placeholder="0123456789" maxlength="20" pattern="\+?[0-9 .()\-]{6,25}" />
@@ -94,6 +96,7 @@
 						<div class="option option__email">
 							<label for="customer__email">Votre e-mail</label>
 							<input type="email" name="email" id="customer__email" placeholder="exemple@gmail.com" maxlength="254" />
+						</div>
 						</div>
 					</fieldset>
 					<fieldset>
@@ -125,6 +128,7 @@
 						Vos données sont utilisées uniquement pour établir votre devis et ne sont jamais transmises à des
 						tiers. <a href="./politique-confidentialite.html">En savoir plus et exercer vos droits</a>
 					</p>
+				</div>
 				</div>
 			</form>
 		</main>
