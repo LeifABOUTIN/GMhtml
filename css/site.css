@@ -1424,7 +1424,7 @@ input[type="radio"]:checked::before {
 }
 .memorial-card .card__body {
 	align-items: center;
-	padding: 36px 28px 30px;
+	padding: 50px 28px 44px;
 }
 .memorial-card__logo {
 	height: 40px;
