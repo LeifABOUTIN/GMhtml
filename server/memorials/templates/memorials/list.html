@@ -26,9 +26,11 @@
 							{% endif %}
 							{% endcomment %}
 							<div class="card__body">
+								<img class="memorial-card__logo" src="/img/logo_grey.png" alt="" />
+								<p class="memorial-card__kicker">En mémoire de</p>
 								<h2 class="memorial-card__name">{{ m.full_name }}</h2>
 								{% if m.maiden_name %}<p class="memorial-card__maiden">née {{ m.maiden_name }}</p>{% endif %}
-								<p>{% if m.birth_date %}{{ m.birth_date|date:"Y" }} – {% endif %}décédé(e) le {{ m.death_date|date:"j F Y" }}{% if m.city %}<br />{{ m.city }}{% endif %}</p>
+								<p class="memorial-card__dates">{% if m.birth_date %}{{ m.birth_date|date:"j F Y" }} – {% endif %}{{ m.death_date|date:"j F Y" }}</p>
 								<span class="card__more">Voir l’avis →</span>
 							</div>
 						</a>

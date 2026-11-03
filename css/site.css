@@ -970,14 +970,21 @@ input[type="radio"]:checked::before {
 	color: #eee;
 }
 
+/* notice page: white sheet, thick green border and black text, like the QR code poster */
 .memorial {
 	max-width: 860px;
 	margin: 16px auto 0;
-	background-color: var(--panel);
-	border: 2px solid var(--green);
-	border-radius: var(--radius);
+	background-color: #fff;
+	color: #222;
+	border: 12px solid var(--green);
+	border-radius: 4px;
 	box-shadow: var(--shadow);
 	overflow: hidden;
+}
+.memorial__logo {
+	height: 64px;
+	width: auto;
+	margin: 0 auto 20px;
 }
 /* header in the style of the QR code poster */
 .memorial__head {
@@ -1047,7 +1054,7 @@ input[type="radio"]:checked::before {
 .memorial__ceremony {
 	margin: 0 48px 40px;
 	padding: 20px 24px;
-	background-color: #fff;
+	background-color: #f3f5f0;
 	border-left: 6px solid var(--green);
 	border-radius: 8px;
 }
@@ -1374,4 +1381,44 @@ input[type="radio"]:checked::before {
 	.quote__nav .btn {
 		text-align: center;
 	}
+}
+
+/* notice cards (list page): same look as the QR code poster */
+.memorial-card {
+	background-color: #fff;
+	color: #222;
+	border: 6px solid var(--green);
+	border-radius: 4px;
+	text-align: center;
+	font-family: Georgia, "Times New Roman", serif;
+}
+.memorial-card .card__body {
+	align-items: center;
+	padding: 28px 22px 24px;
+}
+.memorial-card__logo {
+	height: 40px;
+	width: auto;
+}
+.memorial-card__kicker {
+	flex: 0 !important;
+	margin-top: 18px !important;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	font-size: 0.85rem;
+	color: var(--green-dark);
+}
+.memorial-card .memorial-card__name {
+	font-family: Georgia, "Times New Roman", serif !important;
+	font-size: 1.55rem !important;
+	line-height: 1.2;
+	margin-top: 6px;
+}
+.memorial-card__dates {
+	margin-top: 8px !important;
+}
+.memorial-card .card__more {
+	margin-top: 18px;
+	font-family: "Roboto", sans-serif;
+	color: var(--green-dark);
 }
