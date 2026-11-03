@@ -89,3 +89,88 @@ def _rate_limited(request):
 		return True
 	cache.set(key, (count + 1, window_end), max(1, int(window_end - now)))
 	return False
+
+
+# --- quote forms: pages/devis-obseques.html and pages/devis-marbrerie.html (e-mailed only) ---
+
+AGENCIES = {"soisy": "Soisy-sous-Montmorency", "saint-leu": "Saint-Leu-la-Forêt", "indifferent": "Peu importe"}
+CALLBACK = {"vite": "Dès que possible", "matin": "Le matin", "apres-midi": "L’après-midi", "soir": "En fin de journée"}
+
+# for each form: (field, label, choices, required); choices=None is free text, a set of choices in a list is multiple
+QUOTES = {
+	"obseques": ("Demande de devis obsèques", [
+		("situation", "Situation", {"deces": "Un décès est survenu", "fin-de-vie": "Un proche en fin de vie",
+			"prevoyance": "Prévoir mes propres obsèques"}, True),
+		("type", "Type d’obsèques", {"inhumation": "Inhumation", "cremation": "Crémation",
+			"ne-sait-pas": "Je ne sais pas encore"}, True),
+		("ceremonie", "Cérémonie", {"religieuse": "Religieuse", "civile": "Civile", "aucune": "Pas de cérémonie",
+			"ne-sait-pas": "Je ne sais pas encore"}, False),
+		("extras", "Prestations souhaitées", [{"soins": "Soins de conservation", "fleurs": "Fleurs",
+			"avis": "Avis de décès en ligne", "monument": "Monument / marbrerie",
+			"demarches": "Aide aux démarches administratives"}], False),
+	]),
+	"marbrerie": ("Demande de devis marbrerie", [
+		("besoin", "Besoin", {"creation": "Nouveau monument", "renovation": "Rénovation d’un monument",
+			"gravure": "Gravure / inscription", "entretien": "Entretien / fleurissement"}, True),
+		("ville", "Cimetière (ville)", None, True),
+	]),
+}
+
+
+@csrf_exempt  # static page, like the contact form
+@require_POST
+def quote(request):
+	try:
+		data = json.loads(request.body or b"{}")
+	except ValueError:
+		return JsonResponse({"error": "invalid"}, status=400)
+	if not isinstance(data, dict) or data.get("kind") not in QUOTES:
+		return JsonResponse({"error": "invalid"}, status=400)
+	if data.get("website"):  # honeypot
+		return JsonResponse({"ok": True})
+
+	title, fields = QUOTES[data["kind"]]
+	answers = []
+	for field, label, choices, required in fields:
+		value = data.get(field)
+		if choices is None:
+			value = str(value or "").strip()[:120]
+		elif isinstance(choices, list):
+			value = ", ".join(choices[0][v] for v in value if v in choices[0]) if isinstance(value, list) else ""
+		else:
+			value = choices.get(value, "")
+		if required and not value:
+			return JsonResponse({"error": "missing", "field": field}, status=400)
+		answers.append((label, value or "–"))
+
+	name = str(data.get("name", "")).strip()[:150]
+	email, phone = _split_contact(str(data.get("contact", "")).strip()[:254])
+	if not name or not (email or phone):
+		return JsonResponse({"error": "missing"}, status=400)
+	if _rate_limited(request):
+		return JsonResponse({"error": "rate"}, status=429)
+
+	body = render_to_string("emails/quote_request.txt", {
+		"title": title, "answers": answers, "name": name, "email": email, "phone": phone,
+		"agency": AGENCIES.get(data.get("agency"), "Peu importe"),
+		"callback": CALLBACK.get(data.get("callback"), "Dès que possible"),
+		"message": str(data.get("message") or "").strip()[:2000],
+	})
+	try:
+		EmailMessage(f"{title} – {name}", body, to=settings.MODERATION_EMAILS,
+			reply_to=[email] if email else None).send()
+	except Exception:
+		log.exception("Quote request from %s could not be sent", name)
+		return JsonResponse({"error": "mail"}, status=502)
+	return JsonResponse({"ok": True})
+
+
+def _split_contact(contact):
+	"""(email, phone) from the single contact field; both empty if it is neither."""
+	if "@" in contact:
+		try:
+			validate_email(contact)
+			return contact, ""
+		except ValidationError:
+			return "", ""
+	return ("", contact) if PHONE.match(contact) else ("", "")

@@ -5,4 +5,5 @@ from . import views
 app_name = "contact"
 urlpatterns = [
 	path("envoyer/", views.submit, name="submit"),
+	path("devis/", views.quote, name="quote"),
 ]

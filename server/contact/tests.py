@@ -76,3 +76,49 @@ class AdminTodoTests(TestCase):
 		self.assertContains(page, "À traiter")
 		self.assertContains(page, "nouvelle(s) demande(s) de contact")
 		self.assertContains(page, "?status__exact=new")
+
+
+QUOTE_URL = "/contact/devis/"
+
+
+@override_settings(MODERATION_EMAILS=["agence@example.com"])
+class QuoteFormTests(TestCase):
+	def setUp(self):
+		cache.clear()
+
+	def post(self, **data):
+		body = {"kind": "obseques", "situation": "deces", "type": "cremation", "ceremonie": "civile",
+			"extras": ["fleurs", "avis", "pirate"], "name": "Jean Dupont", "contact": "jean@example.com",
+			"agency": "saint-leu", "callback": "matin", "message": "Merci", **data}
+		return self.client.post(QUOTE_URL, json.dumps(body), content_type="application/json")
+
+	def test_obseques_quote_is_emailed(self):
+		self.assertEqual(self.post().status_code, 200)
+		m = mail.outbox[0]
+		self.assertEqual((m.subject, m.to, m.reply_to), ("Demande de devis obsèques – Jean Dupont",
+			["agence@example.com"], ["jean@example.com"]))
+		for line in ["Situation : Un décès est survenu", "Type d’obsèques : Crémation", "Cérémonie : Civile",
+				"Prestations souhaitées : Fleurs, Avis de décès en ligne", "Agence : Saint-Leu-la-Forêt",
+				"Rappel souhaité : Le matin", "Merci"]:
+			self.assertIn(line, m.body)
+		self.assertFalse(ContactRequest.objects.exists())
+
+	def test_marbrerie_quote(self):
+		r = self.post(kind="marbrerie", besoin="gravure", ville="Soisy", contact="06 12 34 56 78", agency=None)
+		self.assertEqual(r.status_code, 200)
+		self.assertIn("Besoin : Gravure / inscription", mail.outbox[0].body)
+		self.assertIn("Cimetière (ville) : Soisy", mail.outbox[0].body)
+		self.assertIn("Rappeler Jean Dupont au 06 12 34 56 78", mail.outbox[0].body)
+		self.assertIn("Agence : Peu importe", mail.outbox[0].body)
+
+	def test_invalid_quotes(self):
+		self.assertEqual(self.post(kind="autre").status_code, 400)
+		self.assertEqual(self.post(type="").status_code, 400)
+		self.assertEqual(self.post(kind="marbrerie", besoin="creation").status_code, 400)  # no town
+		self.assertEqual(self.post(contact="nope").status_code, 400)
+		self.assertEqual(self.post(website="x").status_code, 200)
+		self.assertEqual(mail.outbox, [])
+
+	def test_error_if_email_fails(self):
+		with self.settings(EMAIL_BACKEND="nonexistent.Backend"):
+			self.assertEqual(self.post().status_code, 502)

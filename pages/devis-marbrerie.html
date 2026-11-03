@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Devis marbrerie et monument funéraire – Pompes Funèbres et Marbrerie GM</title>
+		<meta name="description" content="Demandez un devis gratuit pour un monument funéraire, une rénovation, une gravure ou l’entretien d’une sépulture." />
+		<link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
+		<link rel="stylesheet" href="../css/site.css" />
+		<script defer src="../script/nav.js"></script>
+		<script defer src="../script/devis.js"></script>
+	</head>
+	<body>
+		<div class="topbar">
+			<strong>Permanence téléphonique décès 7j/7 – 24h/24</strong>
+			<a href="tel:0673623160">06 73 62 31 60</a> · <a href="tel:0645665002">06 45 66 50 02</a>
+		</div>
+		<header class="site-header">
+			<div class="site-header__inner">
+				<a class="site-header__logo" href="../index.html"><img src="../img/logo_grey.png" alt="Pompes Funèbres et Marbrerie GM – accueil" /></a>
+				<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-open="../img/menu.svg" data-close="../img/close.svg">
+					<img src="../img/menu.svg" alt="Menu" />
+				</button>
+				<nav class="site-nav" id="site-nav">
+					<ul>
+						<li><a href="../pages/agences.html">Nos agences</a></li>
+						<li><a href="../pages/qui-sommes-nous.html">Qui sommes-nous</a></li>
+						<li><a href="../pages/service-obseque.html">Services obsèques</a></li>
+						<li><a href="../pages/marbrerie.html">Marbrerie</a></li>
+						<li><a href="../pages/articles-funeraires.html">Articles funéraires</a></li>
+						<li><a href="/avis-de-deces/">Avis de décès</a></li>
+						<li><a href="/actualites/">Actualités</a></li>
+						<li><a href="../pages/config.html" target="_blank">Créer un monument</a></li>
+						<li><a class="site-nav__cta" href="../pages/contact.html">Contact</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+		<main>
+			<div class="page-title">
+				<h1>Devis marbrerie</h1>
+				<p>Monument, rénovation, gravure ou entretien : décrivez votre projet, nous vous rappelons pour le préparer ensemble.</p>
+			</div>
+			<dialog class="form__prise__contact__dialog">
+				<p id="dialog__message"></p>
+				<img id="dialog__image" src="../img/check.svg" alt="" />
+				<button id="close__dialog" class="btn btn--primary" type="button">Fermer</button>
+			</dialog>
+			<form class="form quote" data-kind="marbrerie" novalidate>
+				<div class="quote__progress" aria-hidden="true"><div class="quote__progress-bar"></div></div>
+				<p class="quote__progress-label" aria-live="polite"></p>
+				<div class="quote__step" data-title="Votre projet">
+					<fieldset>
+						<legend>Quel est votre besoin&nbsp;?</legend>
+						<div class="choices">
+							<label class="choice"><input type="radio" name="besoin" value="creation" required />Nouveau monument</label>
+							<label class="choice"><input type="radio" name="besoin" value="renovation" />Rénovation d’un monument</label>
+							<label class="choice"><input type="radio" name="besoin" value="gravure" />Gravure / inscription</label>
+							<label class="choice"><input type="radio" name="besoin" value="entretien" />Entretien / fleurissement</label>
+						</div>
+					</fieldset>
+					<div class="quote__aside">
+						<p><strong>Une idée du monument&nbsp;?</strong> Composez-le en ligne (forme, granit, gravure), puis décrivez-le ci-dessous.</p>
+						<a class="btn btn--ghost" href="./config.html" target="_blank" rel="noopener">Composer mon monument ↗</a>
+					</div>
+					<div class="field">
+						<label for="ville">Ville du cimetière</label>
+						<input type="text" name="ville" id="ville" maxlength="120" placeholder="Ex. : Soisy-sous-Montmorency" required />
+					</div>
+					<div class="field">
+						<label for="message">Votre projet en quelques mots (facultatif)</label>
+						<textarea name="message" id="message" maxlength="600" placeholder="Type de monument, inscription à graver, état actuel de la sépulture…"></textarea>
+						<small>600 caractères maximum.</small>
+					</div>
+					<div class="quote__nav">
+						<button class="btn btn--primary" type="button" data-next>Étape suivante →</button>
+					</div>
+				</div>
+				<div class="quote__step" data-title="Pour vous rappeler">
+					<div class="field">
+						<label for="nom">Nom et prénom</label>
+						<input type="text" name="name" id="nom" placeholder="Votre nom" maxlength="150" required />
+					</div>
+					<fieldset>
+						<legend>Comment souhaitez-vous être recontacté&nbsp;?</legend>
+						<div class="choices">
+							<label class="choice"><input type="radio" name="preference" id="pref__telephone" required />Par téléphone</label>
+							<label class="choice"><input type="radio" name="preference" id="pref__email" />Par e-mail</label>
+						</div>
+						<div class="option option__tel">
+							<label for="customer__tel">Votre téléphone</label>
+							<input type="tel" name="telephone" id="customer__tel" placeholder="0123456789" maxlength="20" pattern="\+?[0-9 .()\-]{6,25}" />
+						</div>
+						<div class="option option__email">
+							<label for="customer__email">Votre e-mail</label>
+							<input type="email" name="email" id="customer__email" placeholder="exemple@gmail.com" maxlength="254" />
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>Agence de votre choix</legend>
+						<div class="choices">
+							<label class="choice"><input type="radio" name="agency" value="soisy" />Soisy-sous-Montmorency</label>
+							<label class="choice"><input type="radio" name="agency" value="saint-leu" />Saint-Leu-la-Forêt</label>
+							<label class="choice"><input type="radio" name="agency" value="indifferent" />Peu importe</label>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>Quand préférez-vous être rappelé&nbsp;?</legend>
+						<div class="choices">
+							<label class="choice"><input type="radio" name="callback" value="vite" />Dès que possible</label>
+							<label class="choice"><input type="radio" name="callback" value="matin" />Le matin</label>
+							<label class="choice"><input type="radio" name="callback" value="apres-midi" />L’après-midi</label>
+							<label class="choice"><input type="radio" name="callback" value="soir" />En fin de journée</label>
+						</div>
+					</fieldset>
+					<div class="hp" aria-hidden="true">
+						<label for="website">Site web</label>
+						<input type="text" name="website" id="website" tabindex="-1" autocomplete="off" />
+					</div>
+					<div class="quote__nav">
+						<button class="btn btn--ghost" type="button" data-back>← Retour</button>
+						<button class="btn btn--primary" type="submit">Envoyer ma demande</button>
+					</div>
+					<p class="form__disclaimer">
+						Vos données sont utilisées uniquement pour établir votre devis et ne sont jamais transmises à des
+						tiers. <a href="./politique-confidentialite.html">En savoir plus et exercer vos droits</a>
+					</p>
+				</div>
+			</form>
+		</main>
+		<footer class="site-footer">
+			<div class="site-footer__inner">
+				<div>
+					<h2>Permanence téléphonique décès</h2>
+					<p>7j/7 – 24h/24</p>
+					<ul>
+						<li><a href="tel:0673623160">06 73 62 31 60</a></li>
+						<li><a href="tel:0645665002">06 45 66 50 02</a></li>
+					</ul>
+				</div>
+				<div>
+					<h2>Soisy-sous-Montmorency</h2>
+					<p>18 rue de l’Égalité<br />95230 Soisy-sous-Montmorency</p>
+					<p>Lun – ven : 9h-12h / 14h-18h<br />Samedi : 9h30-12h / 14h-17h30</p>
+					<p><a href="tel:0139891788">01 39 89 17 88</a></p>
+					<p class="site-footer__hab">Habilitation n° 22-95-0021</p>
+				</div>
+				<div>
+					<h2>Saint-Leu-la-Forêt</h2>
+					<p>2 rue Michelet<br />95320 Saint-Leu-la-Forêt</p>
+					<p>Lun – ven : 10h-12h / 14h-18h<br />Samedi sur rendez-vous</p>
+					<p><a href="tel:0134136882">01 34 13 68 82</a></p>
+					<p class="site-footer__hab">Habilitation n° 22-95-0022</p>
+				</div>
+				<div>
+					<h2>Informations</h2>
+					<ul>
+						<li><a href="../pages/contact.html">Nous contacter</a></li>
+						<li><a class="legal-link" href="../pages/notice-information.html">Notice d’information</a></li>
+						<li><a class="legal-link" href="../pages/mentions-legales.html">Mentions légales</a></li>
+						<li><a class="legal-link" href="../pages/politique-confidentialite.html">Politique de confidentialité</a></li>
+					</ul>
+				</div>
+				<p class="site-footer__copy">© Pompes Funèbres et Marbrerie GM – entreprise familiale indépendante depuis 1955</p>
+			</div>
+		</footer>
+	</body>
+</html>

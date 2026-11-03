@@ -1,0 +1,16 @@
+{% autoescape off %}{{ title }} reçue via le site.
+{% for label, value in answers %}
+{{ label }} : {{ value }}{% endfor %}
+
+Nom : {{ name }}
+{% if email %}E-mail : {{ email }}{% else %}Téléphone : {{ phone }}{% endif %}
+Agence : {{ agency }}
+Rappel souhaité : {{ callback }}
+
+----------------------------------------
+{{ message|default:"(pas de message)" }}
+----------------------------------------
+{% if email %}
+Répondre à cet e-mail répond directement à {{ name }}.{% else %}
+Rappeler {{ name }} au {{ phone }}.{% endif %}
+{% endautoescape %}

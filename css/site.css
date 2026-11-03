@@ -1232,3 +1232,97 @@ input[type="radio"]:checked::before {
 	text-decoration: none;
 	color: #fff;
 }
+
+/* ---------- Quote forms (devis obsèques / marbrerie) ---------- */
+
+.quote__progress {
+	height: 8px;
+	background-color: #fff;
+	border-radius: 999px;
+	overflow: hidden;
+}
+.quote__progress-bar {
+	height: 100%;
+	width: 0;
+	background-color: var(--green);
+	transition: width 250ms ease;
+}
+.quote__progress-label {
+	margin-top: -0.75rem;
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: var(--green-dark);
+}
+.quote__step {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+.quote__step[hidden] {
+	display: none;
+}
+.quote__nav {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+}
+.quote__nav .btn {
+	font: inherit;
+	font-size: 1.05rem;
+	cursor: pointer;
+}
+.quote__nav .btn:only-child {
+	margin-left: auto;
+}
+.quote__aside {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem 1.25rem;
+	padding: 1rem 1.25rem;
+	background-color: #fff;
+	border-left: 4px solid var(--green);
+	border-radius: 8px;
+}
+.quote__aside p {
+	flex: 1 1 260px;
+}
+.form input[type="checkbox"] {
+	appearance: none;
+	width: 1.1em;
+	height: 1.1em;
+	border: 2px solid var(--green);
+	border-radius: 4px;
+	background-color: #fff;
+	display: grid;
+	place-content: center;
+	cursor: pointer;
+	flex-shrink: 0;
+}
+.form input[type="checkbox"]::before {
+	content: "";
+	width: 0.6em;
+	height: 0.6em;
+	background-color: var(--green);
+	clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+	transform: scale(0);
+	transition: transform 120ms ease-in-out;
+}
+.form input[type="checkbox"]:checked::before {
+	transform: scale(1);
+}
+.devis-links {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.75rem;
+	margin: 0 auto 24px;
+}
+@media screen and (max-width: 600px) {
+	.quote__nav {
+		flex-direction: column-reverse;
+	}
+	.quote__nav .btn {
+		text-align: center;
+	}
+}
