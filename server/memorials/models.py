@@ -82,6 +82,22 @@ class Memorial(models.Model):
 		super().save(*args, **kwargs)
 
 
+class Place(models.Model):
+	"""A place used again and again (church, funeral home, cemetery…), picked from a list for each ceremony step."""
+
+	name = models.CharField("lieu", max_length=160, help_text="Ex. : Église Saint-Germain")
+	address = models.CharField("adresse", max_length=255)
+
+	class Meta:
+		verbose_name = "lieu enregistré"
+		verbose_name_plural = "lieux enregistrés"
+		ordering = ["name", "address"]
+		constraints = [models.UniqueConstraint(fields=["name", "address"], name="unique_place")]
+
+	def __str__(self):
+		return f"{self.name} – {self.address}" if self.name else self.address
+
+
 class CeremonyStep(models.Model):
 	"""One stage of the funeral (levée du corps, cérémonie, inhumation…), with a Google Maps link."""
 
@@ -89,6 +105,9 @@ class CeremonyStep(models.Model):
 	title = models.CharField("étape", max_length=120,
 		help_text="Ex. : Levée du corps, Cérémonie religieuse, Inhumation, Crémation, Réunion après la cérémonie.")
 	starts_at = models.DateTimeField("date et heure", null=True, blank=True)
+	saved_place = models.ForeignKey(Place, on_delete=models.SET_NULL, null=True, blank=True, related_name="+",
+		verbose_name="lieu enregistré",
+		help_text="Choisissez un lieu de la liste, ou tapez lieu et adresse : il sera ajouté à la liste.")
 	place = models.CharField("lieu", max_length=160, blank=True, help_text="Ex. : Église Saint-Germain")
 	address = models.CharField("adresse", max_length=255, blank=True,
 		help_text="Sert au lien « Itinéraire » vers Google Maps.")
@@ -103,6 +122,15 @@ class CeremonyStep(models.Model):
 
 	def __str__(self):
 		return self.title
+
+	def save(self, *args, **kwargs):
+		# a chosen place fills what was left empty; a new place/address is added to the list for next time
+		if self.saved_place:
+			self.place = self.place or self.saved_place.name
+			self.address = self.address or self.saved_place.address
+		if self.address:
+			self.saved_place, _ = Place.objects.get_or_create(name=self.place, address=self.address)
+		super().save(*args, **kwargs)
 
 	@property
 	def maps_url(self):

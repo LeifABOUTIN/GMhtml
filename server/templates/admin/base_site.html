@@ -76,7 +76,7 @@
 	/* bigger everything: the admin sizes are in rem, so this scales text, inputs and buttons together */
 	html {
 		font-size: 112%;
-		--gm-width: 1200px;  /* content is centred in a column this wide */
+		--gm-width: 1440px;  /* content is centred in a column this wide */
 		--gm-gutter: max(40px, calc((100% - var(--gm-width)) / 2));
 	}
 	body {
@@ -121,15 +121,41 @@
 		margin: 0 auto;
 		padding: 28px 40px;
 	}
-	/* home page: "À traiter", the models and recent actions stacked in a narrower column */
-	.dashboard #content {
-		max-width: 880px;
-	}
+	/* home page: "À traiter" and the models on 2/3, recent actions on 1/3 (stacked on small screens) */
 	.dashboard #content-main,
 	.dashboard #content-related {
 		float: none;
 		width: auto;
 		margin: 0 0 24px;
+	}
+	.dashboard .module table,
+	.dashboard #content-related .module {
+		width: 100%;
+	}
+	.dashboard .module table th {
+		width: 100%;  /* model name takes the room, "Ajouter / Modifier" stay on the right */
+	}
+	@media (min-width: 1024px) {
+		.dashboard #content {
+			display: grid;
+			grid-template-columns: 2fr 1fr;
+			gap: 0 28px;
+			align-items: start;
+		}
+		.dashboard #content > h1 {
+			grid-column: 1 / -1;
+		}
+		.dashboard .gm-todo,
+		.dashboard #content-main {
+			grid-column: 1;
+		}
+		.dashboard #content-related {
+			grid-column: 2;
+			grid-row: 2 / span 2;
+		}
+		.dashboard #content > br.clear {
+			display: none;
+		}
 	}
 	@media (max-width: 767px) {
 		html {

@@ -21,7 +21,7 @@ from django.utils import timezone
 from .adapters import AdminOnlySocialAccountAdapter
 from PIL import Image
 
-from .models import CeremonyStep, Comment, CommentPhoto, Memorial
+from .models import CeremonyStep, Comment, CommentPhoto, Memorial, Place
 
 
 def make_memorial(**kw):
@@ -130,6 +130,29 @@ class CommentFlowTests(TestCase):
 		call_command("purge_private_comments", stdout=StringIO())
 		self.assertEqual(sorted(Comment.objects.values_list("author_name", flat=True)),
 			["new-failed", "new-rejected", "old-approved", "old-pending"])
+
+
+class PlaceTests(TestCase):
+	def test_new_address_is_saved_for_next_time(self):
+		m = make_memorial()
+		step = CeremonyStep.objects.create(memorial=m, title="Inhumation", place="Cimetière", address="Rue des Lilas, Soisy")
+		self.assertEqual((step.saved_place.name, step.saved_place.address), ("Cimetière", "Rue des Lilas, Soisy"))
+		CeremonyStep.objects.create(memorial=m, title="Recueillement", place="Cimetière", address="Rue des Lilas, Soisy")
+		self.assertEqual(Place.objects.count(), 1)
+
+	def test_chosen_place_fills_the_step(self):
+		église = Place.objects.create(name="Église Saint-Germain", address="1 place de l’Église, 95230 Soisy")
+		step = CeremonyStep.objects.create(memorial=make_memorial(), title="Cérémonie", saved_place=église)
+		self.assertEqual((step.place, step.address), ("Église Saint-Germain", "1 place de l’Église, 95230 Soisy"))
+		self.assertIn("query=%C3%89glise+Saint-Germain", step.maps_url)
+
+	def test_picker_options_carry_the_address(self):
+		Place.objects.create(name="Funérarium", address="7 rue Tarbé des Sablons, 95600 Eaubonne")
+		admin = get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12)
+		self.client.force_login(admin)
+		html = self.client.get("/admin/memorials/memorial/add/").content.decode()
+		self.assertIn('data-address="7 rue Tarbé des Sablons, 95600 Eaubonne"', html)
+		self.assertIn("place_picker.js", html)
 
 
 class CeremonyStepTests(TestCase):

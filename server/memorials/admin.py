@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin, messages
 from django.db.models import Count, Q
 from django.urls import reverse
@@ -9,7 +10,7 @@ from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
 from django.contrib.auth.models import Group
 
 from .emails import send_private_comment
-from .models import CeremonyStep, Comment, CommentPhoto, Memorial
+from .models import CeremonyStep, Comment, CommentPhoto, Memorial, Place
 
 # keep the admin to what the staff actually use (Google login is configured in settings)
 for model in (Group, EmailAddress, SocialAccount, SocialApp, SocialToken):
@@ -17,11 +18,36 @@ for model in (Group, EmailAddress, SocialAccount, SocialApp, SocialToken):
 admin.site.enable_nav_sidebar = False  # few models: the pages stay centred without the side menu
 
 
+class PlaceSelect(forms.Select):
+	"""Each option carries its place and address, so place_picker.js can fill the step's fields."""
+
+	def create_option(self, name, value, *args, **kwargs):
+		option = super().create_option(name, value, *args, **kwargs)
+		place = getattr(value, "instance", None)
+		if place:
+			option["attrs"].update({"data-name": place.name, "data-address": place.address})
+		return option
+
+
+@admin.register(Place)
+class PlaceAdmin(admin.ModelAdmin):
+	list_display = ["name", "address"]
+	search_fields = ["name", "address"]
+
+
 class CeremonyStepInline(admin.TabularInline):
 	model = CeremonyStep
-	fields = ["order", "title", "starts_at", "place", "address", "details"]
+	fields = ["order", "title", "starts_at", "saved_place", "place", "address", "details"]
 	extra = 1
-	verbose_name_plural = "étapes de la cérémonie (une ligne par étape, avec l’adresse pour l’itinéraire)"
+	verbose_name_plural = "étapes de la cérémonie (choisissez un lieu enregistré ou tapez-en un nouveau)"
+
+	class Media:
+		js = ["memorials/place_picker.js"]
+
+	def formfield_for_foreignkey(self, db_field, request, **kwargs):
+		if db_field.name == "saved_place":
+			kwargs["widget"] = PlaceSelect()
+		return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Memorial)
