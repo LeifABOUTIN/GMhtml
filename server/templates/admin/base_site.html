@@ -76,6 +76,8 @@
 	/* bigger everything: the admin sizes are in rem, so this scales text, inputs and buttons together */
 	html {
 		font-size: 112%;
+		--gm-width: 1200px;  /* content is centred in a column this wide */
+		--gm-gutter: max(40px, calc((100% - var(--gm-width)) / 2));
 	}
 	body {
 		background: var(--body-bg);
@@ -87,7 +89,7 @@
 	/* header */
 	#header {
 		border-bottom: 3px solid var(--gm-green);
-		padding: 14px 40px;
+		padding: 14px var(--gm-gutter);
 	}
 	#site-name a {
 		display: inline-flex;
@@ -108,12 +110,34 @@
 		font-size: 0.8rem;
 	}
 	div.breadcrumbs {
-		padding: 12px 40px;
+		padding: 12px var(--gm-gutter);
 	}
 
-	/* content */
+	/* content: one centred column */
 	#content {
+		box-sizing: border-box;
+		width: 100%;
+		max-width: calc(var(--gm-width) + 80px);
+		margin: 0 auto;
 		padding: 28px 40px;
+	}
+	/* home page: "À traiter", the models and recent actions stacked in a narrower column */
+	.dashboard #content {
+		max-width: 880px;
+	}
+	.dashboard #content-main,
+	.dashboard #content-related {
+		float: none;
+		width: auto;
+		margin: 0 0 24px;
+	}
+	@media (max-width: 767px) {
+		html {
+			--gm-gutter: 16px;
+		}
+		#content {
+			padding: 20px 16px;
+		}
 	}
 	#content h1 {
 		font-size: 1.6rem;

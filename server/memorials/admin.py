@@ -14,6 +14,7 @@ from .models import CeremonyStep, Comment, CommentPhoto, Memorial
 # keep the admin to what the staff actually use (Google login is configured in settings)
 for model in (Group, EmailAddress, SocialAccount, SocialApp, SocialToken):
 	admin.site.unregister(model)
+admin.site.enable_nav_sidebar = False  # few models: the pages stay centred without the side menu
 
 
 class CeremonyStepInline(admin.TabularInline):
