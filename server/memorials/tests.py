@@ -152,7 +152,7 @@ class PlaceTests(TestCase):
 		self.client.force_login(admin)
 		html = self.client.get("/admin/memorials/memorial/add/").content.decode()
 		self.assertIn("admin-autocomplete", html)
-		self.assertIn("place_picker.js", html)
+		self.assertLess(html.index("admin/js/jquery.init.js"), html.index("memorials/place_picker.js"))
 		r = self.client.get("/admin/autocomplete/", {"term": "tarbé", "app_label": "memorials",
 			"model_name": "ceremonystep", "field_name": "saved_place"})
 		self.assertEqual([p["text"] for p in r.json()["results"]], ["Funérarium test (Eaubonne)"])

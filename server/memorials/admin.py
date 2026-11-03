@@ -81,7 +81,8 @@ class CeremonyStepInline(admin.StackedInline):
 	verbose_name_plural = "étapes de la cérémonie (choisissez un lieu enregistré ou tapez-en un nouveau)"
 
 	class Media:
-		js = ["memorials/place_picker.js"]
+		# listed with jQuery and jquery.init.js so Django puts the picker after them (it uses django.jQuery)
+		js = ["admin/js/vendor/jquery/jquery.min.js", "admin/js/jquery.init.js", "memorials/place_picker.js"]
 
 	def formfield_for_dbfield(self, db_field, request, **kwargs):
 		if db_field.name == "title":
