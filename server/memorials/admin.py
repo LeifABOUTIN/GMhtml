@@ -34,7 +34,7 @@ class MemorialAdmin(admin.ModelAdmin):
 	actions = ["publish", "unpublish"]
 	fieldsets = [
 		("Défunt", {"fields": [("first_name", "last_name"), "maiden_name", ("birth_date", "death_date"), "city"]}),  # "photo", "photo_preview": pictures switched off
-		("Avis", {"fields": ["ceremony", "faire_part"]}),  # "announcement": text switched off
+		("Avis", {"fields": ["announcement", "ceremony", "faire_part"]}),
 		("Famille", {"fields": ["family_emails"]}),
 		("Publication", {"fields": ["is_published", "slug", ("created_at", "updated_at")]}),
 		("QR code pour la cérémonie", {"fields": ["qr_tools"]}),

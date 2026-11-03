@@ -152,6 +152,14 @@ class MemorialPageTests(TestCase):
 		html = self.client.get("/avis-de-deces/").content.decode()
 		self.assertLess(html.index("Récent"), html.index("Ancien"))
 
+	def test_announcement_and_collapsible_ceremony(self):
+		m = make_memorial(announcement="Une pensée pour elle")
+		CeremonyStep.objects.create(memorial=m, title="Inhumation", address="Cimetière de Soisy")
+		html = self.client.get(m.get_absolute_url()).content.decode()
+		self.assertIn('<div class="memorial__announcement"><p>Une pensée pour elle</p></div>', html)
+		self.assertIn('<details class="memorial__ceremony">', html)
+		self.assertIn("Itinéraire", html)
+
 	def test_faire_part_download(self):
 		media = tempfile.mkdtemp()
 		self.addCleanup(shutil.rmtree, media, ignore_errors=True)

@@ -1017,6 +1017,23 @@ input[type="radio"]:checked::before {
 	font-size: 1.1rem;
 	margin-top: 8px;
 }
+.memorial__announcement {
+	max-width: 620px;
+	margin: 28px auto 0;
+	font-size: 1.15rem;
+	line-height: 1.75;
+}
+.memorial__announcement::before {
+	content: "";
+	display: block;
+	width: 64px;
+	height: 2px;
+	margin: 0 auto 24px;
+	background-color: var(--green);
+}
+.memorial__announcement p + p {
+	margin-top: 0.9rem;
+}
 .memorial__faire-part {
 	margin-top: 24px;
 	font-family: "Roboto", sans-serif;
@@ -1034,10 +1051,39 @@ input[type="radio"]:checked::before {
 	border-left: 6px solid var(--green);
 	border-radius: 8px;
 }
+.memorial__ceremony {
+	margin-top: 40px;
+}
+.memorial__ceremony summary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	list-style: none;
+	cursor: pointer;
+}
+.memorial__ceremony summary::-webkit-details-marker {
+	display: none;
+}
+.memorial__ceremony summary::after {
+	content: "";
+	width: 10px;
+	height: 10px;
+	border-right: 2px solid var(--green-dark);
+	border-bottom: 2px solid var(--green-dark);
+	transform: rotate(45deg);
+	transition: transform 150ms ease;
+	flex-shrink: 0;
+}
+.memorial__ceremony[open] summary::after {
+	transform: rotate(-135deg);
+}
+.memorial__ceremony[open] summary {
+	margin-bottom: 6px;
+}
 .memorial__ceremony h2 {
 	color: var(--green-dark);
 	font-size: 1.2rem;
-	margin-bottom: 6px;
 }
 .steps {
 	list-style: none;
@@ -1235,6 +1281,9 @@ input[type="radio"]:checked::before {
 
 /* ---------- Quote forms (devis obsèques / marbrerie) ---------- */
 
+.quote {
+	scroll-margin-top: 110px;  /* below the sticky header */
+}
 .quote__progress {
 	height: 8px;
 	background-color: #fff;

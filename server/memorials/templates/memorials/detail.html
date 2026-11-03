@@ -21,21 +21,18 @@
 							{% if memorial.birth_date %}{{ memorial.birth_date|date:"j F Y" }} – {% endif %}{{ memorial.death_date|date:"j F Y" }}
 						</p>
 						{% comment "commune masquée : en-tête au style du QR code" %}{% if memorial.city %}<p>{{ memorial.city }}</p>{% endif %}{% endcomment %}
+						{% if memorial.announcement %}
+							<div class="memorial__announcement">{{ memorial.announcement|linebreaks }}</div>
+						{% endif %}
 						{% if memorial.faire_part %}
 							<p class="memorial__faire-part"><a class="btn btn--primary" href="{{ memorial.faire_part.url }}" target="_blank" rel="noopener" download>Télécharger le faire-part</a></p>
 						{% endif %}
 					</div>
 				</header>
 
-				{% comment "Texte de l’avis désactivé : l’en-tête suffit" %}
-				<div class="prose memorial__text">
-					{{ memorial.announcement|linebreaks }}
-				</div>
-				{% endcomment %}
-
 				{% if steps or memorial.ceremony %}
-					<section class="memorial__ceremony">
-						<h2>Cérémonie</h2>
+					<details class="memorial__ceremony">
+						<summary><h2>Cérémonie et itinéraires</h2></summary>
 						{% if steps %}
 							<ol class="steps">
 								{% for step in steps %}
@@ -60,7 +57,7 @@
 						{% if memorial.ceremony %}
 							<div class="steps__notes">{{ memorial.ceremony|linebreaks }}</div>
 						{% endif %}
-					</section>
+					</details>
 				{% endif %}
 			</article>
 
