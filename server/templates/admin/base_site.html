@@ -279,6 +279,10 @@
 		color: var(--body-medium-color);
 		padding: 10px 16px;
 	}
+	/* the date is typed on the first step only (see CeremonyStepForm) */
+	#steps-group .inline-related:not(#steps-0) .field-day {
+		display: none;
+	}
 	.inline-related input[name$="-order"] {
 		width: 4em;
 	}

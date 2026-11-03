@@ -1,8 +1,13 @@
 import json
 from pathlib import Path
 
+from datetime import datetime
+
 from django import forms
 from django.contrib import admin, messages
+from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget
+from django.forms.models import BaseInlineFormSet
+from django.utils import timezone
 from django.db.models import Count, Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -71,11 +76,54 @@ class PlaceAdmin(admin.ModelAdmin):
 		return JsonResponse({"name": place.name, "address": place.address})
 
 
+class CeremonyStepForm(forms.ModelForm):
+	"""Date and time apart: the date is entered on the first step only, the others just give a time."""
+
+	day = forms.DateField(label="date de la cérémonie", required=False, widget=AdminDateWidget,
+		help_text="Sur la première étape seulement : les suivantes ont lieu le même jour.")
+	time = forms.TimeField(label="heure", required=False, widget=AdminTimeWidget)
+
+	class Meta:
+		model = CeremonyStep
+		exclude = ["starts_at"]
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		if self.instance.starts_at:
+			local = timezone.localtime(self.instance.starts_at)
+			self.initial.update(day=local.date(), time=local.time().replace(second=0, microsecond=0))
+
+
+class CeremonyStepFormSet(BaseInlineFormSet):
+	def clean(self):
+		super().clean()
+		steps = [f for f in self.forms if f.has_changed() or f.instance.pk]
+		steps = [f for f in steps if not (self.can_delete and self._should_delete_form(f)) and hasattr(f, "cleaned_data")]
+		if not steps:
+			return
+		first = steps[0]
+		day, time = first.cleaned_data.get("day"), first.cleaned_data.get("time")
+		if time and not day:
+			first.add_error("day", "Indiquez la date de la cérémonie sur la première étape.")
+		if day and not time:
+			first.add_error("time", "Indiquez l’heure de la première étape.")
+		for form in steps:
+			# the day of a later step is never typed (its field is hidden): always the first step's
+			step_time = form.cleaned_data.get("time")
+			if step_time and not day:
+				if form is not first:
+					form.add_error("time", "Indiquez d’abord la date sur la première étape.")
+				continue
+			form.instance.starts_at = timezone.make_aware(datetime.combine(day, step_time)) if step_time else None
+
+
 class CeremonyStepInline(admin.StackedInline):
 	"""One block per step (a table row was wider than the screen)."""
 
 	model = CeremonyStep
-	fields = [("title", "order"), "starts_at", "saved_place", ("place", "address"), "details"]
+	form = CeremonyStepForm
+	formset = CeremonyStepFormSet
+	fields = [("title", "order"), ("day", "time"), "saved_place", ("place", "address"), "details"]
 	autocomplete_fields = ["saved_place"]  # type a few letters of the name, the town or the street
 	extra = 1
 	verbose_name_plural = "étapes de la cérémonie (choisissez un lieu enregistré ou tapez-en un nouveau)"

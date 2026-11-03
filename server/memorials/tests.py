@@ -211,6 +211,40 @@ class SendQRTests(TestCase):
 		self.assertIn('name="_send_qr"', html)
 
 
+class StepDayTests(TestCase):
+	"""The date is typed on the first step; the next steps only give a time."""
+
+	def setUp(self):
+		self.m = make_memorial()
+		self.client.force_login(get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12))
+
+	def post(self, *steps):
+		data = {"first_name": "Jeanne", "last_name": "Exemple", "death_date": "28/09/2026", "announcement": "",
+			"family_emails": "", "is_published": "on", "slug": self.m.slug,
+			"steps-TOTAL_FORMS": str(len(steps)), "steps-INITIAL_FORMS": "0", "steps-MIN_NUM_FORMS": "0",
+			"steps-MAX_NUM_FORMS": "1000"}
+		for i, (title, day, time) in enumerate(steps):
+			data.update({f"steps-{i}-title": title, f"steps-{i}-order": str(i), f"steps-{i}-day": day,
+				f"steps-{i}-time": time, f"steps-{i}-place": "", f"steps-{i}-address": "", f"steps-{i}-details": ""})
+		return self.client.post(f"/admin/memorials/memorial/{self.m.pk}/change/", data)
+
+	def test_later_steps_take_the_first_steps_day(self):
+		r = self.post(("Levée du corps", "06/11/2026", "09:30"), ("Cérémonie", "", "10:30"), ("Inhumation", "", ""))
+		self.assertEqual(r.status_code, 302, r.content.decode()[:3000])
+		times = [timezone.localtime(s.starts_at).strftime("%d/%m %H:%M") if s.starts_at else None
+			for s in self.m.steps.all()]
+		self.assertEqual(times, ["06/11 09:30", "06/11 10:30", None])
+		html = self.client.get(self.m.get_absolute_url()).content.decode()
+		self.assertIn("vendredi 6 novembre 2026 à 09h30", html)
+		self.assertIn("à 10h30", html)
+		self.assertNotIn("vendredi 6 novembre 2026 à 10h30", html)
+
+	def test_time_without_a_first_date_is_refused(self):
+		r = self.post(("Levée du corps", "", ""), ("Cérémonie", "", "10:30"))
+		self.assertEqual(r.status_code, 200)
+		self.assertContains(r, "Indiquez d’abord la date sur la première étape.")
+
+
 class CeremonyStepTests(TestCase):
 	def test_steps_are_shown_with_maps_link(self):
 		m = make_memorial()
