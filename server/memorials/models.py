@@ -1,3 +1,4 @@
+import re
 from urllib.parse import quote_plus
 from uuid import uuid4
 
@@ -83,20 +84,35 @@ class Memorial(models.Model):
 		super().save(*args, **kwargs)
 
 
+def place_title(name, address):
+	"""Default title of a saved place: "Église Saint-Flaive (Ermont)", the town taken after the postcode."""
+	town = re.search(r"\b\d{5}\s+(.+)$", address)
+	town = town.group(1).strip() if town else ""
+	if name and town:
+		return f"{name} ({town})"
+	return name or address
+
+
 class Place(models.Model):
 	"""A place used again and again (church, funeral home, cemetery…), picked from a list for each ceremony step."""
 
-	name = models.CharField("lieu", max_length=160, help_text="Ex. : Église Saint-Germain")
+	title = models.CharField("titre", max_length=200, blank=True,
+		help_text="Nom affiché dans la liste de choix, ex. : Église de Soisy. Laissé vide : « lieu (ville) ».")
+	name = models.CharField("lieu", max_length=160, help_text="Affiché sur la page de l’avis. Ex. : Église Saint-Germain")
 	address = models.CharField("adresse", max_length=255)
 
 	class Meta:
 		verbose_name = "lieu enregistré"
 		verbose_name_plural = "lieux enregistrés"
-		ordering = ["name", "address"]
+		ordering = ["title", "name", "address"]
 		constraints = [models.UniqueConstraint(fields=["name", "address"], name="unique_place")]
 
 	def __str__(self):
-		return f"{self.name} – {self.address}" if self.name else self.address
+		return self.title or place_title(self.name, self.address)
+
+	def save(self, *args, **kwargs):
+		self.title = self.title.strip() or place_title(self.name, self.address)
+		super().save(*args, **kwargs)
 
 
 class CeremonyStep(models.Model):

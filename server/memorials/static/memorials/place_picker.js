@@ -1,13 +1,11 @@
-// Ceremony steps in the admin: picking a saved place fills "lieu" and "adresse" (they stay editable).
-// The place field is a search box (select2), which only fires jQuery events, hence django.jQuery.
-django.jQuery(document).on("change", 'select[name$="-saved_place"]', function () {
-	const option = this.selectedOptions[0]
-	if (!option || !option.value) return
-	// the label is "lieu – adresse" (Place.__str__)
-	const label = option.text
-	const i = label.indexOf(" – ")
-	const [name, address] = i < 0 ? ["", label] : [label.slice(0, i), label.slice(i + 3)]
+// Ceremony steps in the admin: picking a saved place (by its title) fills "lieu" and "adresse".
+// They stay editable. The place field is a search box (select2), which only fires jQuery events.
+django.jQuery(document).on("change", 'select[name$="-saved_place"]', async function () {
+	if (!this.value) return
+	const res = await fetch(`/admin/memorials/place/${this.value}/json/`)
+	if (!res.ok) return
+	const place = await res.json()
 	const prefix = this.name.replace(/saved_place$/, "")
-	this.form.elements[prefix + "place"].value = name
-	this.form.elements[prefix + "address"].value = address
+	this.form.elements[prefix + "place"].value = place.name
+	this.form.elements[prefix + "address"].value = place.address
 })

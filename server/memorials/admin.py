@@ -1,6 +1,8 @@
 from django.contrib import admin, messages
 from django.db.models import Count, Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.urls import path
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -30,8 +32,18 @@ admin.site.get_app_list = get_app_list
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
-	list_display = ["name", "address"]
-	search_fields = ["name", "address"]
+	list_display = ["title", "name", "address"]
+	search_fields = ["title", "name", "address"]
+	fields = ["title", "name", "address"]
+
+	def get_urls(self):
+		return [path("<int:pk>/json/", self.admin_site.admin_view(self.place_json), name="memorials_place_json"),
+			*super().get_urls()]
+
+	def place_json(self, request, pk):
+		"""Lieu + adresse of one place, for place_picker.js."""
+		place = get_object_or_404(Place, pk=pk)
+		return JsonResponse({"name": place.name, "address": place.address})
 
 
 class CeremonyStepInline(admin.StackedInline):

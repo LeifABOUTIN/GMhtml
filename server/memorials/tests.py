@@ -155,7 +155,19 @@ class PlaceTests(TestCase):
 		self.assertIn("place_picker.js", html)
 		r = self.client.get("/admin/autocomplete/", {"term": "tarbé", "app_label": "memorials",
 			"model_name": "ceremonystep", "field_name": "saved_place"})
-		self.assertEqual([p["text"] for p in r.json()["results"]], ["Funérarium test – 7 rue Tarbé des Sablons, 95600 Eaubonne"])
+		self.assertEqual([p["text"] for p in r.json()["results"]], ["Funérarium test (Eaubonne)"])
+
+	def test_title_is_filled_and_searchable(self):
+		p = Place.objects.create(name="Chapelle test", address="1 rue Test, 95560 Chauvry")
+		self.assertEqual(str(p), "Chapelle test (Chauvry)")
+		own = Place.objects.create(title="Église de Soisy", name="Église Saint-Germain", address="Place de l’Église, 95230 Soisy")
+		self.assertEqual(str(own), "Église de Soisy")
+		self.client.force_login(get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12))
+		r = self.client.get("/admin/autocomplete/", {"term": "église de soisy", "app_label": "memorials",
+			"model_name": "ceremonystep", "field_name": "saved_place"})
+		self.assertEqual([x["text"] for x in r.json()["results"]], ["Église de Soisy"])
+		r = self.client.get(f"/admin/memorials/place/{own.pk}/json/")
+		self.assertEqual(r.json(), {"name": "Église Saint-Germain", "address": "Place de l’Église, 95230 Soisy"})
 
 	def test_place_list_file_is_loaded(self):
 		self.assertTrue(Place.objects.filter(name="Crématorium des Joncherolles").exists())
