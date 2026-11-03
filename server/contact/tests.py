@@ -73,7 +73,7 @@ class AdminTodoTests(TestCase):
 		admin = get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12)
 		self.client.force_login(admin)
 		page = self.client.get("/admin/")
-		self.assertContains(page, "À traiter")
+		self.assertNotContains(page, "À traiter")
 		self.assertContains(page, "nouvelle(s) demande(s) de contact")
 		self.assertContains(page, "?status__exact=new")
 
