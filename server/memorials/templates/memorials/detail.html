@@ -14,22 +14,24 @@
 					{% endif %}
 					{% endcomment %}
 					<div>
-						<p class="memorial__kicker">Avis de décès</p>
+						<p class="memorial__kicker">En mémoire de</p>
 						<h1 class="memorial__name">{{ memorial.full_name }}</h1>
 						{% if memorial.maiden_name %}<p class="memorial__maiden">née {{ memorial.maiden_name }}</p>{% endif %}
 						<p class="memorial__dates">
 							{% if memorial.birth_date %}{{ memorial.birth_date|date:"j F Y" }} – {% endif %}{{ memorial.death_date|date:"j F Y" }}
 						</p>
-						{% if memorial.city %}<p>{{ memorial.city }}</p>{% endif %}
+						{% comment "commune masquée : en-tête au style du QR code" %}{% if memorial.city %}<p>{{ memorial.city }}</p>{% endif %}{% endcomment %}
+						{% if memorial.faire_part %}
+							<p class="memorial__faire-part"><a class="btn btn--primary" href="{{ memorial.faire_part.url }}" target="_blank" rel="noopener" download>Télécharger le faire-part</a></p>
+						{% endif %}
 					</div>
 				</header>
 
+				{% comment "Texte de l’avis désactivé : l’en-tête suffit" %}
 				<div class="prose memorial__text">
 					{{ memorial.announcement|linebreaks }}
-					{% if memorial.faire_part %}
-						<p><a class="btn btn--primary" href="{{ memorial.faire_part.url }}" target="_blank" rel="noopener" download>Télécharger le faire-part</a></p>
-					{% endif %}
 				</div>
+				{% endcomment %}
 
 				{% if steps or memorial.ceremony %}
 					<section class="memorial__ceremony">

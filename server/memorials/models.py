@@ -34,7 +34,7 @@ class Memorial(models.Model):
 	faire_part = models.FileField("faire-part", upload_to="faire-part/%Y/", blank=True,
 		validators=[FileExtensionValidator(["pdf", "jpg", "jpeg", "png"])],
 		help_text="Facultatif : PDF ou image. Un bouton « Télécharger le faire-part » apparaît sur la page.")
-	announcement = models.TextField("texte de l’avis",
+	announcement = models.TextField("texte de l’avis", blank=True,  # no longer shown on the site
 		help_text="Texte de l’avis de décès, tel qu’il apparaîtra sur la page.")
 	ceremony = models.TextField("informations complémentaires", blank=True,
 		help_text="Facultatif : fleurs, dons, « ni fleurs ni couronnes »… Les étapes de la cérémonie "
