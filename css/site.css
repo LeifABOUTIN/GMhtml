@@ -1494,12 +1494,13 @@ input[type="radio"]:checked::before {
 /* ---------- Compositions de deuil (partner florist) ---------- */
 
 .compo {
+	/* same panel as the other pages (.prose): no border */
 	max-width: 1080px;
 	margin: 0 auto;
 	padding: 40px 48px;
-	background-color: #fff;
+	background-color: var(--panel);
 	color: #222;
-	border: 10px solid var(--green);
+	border-radius: var(--radius);
 	box-shadow: var(--shadow);
 }
 .compo__order {
@@ -1507,7 +1508,7 @@ input[type="radio"]:checked::before {
 	align-items: center;
 	gap: 28px;
 	padding: 24px 28px;
-	background-color: #f3f5f0;
+	background-color: #fff;
 	border-left: 6px solid var(--green);
 	border-radius: 8px;
 }
@@ -1668,7 +1669,6 @@ input[type="radio"]:checked::before {
 @media screen and (max-width: 640px) {
 	.compo {
 		padding: 24px 16px;
-		border-width: 6px;
 	}
 	.compo__order {
 		flex-direction: column;
