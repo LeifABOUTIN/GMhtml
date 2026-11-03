@@ -1,18 +1,13 @@
-// Ceremony steps in the admin: picking a saved place fills "lieu" and "adresse" (they stay editable)
-document.addEventListener("change", (e) => {
-	const select = e.target
-	if (!select.matches?.('select[name$="-saved_place"]')) return
-	const option = select.selectedOptions[0]
+// Ceremony steps in the admin: picking a saved place fills "lieu" and "adresse" (they stay editable).
+// The place field is a search box (select2), which only fires jQuery events, hence django.jQuery.
+django.jQuery(document).on("change", 'select[name$="-saved_place"]', function () {
+	const option = this.selectedOptions[0]
 	if (!option || !option.value) return
-	let name = option.dataset.name
-	let address = option.dataset.address
-	if (address === undefined) {
-		// a place just added with the "+" button has no data: its label is "lieu – adresse"
-		const i = option.text.lastIndexOf(" – ")
-		;[name, address] = i < 0 ? ["", option.text] : [option.text.slice(0, i), option.text.slice(i + 3)]
-	}
-	const prefix = select.name.replace(/saved_place$/, "")
-	const form = select.form
-	form.elements[prefix + "place"].value = name
-	form.elements[prefix + "address"].value = address
+	// the label is "lieu – adresse" (Place.__str__)
+	const label = option.text
+	const i = label.indexOf(" – ")
+	const [name, address] = i < 0 ? ["", label] : [label.slice(0, i), label.slice(i + 3)]
+	const prefix = this.name.replace(/saved_place$/, "")
+	this.form.elements[prefix + "place"].value = name
+	this.form.elements[prefix + "address"].value = address
 })

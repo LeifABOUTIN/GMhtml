@@ -138,7 +138,7 @@ class PlaceTests(TestCase):
 		step = CeremonyStep.objects.create(memorial=m, title="Inhumation", place="Cimetière", address="Rue des Lilas, Soisy")
 		self.assertEqual((step.saved_place.name, step.saved_place.address), ("Cimetière", "Rue des Lilas, Soisy"))
 		CeremonyStep.objects.create(memorial=m, title="Recueillement", place="Cimetière", address="Rue des Lilas, Soisy")
-		self.assertEqual(Place.objects.count(), 1)
+		self.assertEqual(Place.objects.filter(address="Rue des Lilas, Soisy").count(), 1)
 
 	def test_chosen_place_fills_the_step(self):
 		église = Place.objects.create(name="Église Saint-Germain", address="1 place de l’Église, 95230 Soisy")
@@ -146,13 +146,47 @@ class PlaceTests(TestCase):
 		self.assertEqual((step.place, step.address), ("Église Saint-Germain", "1 place de l’Église, 95230 Soisy"))
 		self.assertIn("query=%C3%89glise+Saint-Germain", step.maps_url)
 
-	def test_picker_options_carry_the_address(self):
-		Place.objects.create(name="Funérarium", address="7 rue Tarbé des Sablons, 95600 Eaubonne")
+	def test_places_are_searched_by_name_or_town(self):
+		Place.objects.create(name="Funérarium test", address="7 rue Tarbé des Sablons, 95600 Eaubonne")
 		admin = get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12)
 		self.client.force_login(admin)
 		html = self.client.get("/admin/memorials/memorial/add/").content.decode()
-		self.assertIn('data-address="7 rue Tarbé des Sablons, 95600 Eaubonne"', html)
+		self.assertIn("admin-autocomplete", html)
 		self.assertIn("place_picker.js", html)
+		r = self.client.get("/admin/autocomplete/", {"term": "tarbé", "app_label": "memorials",
+			"model_name": "ceremonystep", "field_name": "saved_place"})
+		self.assertEqual([p["text"] for p in r.json()["results"]], ["Funérarium test – 7 rue Tarbé des Sablons, 95600 Eaubonne"])
+
+	def test_place_list_file_is_loaded(self):
+		self.assertTrue(Place.objects.filter(name="Crématorium des Joncherolles").exists())
+
+
+class SendQRTests(TestCase):
+	def setUp(self):
+		self.m = make_memorial()
+		self.client.force_login(get_user_model().objects.create_superuser("boss", "boss@example.com", "x" * 12))
+
+	def send(self, memorial):
+		return self.client.post("/admin/memorials/memorial/", {"action": "send_qr", "_selected_action": [memorial.pk]},
+			follow=True)
+
+	def test_link_and_qr_png_sent_to_each_family_address(self):
+		self.send(self.m)
+		self.assertEqual([m.to for m in mail.outbox], [["a@example.com"], ["b@example.com"]])
+		self.assertEqual(mail.outbox[0].subject, "La page en mémoire de Jeanne Exemple")
+		self.assertIn(self.m.public_url, mail.outbox[0].body)
+		name, content, mimetype = mail.outbox[0].attachments[0]
+		self.assertEqual((name, mimetype), ("qr-code-jeanne-exemple-2026.png", "image/png"))
+		self.assertTrue(content.startswith(b"\x89PNG"))
+
+	def test_unpublished_or_without_family_email_is_not_sent(self):
+		self.assertContains(self.send(make_memorial(is_published=False)), "publiez l’avis avant")
+		self.assertContains(self.send(make_memorial(family_emails="")), "aucun e-mail de la famille")
+		self.assertEqual(mail.outbox, [])
+
+	def test_button_in_qr_box(self):
+		html = self.client.get(f"/admin/memorials/memorial/{self.m.pk}/change/").content.decode()
+		self.assertIn('name="_send_qr"', html)
 
 
 class CeremonyStepTests(TestCase):

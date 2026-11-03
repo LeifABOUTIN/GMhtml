@@ -1,6 +1,6 @@
-from django import forms
 from django.contrib import admin, messages
 from django.db.models import Count, Q
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -9,7 +9,7 @@ from allauth.account.models import EmailAddress
 from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
 from django.contrib.auth.models import Group
 
-from .emails import send_private_comment
+from .emails import send_private_comment, send_qr_to_family
 from .models import CeremonyStep, Comment, CommentPhoto, Memorial, Place
 
 # keep the admin to what the staff actually use (Google login is configured in settings)
@@ -28,17 +28,6 @@ def get_app_list(request, app_label=None):
 admin.site.get_app_list = get_app_list
 
 
-class PlaceSelect(forms.Select):
-	"""Each option carries its place and address, so place_picker.js can fill the step's fields."""
-
-	def create_option(self, name, value, *args, **kwargs):
-		option = super().create_option(name, value, *args, **kwargs)
-		place = getattr(value, "instance", None)
-		if place:
-			option["attrs"].update({"data-name": place.name, "data-address": place.address})
-		return option
-
-
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
 	list_display = ["name", "address"]
@@ -50,16 +39,12 @@ class CeremonyStepInline(admin.StackedInline):
 
 	model = CeremonyStep
 	fields = [("title", "order"), "starts_at", "saved_place", ("place", "address"), "details"]
+	autocomplete_fields = ["saved_place"]  # type a few letters of the name, the town or the street
 	extra = 1
 	verbose_name_plural = "étapes de la cérémonie (choisissez un lieu enregistré ou tapez-en un nouveau)"
 
 	class Media:
 		js = ["memorials/place_picker.js"]
-
-	def formfield_for_foreignkey(self, db_field, request, **kwargs):
-		if db_field.name == "saved_place":
-			kwargs["widget"] = PlaceSelect()
-		return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Memorial)
@@ -70,7 +55,7 @@ class MemorialAdmin(admin.ModelAdmin):
 	search_fields = ["first_name", "last_name", "maiden_name"]
 	date_hierarchy = "death_date"
 	readonly_fields = ["qr_tools", "created_at", "updated_at"]
-	actions = ["publish", "unpublish"]
+	actions = ["publish", "unpublish", "send_qr"]
 	fieldsets = [
 		("Défunt", {"fields": [("first_name", "last_name"), "maiden_name", ("birth_date", "death_date"), "city"]}),  # "photo", "photo_preview": pictures switched off
 		("Avis", {"fields": ["announcement", "ceremony", "faire_part"]}),
@@ -113,14 +98,20 @@ class MemorialAdmin(admin.ModelAdmin):
 		warning = "" if obj.is_published else (
 			"<p><b>Attention :</b> l’avis n’est pas encore publié, le QR code mènera à une page introuvable "
 			"tant que « publié » n’est pas coché.</p>")
+		if obj.family_email_list:
+			send = format_html('<p><button type="submit" name="_send_qr" class="button">'
+				'Enregistrer et envoyer le lien + QR code à la famille ({})</button></p>', ", ".join(obj.family_email_list))
+		else:
+			send = mark_safe("<p>Ajoutez les e-mails de la famille (plus haut) pour leur envoyer le lien et le QR code.</p>")
 		return format_html(
 			'{}<p>Le QR code ouvre la page de l’avis.</p>'
 			'<p><a href="{}" target="_blank">Affiche A4 ↗</a> · <a href="{}" target="_blank">Cartes à emporter ↗</a>'
-			' · <a href="{}">Télécharger le QR code seul (SVG)</a></p>',
+			' · <a href="{}">Télécharger le QR code seul (SVG)</a></p>{}',
 			mark_safe(warning),
 			reverse("memorials:qr", args=[obj.slug]),
 			reverse("memorials:qr", args=[obj.slug]) + "?format=cartes",
 			reverse("memorials:qr_download", args=[obj.slug]),
+			send,
 		)
 
 	@admin.display(description="aperçu")
@@ -136,6 +127,32 @@ class MemorialAdmin(admin.ModelAdmin):
 	@admin.action(description="Masquer les avis sélectionnés")
 	def unpublish(self, request, queryset):
 		queryset.update(is_published=False)
+
+	@admin.action(description="✉ Envoyer le lien et le QR code à la famille")
+	def send_qr(self, request, queryset):
+		for memorial in queryset:
+			self._send_qr(request, memorial)
+
+	def response_change(self, request, obj):
+		# "Enregistrer et envoyer…" button in the QR code box: the notice is saved, then sent
+		if "_send_qr" in request.POST:
+			self._send_qr(request, obj)
+			return HttpResponseRedirect(request.path)
+		return super().response_change(request, obj)
+
+	def _send_qr(self, request, memorial):
+		if not memorial.is_published:
+			self.message_user(request, f"{memorial.full_name} : publiez l’avis avant d’envoyer le lien à la famille.",
+				messages.ERROR)
+		elif not memorial.family_email_list:
+			self.message_user(request, f"{memorial.full_name} : aucun e-mail de la famille.", messages.WARNING)
+		else:
+			sent, failed = send_qr_to_family(memorial)
+			if failed:
+				self.message_user(request, f"{memorial.full_name} : {sent} e-mail(s) envoyé(s), {failed} en échec.",
+					messages.WARNING)
+			else:
+				self.message_user(request, f"{memorial.full_name} : lien et QR code envoyés à {sent} adresse(s).")
 
 
 class CommentPhotoInline(admin.TabularInline):

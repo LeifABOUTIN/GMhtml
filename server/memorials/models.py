@@ -41,7 +41,8 @@ class Memorial(models.Model):
 			"se saisissent dans le tableau « Étapes de la cérémonie » plus bas.")
 	family_emails = models.CharField("e-mails de la famille", max_length=500, blank=True,
 		validators=[validate_email_list],
-		help_text="Reçoivent les messages privés. Plusieurs adresses séparées par des virgules.")
+		help_text="Reçoivent le lien de la page et son QR code (bouton dans « QR code pour la cérémonie »). "
+			"Plusieurs adresses séparées par des virgules.")
 	is_published = models.BooleanField("publié", default=False,
 		help_text="Décochez pour masquer la page au public.")
 	comments_open = models.BooleanField("messages autorisés", default=True)

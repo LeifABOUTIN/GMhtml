@@ -17,3 +17,10 @@ def qr_svg(url, standalone=False):
 		qr.save(buf, kind="svg", scale=10, border=4, dark="#000000", light="#ffffff")
 		return buf.getvalue().decode("utf-8")
 	return qr.svg_inline(scale=10, border=4, dark="#000000", light="#ffffff", omitsize=True)
+
+
+def qr_png(url):
+	"""PNG of the same QR code, for e-mails (mail apps show PNG attachments, not always SVG)."""
+	buf = io.BytesIO()
+	segno.make(url, error="m", micro=False).save(buf, kind="png", scale=12, border=4)
+	return buf.getvalue()

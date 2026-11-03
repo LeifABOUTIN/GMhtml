@@ -5,6 +5,8 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.urls import reverse
 
+from .qr import qr_png
+
 log = logging.getLogger(__name__)
 
 
@@ -46,3 +48,20 @@ def notify_moderators(comment):
 		).send()
 	except Exception:
 		log.exception("Moderation email for comment %s could not be sent", comment.pk)
+
+
+def send_qr_to_family(memorial):
+	"""Email the page's address and its QR code (PNG) to each family address. Returns (sent, failed)."""
+	body = render_to_string("emails/qr_family.txt", {"memorial": memorial, "page_url": memorial.public_url})
+	attachment = (f"qr-code-{memorial.slug}.png", qr_png(memorial.public_url), "image/png")
+	sent = failed = 0
+	# one email per address so family members don't see each other's addresses
+	for to in memorial.family_email_list:
+		try:
+			EmailMessage(f"La page en mémoire de {memorial.full_name}", body, to=[to],
+				attachments=[attachment]).send()
+			sent += 1
+		except Exception:
+			log.exception("QR code of memorial %s could not be sent to %s", memorial.pk, to)
+			failed += 1
+	return sent, failed

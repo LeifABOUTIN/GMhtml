@@ -1,0 +1,13 @@
+{% autoescape off %}Bonjour,
+
+La page en mémoire de {{ memorial.full_name }} est en ligne sur le site des Pompes Funèbres et Marbrerie GM :
+{{ page_url }}
+
+Vous y trouverez l'avis, le déroulement de la cérémonie et les itinéraires.
+
+Le QR code de la page est joint à cet e-mail : vous pouvez l'imprimer ou l'envoyer à vos proches. En le visant avec l'appareil photo d'un téléphone, on arrive directement sur la page.
+
+Avec nos sincères condoléances,
+Pompes Funèbres et Marbrerie GM
+01 39 89 17 88 – Permanence téléphonique décès 7j/7 – 24h/24 : 06 73 62 31 60
+{% endautoescape %}
