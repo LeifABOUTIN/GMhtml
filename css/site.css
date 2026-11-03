@@ -1364,6 +1364,15 @@ input[type="radio"]:checked::before {
 .quote__aside p {
 	flex: 1 1 260px;
 }
+/* outlined buttons are white-on-dark elsewhere on the site; on the light form they need dark text */
+.quote .btn--ghost {
+	color: var(--green-dark);
+	border-color: var(--green);
+	background-color: #fff;
+}
+.quote .btn--ghost:hover {
+	background-color: rgba(122, 134, 112, 0.15);
+}
 .form input[type="checkbox"] {
 	appearance: none;
 	width: 1.1em;
