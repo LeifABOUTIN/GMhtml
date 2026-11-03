@@ -977,7 +977,7 @@ input[type="radio"]:checked::before {
 	background-color: #fff;
 	color: #222;
 	border: 10px solid var(--green);
-	border-radius: 20px;
+	border-radius: 0;  /* a sheet of paper, like the printed poster */
 	box-shadow: var(--shadow);
 	overflow: hidden;
 }
