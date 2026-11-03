@@ -1458,3 +1458,34 @@ input[type="radio"]:checked::before {
 	font-family: "Roboto", sans-serif;
 	color: var(--green-dark);
 }
+
+/* "Envoyer des fleurs" on a notice: same box as "Cérémonie et itinéraires" */
+.memorial__ceremony + .memorial__flowers {
+	margin-top: -16px;  /* the two boxes sit close together */
+}
+.memorial__flowers h2 {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+.icon-flower {
+	color: var(--green);
+	flex-shrink: 0;
+}
+.flowers__intro {
+	margin-top: 4px;
+}
+.flowers__where {
+	margin-top: 12px;
+	line-height: 1.6;
+}
+.flowers__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 6px;
+}
+.flowers__actions .icon-flower {
+	width: 18px;
+	height: 18px;
+}

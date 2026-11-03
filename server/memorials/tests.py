@@ -273,6 +273,13 @@ class MemorialPageTests(TestCase):
 		self.assertIn('<details class="memorial__ceremony">', html)
 		self.assertIn("Itinéraire", html)
 
+	def test_partner_florist_on_every_notice(self):
+		html = self.client.get(make_memorial().get_absolute_url()).content.decode()
+		self.assertIn("Envoyer des fleurs", html)
+		self.assertIn('href="tel:0139897442"', html)
+		self.assertIn("45 avenue du Général Leclerc", html)
+		self.assertIn("https://www.amourdefleurs95.com/", html)
+
 	def test_faire_part_download(self):
 		media = tempfile.mkdtemp()
 		self.addCleanup(shutil.rmtree, media, ignore_errors=True)
