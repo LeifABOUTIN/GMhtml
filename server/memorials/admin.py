@@ -17,6 +17,16 @@ for model in (Group, EmailAddress, SocialAccount, SocialApp, SocialToken):
 	admin.site.unregister(model)
 admin.site.enable_nav_sidebar = False  # few models: the pages stay centred without the side menu
 
+_get_app_list = admin.site.get_app_list
+
+
+def get_app_list(request, app_label=None):
+	"""« Avis de décès » first: it's what the staff use most."""
+	return sorted(_get_app_list(request, app_label), key=lambda app: app["app_label"] != "memorials")
+
+
+admin.site.get_app_list = get_app_list
+
 
 class PlaceSelect(forms.Select):
 	"""Each option carries its place and address, so place_picker.js can fill the step's fields."""
