@@ -46,26 +46,28 @@ window.onload = () => {
 			message: message || undefined,
 			contact: mail !== "" ? mail : tel,
 		}
+		let ok = false
 		try {
-			const res = await fetch("https://cmm7zvmefp2c65aqucfpnla6pu0zpzed.lambda-url.eu-west-3.on.aws", {
+			// saved by the site's server (server/contact), which also notifies the agency by e-mail
+			const res = await fetch("/contact/envoyer/", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(body),
 			})
-			if (res.status === 200) {
-				imgDialog.src = "../img/check.svg"
-				messageDialog.textContent =
-					"Nous avons bien reçu votre demande, nous vous contacterons au plus vite!"
-				dialogForm.showModal()
-			} else {
-				imgDialog.src = "../img/error.svg"
-				dialogForm.classList.add("error")
-				messageDialog.textContent =
-					"Il semble qu'il y ait un problème de notre coté.. réassayez plus tard.."
-				dialogForm.showModal()
-			}
+			ok = res.status === 200
 		} catch (e) {}
+		if (ok) {
+			imgDialog.src = "../img/check.svg"
+			messageDialog.textContent =
+				"Nous avons bien reçu votre demande, nous vous contacterons au plus vite!"
+		} else {
+			imgDialog.src = "../img/error.svg"
+			dialogForm.classList.add("error")
+			messageDialog.textContent =
+				"Votre demande n'a pas pu être envoyée. Merci de réessayer ou de nous appeler au 01 39 89 17 88."
+		}
+		dialogForm.showModal()
 	})
 }
