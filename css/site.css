@@ -1683,3 +1683,173 @@ input[type="radio"]:checked::before {
 		gap: 10px;
 	}
 }
+
+/* ---------- Phones: one full-width column, no gaps ----------
+   Blocks run from edge to edge and sit directly on each other. They use negative margins rather than
+   removing main's padding, so page titles and anything else in main keep their side margin.
+   Selectors stay narrow: memorials and news reuse .card, .prose and .form with their own layouts. */
+
+@media screen and (max-width: 600px) {
+	main {
+		padding-bottom: 0;
+	}
+
+	.hero {
+		padding: 32px 0 0;
+	}
+	.hero__actions {
+		flex-direction: column;
+		gap: 0;
+		margin: 32px -16px 0;
+	}
+	.hero__actions .btn {
+		padding: 1.15rem 1rem;
+		border: 0;
+		border-radius: 0;
+		font-size: 1.1rem;
+	}
+	.hero__actions .btn--ghost {
+		background-color: var(--black);
+		color: var(--green);
+	}
+
+	/* services: a stack of photo bands, text on the photo, alternating sides */
+	.cards:has(.card__img) {
+		gap: 0;
+		margin: 0 -16px;
+	}
+	.card:has(.card__img) {
+		position: relative;
+		min-height: 62vw;
+		justify-content: flex-end;
+		background-color: var(--black);
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		color: #fff;
+	}
+	.card:has(.card__img):hover {
+		transform: none;
+		box-shadow: none;
+	}
+	.card__img {
+		position: absolute;
+		inset: 0;
+		aspect-ratio: auto;
+		border-bottom: 0;
+	}
+	.card__img::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(transparent 15%, rgba(7, 7, 7, 0.88) 85%);
+		transition: background-color 200ms ease;
+	}
+	.card:active .card__img::after {
+		background-color: rgba(122, 134, 112, 0.35);
+	}
+	.card__img ~ .card__body {
+		position: relative;
+		flex: none;
+		padding: 56px 20px 18px;
+	}
+	.card:nth-child(even) .card__img ~ .card__body {
+		align-items: flex-end;
+		text-align: right;
+	}
+	.card__img ~ .card__body h2 {
+		color: #fff;
+		font-size: 1.45rem;
+	}
+	.card__img ~ .card__body p {
+		flex: none;
+		max-width: 22em;
+	}
+	.card__img ~ .card__body .card__more {
+		margin-top: 8px;
+		color: #fff;
+	}
+	/* the logo band: a little taller, so the logo stays clear of the text */
+	.card:has(.img-equipe) {
+		min-height: 84vw;
+	}
+	.img-equipe {
+		background-size: auto 46%;
+		background-position: left 16px top 14px;
+	}
+
+	.feature {
+		margin: 0 -16px;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		background-color: var(--green);
+		color: #fff;
+	}
+	.feature__img {
+		min-height: 62vw;
+	}
+	.feature h2 {
+		color: #fff;
+	}
+	.feature .btn {
+		width: 100%;
+		text-align: center;
+		background-color: var(--black);
+		border-color: var(--black);
+		border-radius: 0;
+	}
+
+	main > .prose,
+	main > .form {
+		max-width: none;
+		margin: 0 -16px;
+		border-radius: 0;
+		box-shadow: none;
+		background-color: rgba(255, 255, 255, 0.92);
+	}
+	/* photos in text pages reach the screen edges too (.prose has 20px side padding, 28px on top) */
+	main > .prose .illustration {
+		width: calc(100% + 40px);
+		max-width: none;
+		margin-left: -20px;
+		margin-right: -20px;
+		border: 0;
+		border-radius: 0;
+	}
+	main > .prose > .illustration:first-child {
+		margin-top: -28px;
+	}
+	main > .form .submit__form {
+		align-self: stretch;
+		border-radius: 0;
+	}
+
+	.agencies {
+		gap: 0;
+		margin: 0 -16px;
+	}
+	.agency {
+		border-radius: 0;
+		box-shadow: none;
+		background-color: rgba(255, 255, 255, 0.92);
+	}
+	.agency__body {
+		padding: 24px 20px 28px;
+	}
+
+	.site-footer__inner {
+		gap: 0;
+		padding: 0;
+		text-align: left;
+	}
+	.site-footer__inner > div {
+		padding: 22px 20px;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+	}
+	.site-footer__copy {
+		border-top: 0;
+		padding: 16px 20px;
+		text-align: left;
+	}
+}
