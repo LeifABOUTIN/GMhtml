@@ -119,7 +119,7 @@ What the import does:
 
 ### Beta (beta.gmfuneraire.fr) and going live
 
-The server first runs as a password-protected beta, while www.gmfuneraire.fr stays on S3:
+The beta is password-protected:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/LeifABOUTIN/GMhtml/memorials/server/deploy/setup.sh \
@@ -129,14 +129,15 @@ curl -fsSL https://raw.githubusercontent.com/LeifABOUTIN/GMhtml/memorials/server
 Testers log in with user `beta` and that password; the beta also tells search engines not to index it.
 Change the password: `printf 'beta:%s\n' "$(openssl passwd -apr1 'NEW')" | sudo tee /etc/nginx/gm-beta.htpasswd && sudo systemctl reload nginx`.
 
-Going live later:
-1. `/srv/gm/env`: `DJANGO_ALLOWED_HOSTS=gmfuneraire.fr,www.gmfuneraire.fr,beta.gmfuneraire.fr`, `SITE_URL=https://www.gmfuneraire.fr`,
-   then `sudo systemctl restart gm`.
-2. `/etc/nginx/sites-available/gm`: add `gmfuneraire.fr www.gmfuneraire.fr` to every `server_name` line.
-3. `sudo rm /etc/nginx/snippets/gm-access.conf && sudo systemctl reload nginx` (removes the password).
-4. Point the DNS of `gmfuneraire.fr` and `www.gmfuneraire.fr` to the server's Elastic IP (instead of CloudFront), then
-   `sudo certbot --nginx -d gmfuneraire.fr -d www.gmfuneraire.fr -d beta.gmfuneraire.fr`.
-5. Add the new address to the Google sign-in client's redirect URIs.
+The public site runs on this same server. `www.gmfuneraire.fr` serves the `redesign` branch as plain files
+from `/srv/gm/www-prod` and only `/contact/envoyer/` reaches Django (`deploy/nginx-prod.conf`); `gmfuneraire.fr`
+redirects to it. Memorials, news, quotes and the admin stay on the beta until their tests are done.
+S3, CloudFront and the Lambda are no longer in use.
+
+Opening the rest of the backend later:
+1. `/srv/gm/env`: `SITE_URL=https://www.gmfuneraire.fr`, then `sudo systemctl restart gm`.
+2. Publish `memorials` to `/srv/gm/www-prod` and add the Django paths to `deploy/nginx-prod.conf`.
+3. Add the new address to the Google sign-in client's redirect URIs.
 
 ### Updating the site later
 
