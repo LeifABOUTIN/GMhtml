@@ -11,6 +11,7 @@ sudo -u gm git fetch -q origin "$BRANCH"
 commit=$(sudo -u gm git rev-parse --short FETCH_HEAD)
 
 tmp=$(mktemp -d)
+chmod 755 "$tmp"  # rsync -a copies this mode onto the site root, and nginx must be able to enter it
 trap 'rm -rf "$tmp"' EXIT
 sudo -u gm git archive FETCH_HEAD | tar -x -C "$tmp"
 rm -rf "$tmp/server"
