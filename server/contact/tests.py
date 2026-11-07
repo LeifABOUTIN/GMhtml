@@ -34,6 +34,15 @@ class ContactFormTests(TestCase):
 		self.assertIn("Bonjour", mail.outbox[0].body)
 		self.assertNotIn("/admin/", mail.outbox[0].body)
 
+	def test_cut_off_phone_is_refused(self):
+		for number in ("06 12 34 5", "+336123456", "0033 6 12 34 5", "0612"):
+			self.assertEqual(self.post(contact=number).status_code, 400, number)
+		self.assertEqual(mail.outbox, [])
+
+	def test_international_phone(self):
+		self.assertEqual(self.post(contact="+33 6 12 34 56 78").status_code, 200)
+		self.assertEqual(self.post(contact="0049 170 1234567").status_code, 200)
+
 	def test_phone_contact(self):
 		self.post(contact="06 12 34 56 78", reason="infos", message=None)
 		self.assertIn("Téléphone : 06 12 34 56 78", mail.outbox[0].body)

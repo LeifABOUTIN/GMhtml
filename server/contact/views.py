@@ -21,7 +21,12 @@ log = logging.getLogger(__name__)
 
 RATE_LIMIT = 5  # requests per visitor…
 RATE_WINDOW = 10 * 60  # …per 10 minutes
-PHONE = re.compile(r"^\+?[0-9 .()-]{6,25}$")
+# a full French number, or an international one; same rule as script/form.js and script/devis.js
+PHONE = re.compile(r"^(0[1-9]\d{8}|(\+|00)330?\d{9}|(\+|00)(?!33)\d{8,15})$")
+
+
+def _is_phone(value):
+	return bool(PHONE.match(re.sub(r"[ .()-]", "", value)))
 
 
 @csrf_exempt  # the static contact page has no CSRF token; the endpoint only e-mails a request
@@ -47,7 +52,7 @@ def submit(request):
 			email = contact
 		except ValidationError:
 			pass
-	elif PHONE.match(contact):
+	elif _is_phone(contact):
 		phone = contact
 	if not name or not (email or phone):
 		return JsonResponse({"error": "missing"}, status=400)
@@ -173,4 +178,4 @@ def _split_contact(contact):
 			return contact, ""
 		except ValidationError:
 			return "", ""
-	return ("", contact) if PHONE.match(contact) else ("", "")
+	return ("", contact) if _is_phone(contact) else ("", "")

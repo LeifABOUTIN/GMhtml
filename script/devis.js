@@ -42,6 +42,12 @@ window.addEventListener("DOMContentLoaded", () => {
 	)
 	email.disabled = tel.disabled = true
 
+	// same rule as server/contact/views.py: a full French number, or an international one
+	tel.addEventListener("input", () => {
+		const complete = /^(0[1-9]\d{8}|(\+|00)330?\d{9}|(\+|00)(?!33)\d{8,15})$/.test(tel.value.replace(/[ .()-]/g, ""))
+		tel.setCustomValidity(!tel.value || complete ? "" : "Indiquez votre numéro complet, par exemple 06 12 34 56 78.")
+	})
+
 	document.getElementById("close__dialog").addEventListener("click", () => {
 		dialog.close()
 		if (!dialog.classList.contains("error")) window.location.href = "/"

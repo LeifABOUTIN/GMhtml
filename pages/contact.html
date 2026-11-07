@@ -51,6 +51,10 @@
 				<button id="close__dialog" class="btn btn--primary" type="button">Fermer</button>
 			</dialog>
 			<form class="form form__prise_contact">
+				<p class="form__urgent">
+					Un décès vient de survenir&nbsp;? Appelez-nous 24h/24&nbsp;:
+					<a href="tel:0673623160">06 73 62 31 60</a> ou <a href="tel:0645665002">06 45 66 50 02</a>
+				</p>
 				<fieldset>
 					<legend>Votre demande</legend>
 					<div class="choices">
@@ -60,7 +64,7 @@
 				</fieldset>
 				<div class="field">
 					<label for="nom">Nom et prénom</label>
-					<input type="text" name="nom" id="nom" placeholder="Votre nom" required />
+					<input type="text" name="nom" id="nom" placeholder="Votre nom" autocomplete="name" maxlength="150" required />
 				</div>
 				<div class="field">
 					<label for="message">Votre message (optionnel)</label>
@@ -69,18 +73,22 @@
 				<fieldset>
 					<legend>Comment souhaitez-vous être recontacté&nbsp;?</legend>
 					<div class="choices">
+						<label class="choice"><input type="radio" name="preference" id="pref__telephone" class="rbtel" required checked />Par téléphone</label>
 						<label class="choice"><input type="radio" name="preference" id="pref__email" class="rbmail" />Par e-mail</label>
-						<label class="choice"><input type="radio" name="preference" id="pref__telephone" class="rbtel" />Par téléphone</label>
 					</div>
 					<div class="option option__email">
 						<label for="customer__email">Votre e-mail</label>
-						<input type="text" name="email" id="customer__email" placeholder="exemple@gmail.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required />
+						<input type="email" name="email" id="customer__email" placeholder="exemple@gmail.com" autocomplete="email" maxlength="254" />
 					</div>
 					<div class="option option__tel">
 						<label for="customer__tel">Votre téléphone</label>
-						<input type="tel" name="telephone" id="customer__tel" placeholder="0123456789" maxlength="10" required />
+						<input type="tel" name="telephone" id="customer__tel" placeholder="06 12 34 56 78" autocomplete="tel" maxlength="25" />
 					</div>
 				</fieldset>
+				<div class="hp" aria-hidden="true">
+					<label for="website">Site web</label>
+					<input type="text" name="website" id="website" tabindex="-1" autocomplete="off" />
+				</div>
 				<button class="btn btn--primary submit__form" type="submit">Demander à être contacté</button>
 				<p class="form__disclaimer">
 					Vos données sont utilisées uniquement pour répondre à votre demande et ne sont jamais transmises à des
