@@ -878,7 +878,8 @@ input[type="radio"]:checked::before {
 
 /* ---------- Phones: one full-width column, no gaps ----------
    Blocks run from edge to edge and sit directly on each other. They use negative margins rather than
-   removing main's padding, so page titles and anything else in main keep their side margin. */
+   removing main's padding, so page titles and anything else in main keep their side margin.
+   Selectors stay narrow: memorials and news reuse .card, .prose and .form with their own layouts. */
 
 @media screen and (max-width: 600px) {
 	main {
@@ -905,11 +906,11 @@ input[type="radio"]:checked::before {
 	}
 
 	/* services: a stack of photo bands, text on the photo, alternating sides */
-	.cards {
+	.cards:has(.card__img) {
 		gap: 0;
 		margin: 0 -16px;
 	}
-	.card {
+	.card:has(.card__img) {
 		position: relative;
 		min-height: 62vw;
 		justify-content: flex-end;
@@ -919,7 +920,7 @@ input[type="radio"]:checked::before {
 		box-shadow: none;
 		color: #fff;
 	}
-	.card:hover {
+	.card:has(.card__img):hover {
 		transform: none;
 		box-shadow: none;
 	}
@@ -939,24 +940,24 @@ input[type="radio"]:checked::before {
 	.card:active .card__img::after {
 		background-color: rgba(122, 134, 112, 0.35);
 	}
-	.card__body {
+	.card__img ~ .card__body {
 		position: relative;
 		flex: none;
 		padding: 56px 20px 18px;
 	}
-	.card:nth-child(even) .card__body {
+	.card:nth-child(even) .card__img ~ .card__body {
 		align-items: flex-end;
 		text-align: right;
 	}
-	.card h2 {
+	.card__img ~ .card__body h2 {
 		color: #fff;
 		font-size: 1.45rem;
 	}
-	.card p {
+	.card__img ~ .card__body p {
 		flex: none;
 		max-width: 22em;
 	}
-	.card__more {
+	.card__img ~ .card__body .card__more {
 		margin-top: 8px;
 		color: #fff;
 	}
@@ -991,19 +992,16 @@ input[type="radio"]:checked::before {
 		border-radius: 0;
 	}
 
-	.prose,
-	.form {
+	main > .prose,
+	main > .form {
 		max-width: none;
 		margin: 0 -16px;
 		border-radius: 0;
 		box-shadow: none;
 		background-color: rgba(255, 255, 255, 0.92);
 	}
-	#legal-dialog .prose {
-		margin: 0;
-	}
 	/* photos in text pages reach the screen edges too (.prose has 20px side padding, 28px on top) */
-	.prose .illustration {
+	main > .prose .illustration {
 		width: calc(100% + 40px);
 		max-width: none;
 		margin-left: -20px;
@@ -1011,10 +1009,10 @@ input[type="radio"]:checked::before {
 		border: 0;
 		border-radius: 0;
 	}
-	.prose > .illustration:first-child {
+	main > .prose > .illustration:first-child {
 		margin-top: -28px;
 	}
-	.form .submit__form {
+	main > .form .submit__form {
 		align-self: stretch;
 		border-radius: 0;
 	}
