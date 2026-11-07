@@ -23,6 +23,7 @@ sed -i -E "s#(css/site\.css|script/[a-z]+\.js)(\?v=[0-9]+)?\"#\1?v=$v\"#g" /srv/
 chown -R gm:www-data /srv/gm/www-prod
 
 cp /srv/gm/repo/server/deploy/nginx-prod.conf /etc/nginx/sites-available/gm-prod
+cp /srv/gm/repo/server/deploy/nginx-gzip.conf /etc/nginx/conf.d/gm-gzip.conf
 ln -sf /etc/nginx/sites-available/gm-prod /etc/nginx/sites-enabled/gm-prod
 nginx -t && systemctl reload nginx
 echo "Public site deployed: $commit"

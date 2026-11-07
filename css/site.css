@@ -2,6 +2,13 @@
 	font-family: Couture;
 	src: url("../fonts/couture-bld.otf") format("opentype");
 }
+/* Couture has no accented letters: these few capitals come from Montserrat Bold (SIL OFL, see fonts/).
+   Titles are set in capitals below, so the accents in their real text always land on this range. */
+@font-face {
+	font-family: Couture;
+	src: url("../fonts/couture-accents.woff2") format("woff2");
+	unicode-range: U+C0, U+C2, U+C7-CB, U+CE, U+D4, U+D9, U+DB;
+}
 
 :root {
 	--green: #7a8670;
@@ -220,6 +227,7 @@ main {
 }
 .page-title h1 {
 	font-family: "Couture", sans-serif;
+	text-transform: uppercase;
 	font-weight: normal;
 	color: var(--green);
 	font-size: clamp(1.75rem, 5vw, 3.25rem);
@@ -293,6 +301,7 @@ main {
 }
 .hero h1 {
 	font-family: "Couture", sans-serif;
+	text-transform: uppercase;
 	font-weight: normal;
 	color: var(--green);
 	font-size: clamp(1.75rem, 5vw, 3.25rem);
@@ -360,6 +369,7 @@ main {
 }
 .card h2 {
 	font-family: "Couture", sans-serif;
+	text-transform: uppercase;
 	font-weight: normal;
 	color: var(--green);
 	font-size: 1.15rem;
@@ -428,6 +438,7 @@ main {
 }
 .feature h2 {
 	font-family: "Couture", sans-serif;
+	text-transform: uppercase;
 	font-weight: normal;
 	color: var(--green);
 	font-size: 1.5rem;
@@ -1155,6 +1166,7 @@ input[type="radio"]:checked::before {
 }
 .condolences > h2 {
 	font-family: "Couture", sans-serif;
+	text-transform: uppercase;
 	font-weight: normal;
 	color: var(--green);
 	font-size: 1.6rem;
@@ -1684,6 +1696,11 @@ input[type="radio"]:checked::before {
 	}
 }
 
+/* always-visible call button, phones only */
+.call-bar {
+	display: none;
+}
+
 /* ---------- Phones: one full-width column, no gaps ----------
    Blocks run from edge to edge and sit directly on each other. They use negative margins rather than
    removing main's padding, so page titles and anything else in main keep their side margin.
@@ -1851,5 +1868,34 @@ input[type="radio"]:checked::before {
 		border-top: 0;
 		padding: 16px 20px;
 		text-align: left;
+	}
+
+	/* the 24h/24 number stays on screen; the page gets room so the bar never hides the footer */
+	body {
+		padding-bottom: 60px;
+	}
+	.call-bar {
+		position: fixed;
+		z-index: 90;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-height: 60px;
+		padding: 6px 12px;
+		background-color: var(--green-dark);
+		color: #fff;
+		font-size: 0.85rem;
+		line-height: 1.25;
+		text-decoration: none;
+		box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.35);
+	}
+	.call-bar span {
+		font-size: 1.15rem;
+		font-weight: 700;
+		letter-spacing: 0.03em;
 	}
 }
